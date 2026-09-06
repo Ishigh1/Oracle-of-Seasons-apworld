@@ -16,7 +16,7 @@ def randomize_puzzles(rom: RomData, texts: dict[str, str], assembler: Z80Assembl
         return
     randomize_dance(rom)
     randomize_hns(assembler)
-    randomize_ghini(texts)
+    randomize_ghini(rom, texts)
     randomize_d3_statue_puzzle(room_data)
     randomize_d7_armos_puzzle(rom, assembler, room_data)
     randomize_d8_ice_puzzle(room_data)
