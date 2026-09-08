@@ -118,7 +118,7 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
     for loc_name, loc_data in LOCATIONS_DATA.items():
         if not location_is_active(world, loc_name, loc_data):
             continue
-        if "vanilla_item" not in loc_data:
+        if "local" in loc_data:
             continue
 
         item_name = loc_data["vanilla_item"]

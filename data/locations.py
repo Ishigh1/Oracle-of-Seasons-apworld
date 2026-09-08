@@ -1717,6 +1717,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
 
     "Horon Village: Seed Tree": {
         "region_id": "horon village tree",
+        "vanilla_item": "Ember Seeds",
         "local": True,
         "room": 0x00f8,
         "collect": COLLECT_TOUCH,
@@ -1724,6 +1725,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
     },
     "Woods of Winter: Seed Tree": {
         "region_id": "woods of winter tree",
+        "vanilla_item": "Mystery Seeds",
         "local": True,
         "room": 0x009e,
         "collect": COLLECT_TOUCH,
@@ -1731,6 +1733,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
     },
     "Holodrum Plain: Seed Tree": {
         "region_id": "north horon tree",
+        "vanilla_item": "Scent Seeds",
         "local": True,
         "room": 0x0067,
         "collect": COLLECT_TOUCH,
@@ -1738,6 +1741,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
     },
     "Spool Swamp: Seed Tree": {
         "region_id": "spool swamp tree",
+        "vanilla_item": "Pegasus Seeds",
         "local": True,
         "room": 0x0072,
         "collect": COLLECT_TOUCH,
@@ -1745,6 +1749,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
     },
     "Sunken City: Seed Tree": {
         "region_id": "sunken city tree",
+        "vanilla_item": "Gale Seeds",
         "local": True,
         "room": 0x005f,
         "collect": COLLECT_TOUCH,
@@ -1752,6 +1757,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
     },
     "Tarm Ruins: Seed Tree": {
         "region_id": "tarm ruins tree",
+        "vanilla_item": "Gale Seeds",
         "local": True,
         "room": 0x0010,
         "collect": COLLECT_TOUCH,
