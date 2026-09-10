@@ -187,7 +187,7 @@ def apply_text_edits(texts: dict[str, str]) -> None:
                         "If you don't\n"
                         "have it, check\n"
                         "tinyurl.com\n"
-                        "/2cb35snu\n")
+                        "/by3n4dnv\n")
     texts["TX_5303"] = ("How do you\n"
                         "refill your\n"
                         "satchel and\n"
