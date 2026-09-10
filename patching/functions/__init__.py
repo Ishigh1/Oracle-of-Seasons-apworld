@@ -120,8 +120,6 @@ def get_asm_files(patch_data: dict[str, Any]) -> list[str]:
         files += asm_files["ganon_goal"]
     if patch_data["options"]["rosa_quick_unlock"]:
         files += asm_files["instant_rosa"]
-    if get_settings()["tloz_oos_options"]["remove_music"]:
-        files += asm_files["mute_music"]
     if patch_data["options"]["cross_items"]:
         files += asm_files["cross_items"]
     if patch_data["options"]["secret_locations"]:
@@ -134,6 +132,11 @@ def get_asm_files(patch_data: dict[str, Any]) -> list[str]:
             files += asm_files["d11_in_d0"]
     if patch_data["options"]["randomize_puzzles"]:
         files += asm_files["random_puzzles"]
+
+    if get_settings()["tloz_oos_options"]["remove_music"]:
+        files += asm_files["mute_music"]
+    if get_settings()["tloz_oos_options"]["quiet_gloves"]:
+        files += asm_files["quiet_gloves"]
     return files
 
 

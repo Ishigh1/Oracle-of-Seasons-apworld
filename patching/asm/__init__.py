@@ -76,6 +76,9 @@ asm_files = {
     "quick_flute": [
         "asm/conditional/quick_flute.yaml"
     ],
+    "quiet_gloves": [
+        "asm/conditional/quiet_gloves.yaml"
+    ],
     "remove_d2_alt_entrance": [
         "asm/conditional/remove_d2_alt_entrance.yaml"
     ],

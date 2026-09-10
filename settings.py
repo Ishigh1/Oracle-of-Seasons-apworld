@@ -50,6 +50,11 @@ class OracleOfSeasonsSettings(settings.Group):
         If true, no music will be played in the game while sound effects remain untouched
         """
 
+    class OoSQuietGloves(str):
+        """
+        If true, the noise of the magnet gloves will have a lower pitch
+        """
+
     rom_file: RomFile = RomFile(RomFile.copy_to)
     ages_rom_file: AgesRomFile = AgesRomFile(AgesRomFile.copy_to)
     rom_start: bool = True
@@ -58,3 +63,4 @@ class OracleOfSeasonsSettings(settings.Group):
     reveal_hidden_subrosia_digging_spots: OoSRevealDiggingSpots | bool = True
     heart_beep_interval: OoSHeartBeepInterval | str = "vanilla"
     remove_music: OoSRemoveMusic | bool = False
+    quiet_gloves: OoSQuietGloves | bool = False
