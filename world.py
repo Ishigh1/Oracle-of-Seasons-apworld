@@ -2,11 +2,10 @@ import os
 from threading import Event
 from typing import Any, ClassVar, TextIO, cast
 
-from BaseClasses import CollectionState, Item, Location, MultiWorld, ItemClassification
+from BaseClasses import CollectionState, Item, Location, MultiWorld
 from Options import Option
 from rule_builder.rules import Has
 from worlds.AutoWorld import World
-
 from .common.Util import build_item_name_to_id_dict, build_location_name_to_id_dict
 from .data import ITEMS_DATA
 from .data.Constants import (
@@ -98,10 +97,12 @@ class OracleOfSeasonsWorld(World):
         self.remaining_progressive_containers = 0
         self.item_mapping_collect: dict[str, tuple[str, int]] = {}
 
+        self.boss_mapping = {i: i for i in range(1, 9)}
+
         self.made_hints = Event()
         self.region_hints: list[tuple[str, str | int]] = []
         self.item_hints: list[Item | None] = []
-        self.num_prog: int = 1 # initialized at 1 so that before pre_fill, any prog counts as all the progs
+        self.num_prog: int = 1  # initialized at 1 so that before pre_fill, any prog counts as all the progs
 
         self.inventory_locations: list[Location] | None = None
         self.nothing_items: list[Item] | None = None
@@ -143,7 +144,6 @@ class OracleOfSeasonsWorld(World):
 
         stage_pre_fill_dungeon_items(multiworld)
         stage_pre_fill_check_prog(multiworld)
-
 
     def get_filler_item_name(self) -> str:
         filler_item_names = [
@@ -231,7 +231,7 @@ class OracleOfSeasonsWorld(World):
             self.item_hints = create_item_hints(self)
 
     def generate_output(self, output_directory: str) -> None:
-        from .generation.PatchWriter import oos_create_ap_procedure_patch
+        from .generation.patch_writer import oos_create_ap_procedure_patch
 
         patch = oos_create_ap_procedure_patch(self)
         rom_path = os.path.join(
@@ -262,6 +262,7 @@ class OracleOfSeasonsWorld(World):
             "subrosia_portals": self.portal_connections,
             "shop_rupee_requirements": self.shop_rupee_requirements,
             "shop_costs": self.shop_prices,
+            "boss_mapping": self.boss_mapping,
         }
 
         # The structure is made to make it easy to call CreateHints
@@ -316,7 +317,7 @@ class OracleOfSeasonsWorld(World):
         if mapping is not None:
             state.prog_items[self.player][mapping[0]] += mapping[1]
 
-        state.prog_items[self.player]["progs"] += 100 # Pre-multiply by 100 to not have to do it the following line
+        state.prog_items[self.player]["progs"] += 100  # Pre-multiply by 100 to not have to do it the following line
         state.prog_items[self.player]["prog_percent"] = state.prog_items[self.player]["progs"] // self.num_prog
         return True
 
@@ -329,6 +330,6 @@ class OracleOfSeasonsWorld(World):
         if mapping is not None:
             state.prog_items[self.player][mapping[0]] -= mapping[1]
 
-        state.prog_items[self.player]["progs"] -= 100 # Pre-multiply by 100 to not have to do it the following line
+        state.prog_items[self.player]["progs"] -= 100  # Pre-multiply by 100 to not have to do it the following line
         state.prog_items[self.player]["prog_percent"] = state.prog_items[self.player]["progs"] // self.num_prog
         return True

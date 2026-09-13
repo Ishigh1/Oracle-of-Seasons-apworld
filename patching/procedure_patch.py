@@ -8,6 +8,7 @@ import yaml
 import Utils
 from settings import get_settings
 from worlds.Files import APPatchExtension, APProcedurePatch, APTokenMixin
+from .functions.boss_rando import place_bosses
 
 from ..common.patching.RomData import RomData
 from ..common.patching.rooms.encoding import write_room_data
@@ -121,6 +122,7 @@ class OoSPatchExtensions(APPatchExtension):
         set_file_select_text(assembler, caller.player_name)
         set_player_start_inventory(assembler, patch_data)
         randomize_puzzles(rom_data, texts, assembler, room_data, patch_data)
+        place_bosses(assembler, room_data, patch_data)
         if not hasattr(get_settings().tloz_oos_options, "beat_tutorial"):
             set_faq_trap(assembler)
 

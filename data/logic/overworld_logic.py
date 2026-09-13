@@ -112,7 +112,7 @@ from .logic_predicates import (
     oos_season_in_western_coast,
     oos_season_in_woods_of_winter,
     oos_self_locking_item,
-    oos_has_bombchus_for_bombjump,
+    oos_has_bombchus_for_bombjump, oos_has_biggoron_sword,
 )
 from .rulebuilder import from_option
 
@@ -245,7 +245,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                 oos_has_shovel(),
                 Or(
                     oos_has_noble_sword(),
-                    Has("Biggoron's Sword"),
+                    oos_has_biggoron_sword(),
                     oos_has_fools_ore(),
                     And(oos_option_medium_logic(), Or(oos_has_sword(), oos_has_bombchus(3))),
                 ),

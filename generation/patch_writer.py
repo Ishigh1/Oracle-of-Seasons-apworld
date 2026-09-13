@@ -1,6 +1,8 @@
 import json
 from collections import defaultdict
+from typing import cast, Type, Any
 
+from Options import Option
 from ..options import OracleOfSeasonsOptions
 from ..patching.procedure_patch import OoSProcedurePatch
 from ..world import OracleOfSeasonsWorld
@@ -14,12 +16,13 @@ def oos_create_ap_procedure_patch(world: OracleOfSeasonsWorld) -> OoSProcedurePa
 
     del world.shop_prices["subrosianMarket"] # This was only used for rulebuilder and doesn't have a meaning in patch data
 
+    type_hints = cast(dict[str, Type[Option[Any]]], cast(object, OracleOfSeasonsOptions.type_hints))
     patch_data = {
         "version": f"{world.version()}",
         "seed": world.multiworld.seed,
         "options": world.options.as_dict(
-            *[option_name for option_name in OracleOfSeasonsOptions.type_hints
-              if hasattr(OracleOfSeasonsOptions.type_hints[option_name], "include_in_patch")]),
+            *[option_name for option_name in type_hints
+              if hasattr(type_hints[option_name], "include_in_patch")]),
         "samasa_gate_sequence": " ".join([str(x) for x in world.samasa_gate_code]),
         "lost_woods_item_sequence": world.lost_woods_item_sequence,
         "lost_woods_main_sequence": world.lost_woods_main_sequence,
@@ -32,6 +35,7 @@ def oos_create_ap_procedure_patch(world: OracleOfSeasonsWorld) -> OoSProcedurePa
         "shop_prices": world.shop_prices,
         "subrosia_seaside_location": world.random.randint(0, 3),
         "region_hints": world.region_hints,
+        "boss_mapping": world.boss_mapping,
     }
 
     for loc in world.multiworld.get_locations(world.player):
@@ -59,10 +63,10 @@ def oos_create_ap_procedure_patch(world: OracleOfSeasonsWorld) -> OoSProcedurePa
         location = item_hint.location
         player = location.player
         if player == world.player:
-            player = None
+            player_name = None
         else:
-            player = world.multiworld.get_player_name(player)
-        patch_data_item_hints.append((item_hint.name, location.name, player))
+            player_name = world.multiworld.get_player_name(player)
+        patch_data_item_hints.append((item_hint.name, location.name, player_name))
     patch_data["item_hints"] = patch_data_item_hints
 
     start_inventory = defaultdict(int)

@@ -733,6 +733,16 @@ class OracleOfSeasonsStartingMapsCompasses(Toggle):
     include_in_slot_data = True
 
 
+class OracleOfSeasonsShuffleBosses(Toggle):
+    """
+    When enabled, all the dungeon bosses are shuffled together
+    """
+
+    display_name = "Shuffle Bosses"
+
+    include_in_slot_data = True
+
+
 class OracleOfSeasonsRandomizeAi(Toggle):
     """
     When enabled, enemy AI will be randomized.
@@ -839,7 +849,7 @@ class OracleOfSeasonsMoveLink(Toggle):
     ⚠ This option may easily cause softlocks and may cause some issues. Some graphical oddities are also to be expected.
     """
 
-    display_name = "Randomize AI"
+    display_name = "Enable MoveLink"
     visibility = Visibility.all if (datetime.now().month == 4) else Visibility.none  # Only visible in april
 
     include_in_slot_data = True  # This is for the bizhawk client
@@ -940,6 +950,7 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     cross_items: OracleOfSeasonsIncludeCrossItems
     combat_difficulty: OracleOfSeasonsCombatDifficulty
     bird_hint: OracleOfSeasonsBirdHint
+    shuffle_bosses: OracleOfSeasonsShuffleBosses
     randomize_ai: OracleOfSeasonsRandomizeAi
     move_link: OracleOfSeasonsMoveLink
 
@@ -961,6 +972,7 @@ oos_option_groups = [
         "Items",
         [
             OracleOfSeasonsIncludeCrossItems,
+            OracleOfSeasonsFoolsOre,
         ],
     ),
     OptionGroup(
@@ -1050,7 +1062,6 @@ oos_option_groups = [
             OracleOfSeasonsEnforcePotionInShop,
             OracleOfSeasonsRequiredRings,
             OracleOfSeasonsExcludedRings,
-            OracleOfSeasonsFoolsOre,
             OracleOfSeasonsCombatDifficulty,
             OracleOfSeasonsBirdHint,
             OracleOfSeasonsRandomizeAi,

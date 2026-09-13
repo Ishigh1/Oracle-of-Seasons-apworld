@@ -147,9 +147,6 @@ def apply_self_locking_rules(world: OracleOfSeasonsWorld):
         "Gnarled Root Dungeon: Item in Basement": AlwaysAllowRule(
             world, CanReachRegion("d1 railway chest"), f"Small Key ({DUNGEON_NAMES[1]})"
         ),
-        "Snake's Remains: Chest on Terrace": AlwaysAllowRule(
-            world, And(CanReachRegion("d2 arrow room"), oos_has_small_keys(2, 2)), f"Small Key ({DUNGEON_NAMES[2]})"
-        ),
         "Poison Moth's Lair (1F): Chest in Mimics Room": AlwaysAllowRule(
             world, And(CanReachRegion("d3 water room"), oos_can_kill_normal_enemy()), f"Small Key ({DUNGEON_NAMES[3]})"
         ),

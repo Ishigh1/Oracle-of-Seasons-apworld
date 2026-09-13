@@ -1,11 +1,12 @@
 from rule_builder.rules import And, CanReachRegion, Has, Or, True_
 from worlds.tloz_oos.data.logic import LogicLine
-from ..regions import RegionNames
 
 from ... import OracleOfSeasonsWorld
 from ...options import (
     OracleOfSeasonsOptions,
 )
+from ..regions import RegionNames
+from .boss_logic import CanBeatBoss
 from .logic_predicates import (
     oos_can_break_bush,
     oos_can_break_crystal,
@@ -43,6 +44,7 @@ from .logic_predicates import (
     oos_can_use_mystery_seeds,
     oos_can_use_pegasus_seeds,
     oos_can_use_scent_seeds,
+    oos_has_biggoron_sword,
     oos_has_bombchus_for_bombjump,
     oos_has_bombchus_for_tiles,
     oos_has_bombchus_to_fight,
@@ -140,7 +142,7 @@ def make_d1_logic() -> list[LogicLine]:
             ),
         ),
         ("enter d1", "d1 floormaster room", False, oos_can_use_ember_seeds(True)),
-        ("d1 floormaster room", "d1 boss", False, And(oos_has_boss_key(1), oos_can_kill_armored_enemy(False, False))),
+        ("d1 floormaster room", "d1 boss", False, And(oos_has_boss_key(1), CanBeatBoss(1))),
         # 1 key
         ("enter d1", "d1 stalfos chest", False, And(oos_has_small_keys(1, 1), oos_can_kill_stalfos())),
         (
@@ -230,13 +232,6 @@ def make_d2_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOptions) 
         ),
         # 2 keys
         ("d2 roller chest", "d2 spinner", False, And(oos_has_small_keys(2, 2), oos_can_kill_facade())),
-        # terrace self-locking rules
-        (
-            "d2 arrow room",
-            "d2 terrace chest",
-            False,
-            And(oos_has_small_keys(2, 2), oos_self_locking_small_key("Snake's Remains: Chest on Terrace", 2)),
-        ),
         (
             "d2 spinner",
             "d2 wild bombs",
@@ -260,11 +255,7 @@ def make_d2_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOptions) 
             "d2 spinner",
             "d2 boss",
             False,
-            And(
-                oos_has_boss_key(2),
-                oos_has_bombs(),  # regrowable there
-                oos_has_bracelet(),
-            ),
+            And(Or(oos_can_remove_rockslide(False), oos_has_small_keys(2, 3)), oos_has_boss_key(2), CanBeatBoss(2)),
         ),
         # 3 keys
         ("d2 arrow room", "d2 hardhat room", False, oos_has_small_keys(2, 3)),
@@ -348,7 +339,12 @@ def make_d3_logic() -> list[LogicLine]:
         ),
         ("d3 omuai stairs", "d3 quicksand terrace", False, True_()),
         ("d3 omuai stairs", "d3 giant blade room", False, Or(oos_has_feather(), oos_option_hard_logic())),
-        ("d3 omuai stairs", "d3 boss", False, oos_has_boss_key(3)),
+        (
+            "d3 omuai stairs",
+            "d3 boss",
+            False,
+            And(oos_has_boss_key(3), Or(oos_has_feather(), oos_option_medium_logic()), CanBeatBoss(3)),
+        ),
     ]
 
 
@@ -515,40 +511,7 @@ def make_d4_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
                 ),
             ),
         ),
-        (
-            "enter gohma",
-            "d4 boss",
-            False,
-            Or(
-                And(
-                    # Kill Gohma without breaking its pincer
-                    oos_option_medium_logic(),
-                    Or(
-                        oos_has_seed_thrower(),
-                        oos_option_hard_logic(),  # You can kill Gohma with the satchel. Yup...
-                    ),
-                    Or(oos_has_scent_seeds(), oos_has_ember_seeds()),
-                ),
-                And(
-                    # Kill Gohma with sword beams (Gohma's minions give enough hearts to justify it)
-                    oos_option_medium_logic(),
-                    Or(oos_has_noble_sword(), oos_shoot_beams()),
-                ),
-                And(
-                    # Kill Gohma traditionally (break pincer, then spam seeds)
-                    Or(oos_has_sword(), oos_has_fools_ore()),
-                    Or(
-                        oos_can_use_ember_seeds(False),
-                        oos_can_use_scent_seeds(),
-                        And(
-                            oos_option_medium_logic(),
-                            oos_has_satchel(2),  # It may require quite a bunch of mystery seeds...
-                            oos_can_use_mystery_seeds(),
-                        ),
-                    ),
-                ),
-            ),
-        ),
+        ("enter gohma", "d4 boss", False, CanBeatBoss(4)),
     ]
 
 
@@ -735,10 +698,24 @@ def make_d5_logic() -> list[LogicLine]:
             False,
             And(
                 oos_has_small_keys(5, 5),
-                oos_has_magnet_gloves(),
-                oos_has_boss_key(5),
+                Or(
+                    # Go through the basement
+                    oos_has_magnet_gloves(),
+                    And(
+                        oos_option_hell_logic(),
+                        oos_has_cape(),
+                        oos_can_use_pegasus_seeds(),
+                    ),
+                ),
                 Or(oos_option_medium_logic(), oos_has_feather()),
-                oos_has_hearts_by_difficulty(6, 4, 3),
+                Or(
+                    # Pass the pot blocking access to the first magnet block
+                    oos_option_hard_logic(),  # Just use the magnet from above the pot
+                    oos_can_jump_2_wide_pit(),
+                    oos_can_break_pot(),
+                ),
+                oos_has_boss_key(5),
+                CanBeatBoss(5),
             ),
         ),
     ]
@@ -935,16 +912,7 @@ def make_d6_logic() -> list[LogicLine]:
             "d6 pre-boss room",
             "d6 boss",
             False,
-            And(
-                oos_has_boss_key(6),
-                oos_has_magic_boomerang(),
-                Or(
-                    oos_has_sword(),
-                    oos_has_fools_ore(),
-                    oos_has_seed_thrower(),
-                    # Has("expert's ring")
-                ),
-            ),
+            And(oos_has_boss_key(6), CanBeatBoss(6)),
         ),
     ]
 
@@ -1204,14 +1172,7 @@ def make_d7_logic() -> list[LogicLine]:
             "d7 maze chest",
             "d7 boss",
             False,
-            And(
-                oos_has_boss_key(7),
-                Or(
-                    oos_has_sword(),
-                    oos_has_fools_ore(),
-                    # oos_can_punch()
-                ),
-            ),
+            And(oos_has_boss_key(7), CanBeatBoss(7)),
         ),
     ]
 
@@ -1482,7 +1443,10 @@ def make_d8_logic() -> list[LogicLine]:
             "d8 NW crystal",
             "d8 boss",
             False,
-            And(oos_has_small_keys(8, 7), oos_has_boss_key(8), Or(oos_has_sword(), oos_has_fools_ore())),
+            And(
+                oos_has_small_keys(8, 7),
+                oos_has_boss_key(8),
+            ),
         ),
     ]
 
@@ -1507,7 +1471,7 @@ def make_d11_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
                         oos_can_jump_5_wide_liquid(),
                         Or(
                             oos_has_noble_sword(),
-                            Has("Biggoron's Sword"),
+                            oos_has_biggoron_sword(),
                         ),
                     ),
                 ),

@@ -29,7 +29,11 @@ from .rulebuilder import ItemInLocation, LostWoods, Rule, from_bool, from_option
 
 
 def oos_has_sword(accept_biggoron: bool = True) -> Rule:
-    return Or(Has("Progressive Sword"), And(from_bool(accept_biggoron), Has("Biggoron's Sword")))
+    return Or(Has("Progressive Sword"), And(from_bool(accept_biggoron), oos_has_biggoron_sword()))
+
+
+def oos_has_biggoron_sword() -> Rule:
+    return Has("Biggoron's Sword")
 
 
 def oos_has_noble_sword() -> Rule:
@@ -708,7 +712,7 @@ def oos_can_break_mushroom(can_use_companion: bool) -> Rule:
 
 
 def oos_can_break_pot() -> Rule:
-    return Or(oos_has_bracelet(), oos_has_noble_sword(), Has("Biggoron's Sword"), oos_has_switch_hook())
+    return Or(oos_has_bracelet(), oos_has_noble_sword(), oos_has_biggoron_sword(), oos_has_switch_hook())
 
 
 def oos_can_break_flowers(can_summon_companion: bool = False, allow_bombchus: bool = False) -> Rule:
@@ -746,7 +750,7 @@ def oos_can_break_crystal() -> Rule:
 def oos_can_break_sign() -> Rule:
     return Or(
         oos_has_noble_sword(),
-        Has("Biggoron's Sword"),
+        oos_has_biggoron_sword(),
         oos_has_bracelet(),
         oos_can_use_ember_seeds(False),
         oos_has_magic_boomerang(),
