@@ -322,7 +322,7 @@ def create_item_hints(world: OracleOfSeasonsWorld) -> list[Item | None]:
             assert item is not None
             if item.player == world.player:
                 if item.name == "Hint":
-                    non_hintable[LOCATIONS_DATA[location.name]["owl_id"]] = past_items
+                    non_hintable[LOCATIONS_DATA[location.name]["owl_id"]] = set(past_items)
                 elif item.advancement and not item.deprioritized and not location.is_event and not location.locked:
                     current_items.add(item)
             past_items.update(current_items)
