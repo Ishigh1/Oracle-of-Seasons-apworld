@@ -10,7 +10,7 @@ def randomize_ghini(rom: RomData, texts: dict[str, str]) -> None:
     if random.randint(0, 1) == 0:
         # Odd
         texts["TX_4c15"] = texts["TX_4c15"].replace("there were more", "had an odd count")
-        texts["TX_4c17"] = texts["TX_4c17"].replace("were there more\nof", "was the odd\none")
+        texts["TX_4c17"] = texts["TX_4c17"].replace("were there more\nof, ", "was the odd,\n")
 
         rom.write_bytes(GameboyAddress(0x0F, 0x7C9E).address_in_rom(),
                         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0])
