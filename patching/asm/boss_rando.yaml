@@ -52,7 +52,7 @@
   jp nz, dodongo_reset_movement_in_hole
   /endif
 
-0e//dodongo_reset_movement_in_hole/: |
+0e//dodongo_reset_movement_in_hole: |
   /ifdef d2_boss_in_d3
   sub $48
   cp $04

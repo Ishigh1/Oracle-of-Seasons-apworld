@@ -5,6 +5,7 @@ asm_files = {
         "asm/bigger_inventory.yaml",
         "asm/bombchus.yaml",
         "asm/boss_items.yaml",
+        "asm/boss_rando.yaml",
         "asm/business_scrubs.yaml",
         "asm/collect.yaml",
         "asm/combat_difficulty.yaml",
