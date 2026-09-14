@@ -904,8 +904,20 @@ def make_d6_logic() -> list[LogicLine]:
                     ),
                 ),
                 oos_has_feather(),  # jump on trampoline
-                # Switches here are considered trivial since we'll need magic boomerang for
-                # Manhandla anyway
+                Or(
+                    # Trigger the orbs
+                    oos_has_boomerang(),
+                    oos_has_seed_thrower(),
+                    oos_has_bombchus_for_tiles(),
+                    oos_has_switch_hook(),
+                    And(
+                        # Could be medium, but we can only get there without magic boomerang in hard
+                        oos_option_hard_logic(),
+                        Has("Toss Ring"),
+                        oos_has_bombs_for_tiles(),
+                        oos_has_sword(True),  # Spin/biggoron for the farthest orb
+                    ),
+                ),
             ),
         ),
         (
