@@ -1444,6 +1444,7 @@ def make_d8_logic() -> list[LogicLine]:
             "d8 boss",
             False,
             And(
+                CanBeatBoss(8),
                 oos_has_small_keys(8, 7),
                 oos_has_boss_key(8),
             ),

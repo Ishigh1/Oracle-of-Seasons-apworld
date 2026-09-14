@@ -1,13 +1,33 @@
 import dataclasses
 
 from rule_builder.rules import And, Or
-from . import Rule
-from .logic_predicates import oos_can_kill_armored_enemy, oos_has_bombs, oos_has_bracelet, oos_has_bombs_to_fight, oos_has_seed_thrower, \
-    oos_option_medium_logic, oos_option_hard_logic, oos_has_scent_seeds, oos_has_ember_seeds, oos_shoot_beams, oos_has_noble_sword, oos_has_sword, \
-    oos_can_use_scent_seeds, oos_can_use_ember_seeds, oos_has_satchel, oos_can_use_mystery_seeds, oos_has_fools_ore, oos_has_hearts_by_difficulty, \
-    oos_has_magnet_gloves, oos_has_feather, oos_has_magic_boomerang
-from .rulebuilder import from_bool
+
 from ... import OracleOfSeasonsWorld
+from . import Rule
+from .logic_predicates import (
+    oos_can_kill_armored_enemy,
+    oos_can_use_ember_seeds,
+    oos_can_use_mystery_seeds,
+    oos_can_use_scent_seeds,
+    oos_has_bombs,
+    oos_has_bombs_to_fight,
+    oos_has_bracelet,
+    oos_has_ember_seeds,
+    oos_has_feather,
+    oos_has_fools_ore,
+    oos_has_hearts_by_difficulty,
+    oos_has_magic_boomerang,
+    oos_has_magnet_gloves,
+    oos_has_noble_sword,
+    oos_has_satchel,
+    oos_has_scent_seeds,
+    oos_has_seed_thrower,
+    oos_has_sword,
+    oos_option_hard_logic,
+    oos_option_medium_logic,
+    oos_shoot_beams,
+)
+from .rulebuilder import from_bool
 
 
 def can_beat_aquamentus(_: int) -> Rule:
@@ -17,7 +37,7 @@ def can_beat_aquamentus(_: int) -> Rule:
 def can_beat_dodongo(dungeon: int) -> Rule:
     return And(
         Or(
-            from_bool(dungeon == 2), oos_has_bombs(),
+            And(from_bool(dungeon == 2), oos_has_bombs()),
             oos_has_bombs_to_fight(),
         ),
         oos_has_bracelet(),
