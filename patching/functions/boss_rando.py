@@ -108,12 +108,12 @@ def place_dodongo(assembler: Z80Assembler, room_data: list[bytearray], dungeon: 
             0x48: 0x60,
             0x49: 0x60,
             0x4A: 0x60,
-            0xA4: 0x60,
-            0xA5: 0x60,
-            0xA6: 0x60,
-            0xA8: 0x60,
-            0xA9: 0x60,
-            0xAA: 0x60,
+            0x54: 0x60,
+            0x55: 0x60,
+            0x56: 0x60,
+            0x58: 0x60,
+            0x59: 0x60,
+            0x5A: 0x60,
         }
 
         room = room_data[0x553]
@@ -122,6 +122,9 @@ def place_dodongo(assembler: Z80Assembler, room_data: list[bytearray], dungeon: 
 
         assembler.define_byte("d2_boss_in_d3", 1)
         assembler.define_byte("d2_boss_in_other_dungeons", 1)
+
+        assembler.define_byte(f"d{dungeon}_boss_y", 0x20)
+        assembler.define_byte(f"d{dungeon}_boss_x", 0x78)
     elif dungeon == 4:
         room = room_data[0x55F]
         for i in range(0x45, 0x70, 0x10):
