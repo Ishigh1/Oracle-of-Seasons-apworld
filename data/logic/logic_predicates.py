@@ -668,9 +668,14 @@ def oos_can_use_pegasus_seeds() -> Rule:
 
 def oos_can_use_gale_seeds_offensively() -> Rule:
     return And(
-        oos_has_satchel(2),
         oos_option_medium_logic(),
-        Or(oos_has_gale_seeds(), oos_has_mystery_seeds()),
+        Or(
+            oos_has_gale_seeds(),
+            And(
+                oos_has_satchel(2),
+                oos_has_mystery_seeds(),
+            ),
+        ),
         Or(
             oos_has_seed_thrower(),
             And(
@@ -931,8 +936,9 @@ def oos_can_kill_d2_hardhat() -> Rule:
                     oos_has_satchel(),
                 ),
             ),
-            Or(oos_has_scent_seeds(), oos_has_gale_seeds(), oos_has_mystery_seeds()),
+            Or(oos_has_scent_seeds(), oos_has_mystery_seeds()),
         ),
+        oos_can_use_gale_seeds_offensively(),
         And(oos_option_medium_logic(), Or(oos_has_bombchus_to_fight(), oos_has_bombs_to_fight())),
     )
 
