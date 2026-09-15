@@ -242,4 +242,4 @@ def place_gleeok(assembler: Z80Assembler, _: list[bytearray], dungeon: int):
 def place_medusa(assembler: Z80Assembler, _: list[bytearray], dungeon: int):
     assembler.define_byte(f"d{dungeon}_boss", 0x7F)
     if dungeon == 3:
-        assembler.define_byte("d7_boss_in_d3", 1)
+        assembler.define_byte("d8_boss_in_d3", 1)
