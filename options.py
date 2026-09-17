@@ -187,6 +187,7 @@ class OracleOfSeasonsDuplicateSeedTree(Choice):
 
     default = 5
 
+
 class OracleOfSeasonsStartingPosition(Choice):
     """
     Where the game starts:
@@ -1064,6 +1065,7 @@ oos_option_groups = [
             OracleOfSeasonsExcludedRings,
             OracleOfSeasonsCombatDifficulty,
             OracleOfSeasonsBirdHint,
+            OracleOfSeasonsShuffleBosses,
             OracleOfSeasonsRandomizeAi,
             OracleOfSeasonsMoveLink,
             OracleOfSeasonsRemoveItemsFromPool,

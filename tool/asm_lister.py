@@ -23,3 +23,4 @@ if __name__ == "__main__":
     with open(dir_name + "/__init__.py", "w", encoding="utf-8") as f:
         f.write('asm_files = ')
         f.write(json.dumps(asm_files, indent=4))
+        f.write("\n")

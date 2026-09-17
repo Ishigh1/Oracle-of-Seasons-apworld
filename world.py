@@ -91,7 +91,7 @@ class OracleOfSeasonsWorld(World):
         self.shop_prices: dict[str, int] = VANILLA_SHOP_PRICES.copy()
         self.shop_order: list[list[str]] = []
         self.shop_rupee_requirements: dict[str, int] = {}
-        self.essences_in_game: list[str] = ESSENCES
+        self.essences_in_game: list[str] = list(ESSENCES)
         self.random_rings_pool: list[str] = []
         self.remaining_progressive_gasha_seeds = 0
         self.remaining_progressive_containers = 0

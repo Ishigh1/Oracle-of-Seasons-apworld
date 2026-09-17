@@ -94,11 +94,11 @@ def generate_early(world: OracleOfSeasonsWorld) -> None:
     else:
         world.remaining_progressive_containers = 2
 
-    d4_5_bosses = world.random.sample([1, 2, 4, 5, 6, 7, 8], 2)
-    world.boss_mapping[4] = d4_5_bosses[0]
-    world.boss_mapping[5] = d4_5_bosses[1]
-    other_dungeons = [1, 2, 3, 6, 7, 8]
-    remaining_bosses = [i for i in range(1, 9) if i not in d4_5_bosses]
+    dungeon_for_d4_5_bosses = world.random.sample([1, 2, 4, 5, 6, 7, 8], 2)
+    world.boss_mapping[dungeon_for_d4_5_bosses[0]] = 4
+    world.boss_mapping[dungeon_for_d4_5_bosses[1]] = 5
+    remaining_bosses = [1, 2, 3, 6, 7, 8]
+    other_dungeons = [i for i in range(1, 9) if i not in dungeon_for_d4_5_bosses]
     world.random.shuffle(remaining_bosses)
     for i, boss in enumerate(remaining_bosses):
         world.boss_mapping[other_dungeons[i]] = boss

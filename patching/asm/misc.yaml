@@ -176,3 +176,6 @@
 0b/4b3a/: |
   db showtextlowindex,$1f
   db scriptend
+
+# Disables linked protocol initialization because who cares
+00/0c61/: ret

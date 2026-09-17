@@ -51,7 +51,9 @@ from .logic_predicates import (
     oos_can_use_pegasus_seeds,
     oos_can_use_seeds,
     oos_has_autumn,
+    oos_has_biggoron_sword,
     oos_has_bombchus,
+    oos_has_bombchus_for_bombjump,
     oos_has_bombchus_for_tiles,
     oos_has_bombs,
     oos_has_bombs_for_bombjump,
@@ -112,7 +114,6 @@ from .logic_predicates import (
     oos_season_in_western_coast,
     oos_season_in_woods_of_winter,
     oos_self_locking_item,
-    oos_has_bombchus_for_bombjump, oos_has_biggoron_sword,
 )
 from .rulebuilder import from_option
 

@@ -204,7 +204,7 @@
   /endif
 
 0e/7bd0/: |
-  ; Make gleeok not wait for link to stop walking in d3 (due to the trampoline)
+  ; Make medusa not wait for link to stop walking in d3 (due to the trampoline)
   /ifdef d8_boss_in_d3
   nop
   /endif
