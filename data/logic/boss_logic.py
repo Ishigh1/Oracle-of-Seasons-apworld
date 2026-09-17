@@ -6,6 +6,7 @@ from ... import OracleOfSeasonsWorld
 from . import Rule
 from .logic_predicates import (
     oos_can_kill_armored_enemy,
+    oos_can_punch,
     oos_can_use_ember_seeds,
     oos_can_use_mystery_seeds,
     oos_can_use_scent_seeds,
@@ -24,6 +25,7 @@ from .logic_predicates import (
     oos_has_seed_thrower,
     oos_has_sword,
     oos_option_hard_logic,
+    oos_option_hell_logic,
     oos_option_medium_logic,
     oos_shoot_beams,
 )
@@ -114,6 +116,18 @@ def can_beat_gleeok(dungeon: int) -> Rule:
         Or(
             oos_has_sword(),
             oos_has_fools_ore(),
+            And(
+                oos_can_punch(),
+                oos_has_hearts_by_difficulty(20, 7, 5),
+            ),
+            And(
+                oos_option_hard_logic(),
+                oos_has_bombs(9),
+            ),
+            And(
+                oos_option_hell_logic(),
+                oos_has_bombs_to_fight(),
+            )
         ),
         oos_has_hearts_by_difficulty(8, 5, 3),
     )

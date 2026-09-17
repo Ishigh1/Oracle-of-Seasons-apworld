@@ -61,12 +61,12 @@ def create_item(world: OracleOfSeasonsWorld, name: str) -> Item:
         world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium
         and name in progression_items_in_medium_logic
     ):
-        classification = ItemClassification.progression
+        classification = ItemClassification.progression_deprioritized_skip_balancing
     elif (
         world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_hard
         and name in progression_items_in_hard_logic
     ):
-        classification = ItemClassification.progression
+        classification = ItemClassification.progression_deprioritized_skip_balancing
     # As many Gasha Seeds become progression as the number of deterministic Gasha Nuts
     elif world.remaining_progressive_gasha_seeds > 0 and name == "Gasha Seed":
         world.remaining_progressive_gasha_seeds -= 1
