@@ -107,7 +107,7 @@ def oos_has_switch_hook(level: int = 1) -> Rule:
 
 
 def oos_has_tight_switch_hook() -> Rule:
-    return Or(oos_has_switch_hook(2), And(oos_option_medium_logic(), oos_has_switch_hook()))
+    return Or(oos_has_switch_hook(2), And(oos_option_hard_logic(), oos_has_switch_hook()))
 
 
 def oos_has_shooter() -> Rule:
