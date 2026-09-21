@@ -1,3 +1,5 @@
+from typing import cast
+
 from BaseClasses import MultiWorld
 from Fill import fill_restrictive
 
@@ -40,7 +42,7 @@ def stage_pre_fill_dungeon_items(multiworld: MultiWorld):
         per_player_base_all_state.sweep_for_advancements()
 
         # Get the world for the player that is filling.
-        filling_world = multiworld.worlds[filling_player]
+        filling_world = cast(OracleOfSeasonsWorld, multiworld.worlds[filling_player])
 
         # Fill each of this world's dungeons.
         for i in range(0, 10):
@@ -54,25 +56,33 @@ def stage_pre_fill_dungeon_items(multiworld: MultiWorld):
 
             # From the list of all dungeon items that needs to be placed restrictively, only filter the ones for the
             # dungeon we are currently processing.
-            confined_dungeon_items = [item for item in filling_world.pre_fill_items
+            confined_dungeon_items = [item for item in filling_world.prog_pre_fill_items
                                       if item.name.endswith(f"({DUNGEON_NAMES[i]})")]
-            if len(confined_dungeon_items) == 0:
-                continue  # This list might be empty with some keysanity options
+            if len(confined_dungeon_items) != 0:
+                # This list might be empty with some keysanity options
 
-            # Remove from the pre_fill_items the items we're about to place
+                # Remove from the pre_fill_items the items we're about to place
+                for item in confined_dungeon_items:
+                    filling_world.prog_pre_fill_items.remove(item)
+                collection_state = per_player_base_all_state.copy()
+                # Collect the remaining pre_fill_items into the state.
+                for item in filling_world.get_pre_fill_items():
+                    collection_state.collect(item, True)
+                # Sweep the copied state across the entire multiworld to again account for unusual item plando. It is
+                # also beneficial to pass as maximal a state as possible to fill_restrictive to reduce how much sweeping
+                # fill_restrictive must do.
+                collection_state.sweep_for_advancements()
+                # Perform a prefill to place confined items inside locations of this dungeon
+                filling_world.random.shuffle(dungeon_locations)
+                fill_restrictive(multiworld, collection_state, dungeon_locations, confined_dungeon_items,
+                                 single_player_placement=True, lock=True, allow_excluded=True)
+                for item in confined_dungeon_items:
+                    assert item.location is not None
+
+            # Now, work on the nonprog items
+            confined_dungeon_items = [item for item in filling_world.nonprog_pre_fill_items
+                                      if item.name.endswith(f"({DUNGEON_NAMES[i]})")]
             for item in confined_dungeon_items:
-                filling_world.pre_fill_items.remove(item)
-            collection_state = per_player_base_all_state.copy()
-            # Collect the remaining pre_fill_items into the state.
-            for item in filling_world.get_pre_fill_items():
-                collection_state.collect(item, True)
-            # Sweep the copied state across the entire multiworld to again account for unusual item plando. It is
-            # also beneficial to pass as maximal a state as possible to fill_restrictive to reduce how much sweeping
-            # fill_restrictive must do.
-            collection_state.sweep_for_advancements()
-            # Perform a prefill to place confined items inside locations of this dungeon
-            filling_world.random.shuffle(dungeon_locations)
-            fill_restrictive(multiworld, collection_state, dungeon_locations, confined_dungeon_items,
-                             single_player_placement=True, lock=True, allow_excluded=True)
-            for item in confined_dungeon_items:
-                assert item.location is not None
+                location = dungeon_locations.pop()
+                assert location.item is None, "Why is this location filled?"
+                location.place_locked_item(item)

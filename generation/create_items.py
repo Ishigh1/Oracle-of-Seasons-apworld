@@ -383,13 +383,16 @@ def filter_confined_dungeon_items_from_pool(world: OracleOfSeasonsWorld, items: 
 
     # Put Maps & Compasses unless keysanity is enabled for those
     if not world.options.keysanity_maps_compasses:
-        confined_dungeon_items.extend(
-            [item for item in items if item.name.startswith("Dungeon Map") or item.name.startswith("Compass")]
-        )
+        excluded_map_compass = [
+            item for item in items if item.name.startswith("Dungeon Map") or item.name.startswith("Compass")
+        ]
+        for item in excluded_map_compass:
+            items.remove(item)
+        world.nonprog_pre_fill_items.extend(excluded_map_compass)
 
     for item in confined_dungeon_items:
         items.remove(item)
-    world.pre_fill_items.extend(confined_dungeon_items)
+    world.prog_pre_fill_items.extend(confined_dungeon_items)
 
 
 def pre_fill_seeds(world: OracleOfSeasonsWorld) -> None:

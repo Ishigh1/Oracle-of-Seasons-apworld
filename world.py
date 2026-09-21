@@ -80,7 +80,8 @@ class OracleOfSeasonsWorld(World):
 
     def __init__(self, multiworld: MultiWorld, player: int):
         super().__init__(multiworld, player)
-        self.pre_fill_items: list[Item] = []
+        self.prog_pre_fill_items: list[Item] = []
+        self.nonprog_pre_fill_items: list[Item] = []
         self.default_seasons: dict[str, int] = DEFAULT_SEASONS.copy()
         self.dungeon_entrances: dict[str, str] = DUNGEON_CONNECTIONS.copy()
         self.portal_connections: dict[str, str] = PORTAL_CONNECTIONS.copy()
@@ -135,7 +136,7 @@ class OracleOfSeasonsWorld(World):
         create_items(self)
 
     def get_pre_fill_items(self) -> list[Item]:
-        return self.pre_fill_items
+        return self.prog_pre_fill_items
 
     @classmethod
     def stage_pre_fill(cls, multiworld: MultiWorld):
