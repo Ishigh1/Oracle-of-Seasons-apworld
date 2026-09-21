@@ -199,6 +199,10 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
         elif item_name in excluded_mapass:
             item_name += "!FILLER"
 
+        if item_name.endswith("Jewel"):
+            filler_item_count += 1
+            continue
+
         item_pool_dict[item_name] = item_pool_dict.get(item_name, 0) + 1
 
     item_pool_dict["Bomb Upgrade"] = 3
@@ -221,6 +225,18 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
     required_gasha_seeds = world.options.deterministic_gasha_locations.value
     item_pool_dict["Gasha Seed"] = required_gasha_seeds
     extra_items += required_gasha_seeds
+
+    # Add the jewels back to the pool, they are added here to control the classification
+    jewels = sorted(ITEM_GROUPS["Jewels"])
+    world.random.shuffle(jewels)
+    required_jewels = world.options.tarm_gate_required_jewels.value
+    for jewel_number, jewel in enumerate(jewels):
+        if jewel_number >= required_jewels:
+            jewel_name = f"{jewel}!USEFUL"
+        else:
+            jewel_name = jewel
+        item_pool_dict[jewel_name] = 1
+    extra_items += 4
 
     if rupee_item_count > 0:
         rupee_item_pool, filler_item_count = build_rupee_item_dict(world, rupee_item_count, filler_item_count)
