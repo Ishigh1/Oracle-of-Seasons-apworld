@@ -21,6 +21,7 @@ from ...data.Constants import (
     ITEM_GROUPS,
     OLD_MAN_RUPEE_VALUES,
     PORTAL_CONNECTIONS,
+    SEASON_SUMMER,
     SEED_ITEMS,
     SUBROSIA_HIDDEN_DIGGING_SPOTS_LOCATIONS,
     TREASURE_GRAB_INSTANT,
@@ -28,7 +29,7 @@ from ...data.Constants import (
     TREASURE_SET_ITEM_ROOM_FLAG,
     TREASURE_SPAWN_CHEST,
     TREASURE_SPAWN_INSTANT,
-    TREASURE_SPAWN_POOF, SEASON_SUMMER,
+    TREASURE_SPAWN_POOF,
 )
 from ...data.locations import LOCATIONS_DATA
 from ...options import (
@@ -38,7 +39,8 @@ from ...options import (
     OracleOfSeasonsLinkedHerosCave,
     OracleOfSeasonsMasterKeys,
     OracleOfSeasonsOldMenShuffle,
-    OracleOfSeasonsShowDungeonsWithEssence, OracleOfSeasonsStartingPosition,
+    OracleOfSeasonsShowDungeonsWithEssence,
+    OracleOfSeasonsStartingPosition,
 )
 from ...world import OracleOfSeasonsWorld
 from ..asm import asm_files
@@ -63,7 +65,7 @@ from ..util import get_item_id_and_subid
 
 
 def define_foreign_item_data(
-        assembler: Z80Assembler, texts: dict[str, str], patch_data: dict[str, Any]
+    assembler: Z80Assembler, texts: dict[str, str], patch_data: dict[str, Any]
 ) -> dict[str, dict[str, Any]]:
     # Register all foreign items and save their text as TX_0cxx, id 0x41, subid xx
     item_data = ITEMS_DATA.copy()
@@ -83,9 +85,7 @@ def define_foreign_item_data(
         # Forbid \, they're not supported and they'd be interpreted as control sequences
         item_name = item_name.replace("\\", "/")
         player_name = player_name.replace("\\", "/")
-        texts[f"TX_0c{simple_hex(current_subid)}"] = normalize_text(
-            f"You got a 🟥{item_name}⬜ for 🟦{player_name}⬜!"
-        )
+        texts[f"TX_0c{simple_hex(current_subid)}"] = normalize_text(f"You got a 🟥{item_name}⬜ for 🟦{player_name}⬜!")
         item_data[unique_item_name] = {
             "id": 0x41,
             "subid": current_subid,
@@ -148,7 +148,7 @@ def write_chest_contents(rom: RomData, patch_data: dict[str, Any], item_data: di
     locations_data = patch_data["locations"]
     for location_name, location_data in LOCATIONS_DATA.items():
         if (
-                location_data.get("collect", COLLECT_TOUCH) != COLLECT_CHEST and not location_data.get("is_chest", False)
+            location_data.get("collect", COLLECT_TOUCH) != COLLECT_CHEST and not location_data.get("is_chest", False)
         ) or location_name not in locations_data:
             continue
         chest_addr = rom.get_chest_addr(location_data["room"], 0x15, 0x4F6C)
@@ -211,7 +211,7 @@ def define_samasa_combination(assembler: Z80Assembler, patch_data: dict[str, Any
 
 
 def define_compass_rooms_table(
-        assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
+    assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
 ) -> None:
     table = []
     for location_name, item in patch_data["locations"].items():
@@ -236,7 +236,7 @@ def define_compass_rooms_table(
 
 
 def define_collect_properties_table(
-        assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
+    assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
 ) -> None:
     """
     Defines a table of (group, room, collect mode) entries for randomized items
@@ -282,30 +282,32 @@ def define_additional_tile_replacements(assembler: Z80Assembler, patch_data: dic
     table = []
     # Remove Gasha spots when harvested once if deterministic Gasha locations are enabled
     if patch_data["options"]["deterministic_gasha_locations"] > 0:
+        # fmt: off
         table.extend([
-            0x00, 0xa6, 0x20, 0x54, 0xe1,  # North Horon: Gasha Spot Above Impa
-            0x00, 0xc8, 0x20, 0x67, 0xe1,  # Horon Village: Gasha Spot Near Mayor's House
-            0x00, 0xac, 0x20, 0x27, 0xe1,  # Eastern Suburbs: Gasha Spot
-            0x00, 0x95, 0x20, 0x32, 0xe1,  # Holodrum Plain: Gasha Spot Near Mrs. Ruul's House
-            0x00, 0x75, 0x20, 0x34, 0xe1,  # Holodrum Plain: Gasha Spot on Island Above D1
-            0x00, 0x80, 0x20, 0x53, 0xe1,  # Spool Swamp: Gasha Spot Near Floodgate Keyhole
-            0x00, 0xc0, 0x20, 0x61, 0xe1,  # Spool Swamp: Gasha Spot Near Portal
-            0x00, 0x3f, 0x20, 0x44, 0xe1,  # Sunken City: Gasha Spot
-            0x00, 0x1f, 0x20, 0x21, 0xe1,  # Mt. Cucco: Gasha Spot
-            0x00, 0x38, 0x20, 0x25, 0xe1,  # Goron Mountain: Gasha Spot Left of Entrance
-            0x00, 0x3b, 0x20, 0x53, 0xe1,  # Goron Mountain: Gasha Spot Right of Entrance
-            0x00, 0x89, 0x20, 0x24, 0xe1,  # Eyeglass Lake: Gasha Spot Near D5
-            0x00, 0x22, 0x20, 0x45, 0xe1,  # Tarm Ruins: Gasha Spot
-            0x00, 0xf0, 0x20, 0x22, 0xe1,  # Western Coast: Gasha Spot South of Graveyard
-            0x00, 0xef, 0x20, 0x66, 0xe1,  # Samasa Desert: Gasha Spot
-            0x00, 0x44, 0x20, 0x44, 0xe1,  # Path to Onox Castle: Gasha Spot
+            0x00, 0xa6, 0x20, 0x54, 0xE1,  # North Horon: Gasha Spot Above Impa
+            0x00, 0xc8, 0x20, 0x67, 0xE1,  # Horon Village: Gasha Spot Near Mayor's House
+            0x00, 0xAC, 0x20, 0x27, 0xE1,  # Eastern Suburbs: Gasha Spot
+            0x00, 0x95, 0x20, 0x32, 0xE1,  # Holodrum Plain: Gasha Spot Near Mrs. Ruul's House
+            0x00, 0x75, 0x20, 0x34, 0xE1,  # Holodrum Plain: Gasha Spot on Island Above D1
+            0x00, 0x80, 0x20, 0x53, 0xE1,  # Spool Swamp: Gasha Spot Near Floodgate Keyhole
+            0x00, 0xC0, 0x20, 0x61, 0xE1,  # Spool Swamp: Gasha Spot Near Portal
+            0x00, 0x3F, 0x20, 0x44, 0xE1,  # Sunken City: Gasha Spot
+            0x00, 0x1F, 0x20, 0x21, 0xE1,  # Mt. Cucco: Gasha Spot
+            0x00, 0x38, 0x20, 0x25, 0xE1,  # Goron Mountain: Gasha Spot Left of Entrance
+            0x00, 0x3B, 0x20, 0x53, 0xE1,  # Goron Mountain: Gasha Spot Right of Entrance
+            0x00, 0x89, 0x20, 0x24, 0xE1,  # Eyeglass Lake: Gasha Spot Near D5
+            0x00, 0x22, 0x20, 0x45, 0xE1,  # Tarm Ruins: Gasha Spot
+            0x00, 0xF0, 0x20, 0x22, 0xE1,  # Western Coast: Gasha Spot South of Graveyard
+            0x00, 0xEF, 0x20, 0x66, 0xE1,  # Samasa Desert: Gasha Spot
+            0x00, 0x44, 0x20, 0x44, 0xE1,  # Path to Onox Castle: Gasha Spot
         ])
+        # fmt: on
 
     assembler.add_floating_chunk("additionalTileReplacements", table)
 
 
 def define_location_constants(
-        assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
+    assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
 ):
     # If golden ore spots are not shuffled, they are still reachable nonetheless, so we need to enforce their
     # vanilla item for systems to work
@@ -511,7 +513,7 @@ def process_lost_woods_sequence(sequence: list[list[int]]) -> tuple[list[int], s
 
 
 def define_tree_sprites(
-        assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
+    assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
 ) -> None:
     tree_data = {  # Name: (map, position)
         "Horon Village: Seed Tree": (0xF8, 0x48),
@@ -552,12 +554,12 @@ def get_treasure_addr(rom: RomData, item_name: str, item_data: dict[str, dict[st
 
 
 def set_treasure_data(
-        rom: RomData,
-        item_data: dict[str, dict[str, Any]],
-        item_name: str,
-        text_id: int | None,
-        sprite_id: int | None = None,
-        param_value: int | None = None,
+    rom: RomData,
+    item_data: dict[str, dict[str, Any]],
+    item_name: str,
+    text_id: int | None,
+    sprite_id: int | None = None,
+    param_value: int | None = None,
 ) -> None:
     addr = get_treasure_addr(rom, item_name, item_data)
     if text_id is not None:
@@ -681,7 +683,7 @@ def set_player_start_inventory(assembler: Z80Assembler, patch_data: dict[str, An
                 if current_inventory_index == parse_hex_string_to_value(DEFINES["wInventoryB"]):
                     start_inventory_changes[current_inventory_index] = start_inventory_changes[
                         current_inventory_index + 1
-                        ] = item_id
+                    ] = item_id
                     current_inventory_index += 2
                 elif current_inventory_index == parse_hex_string_to_value(DEFINES["wInventoryB"]) + 1:
                     current_inventory_index += 1
@@ -715,7 +717,7 @@ def set_player_start_inventory(assembler: Z80Assembler, patch_data: dict[str, An
         elif item_id == 0x2D:  # Rings
             subid = ITEMS_DATA[item]["subid"] - 4
             start_inventory_changes[parse_hex_string_to_value(DEFINES["wRingsObtained"]) + subid // 8] |= (
-                    0x01 << subid % 8
+                0x01 << subid % 8
             )
         elif item_id == 0x40:  # Essences
             subid = ITEMS_DATA[item]["subid"]
@@ -945,7 +947,7 @@ def inject_slot_name(rom: RomData, slot_name: str) -> None:
 
 
 def set_dungeon_warps(
-        rom: RomData, patch_data: dict[str, Any], dungeon_entrances: dict[str, Any], dungeon_exits: dict[str, Any]
+    rom: RomData, patch_data: dict[str, Any], dungeon_entrances: dict[str, Any], dungeon_exits: dict[str, Any]
 ) -> None:
     warp_matchings = patch_data["dungeon_entrances"]
     enter_values = {name: rom.read_word(dungeon["addr"]) for name, dungeon in dungeon_entrances.items()}
@@ -1021,7 +1023,7 @@ def set_portal_warps(rom: RomData, patch_data: dict[str, Any]) -> None:
 
 
 def define_essence_sparkle_constants(
-        assembler: Z80Assembler, patch_data: dict[str, Any], dungeon_entrances: dict[str, Any]
+    assembler: Z80Assembler, patch_data: dict[str, Any], dungeon_entrances: dict[str, Any]
 ) -> None:
     byte_array = []
     show_dungeons_with_essence = patch_data["options"]["show_dungeons_with_essence"]

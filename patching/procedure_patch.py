@@ -2,6 +2,7 @@ import json
 import logging
 import pkgutil
 import random
+from typing import cast
 
 import yaml
 
@@ -82,7 +83,7 @@ class OoSPatchExtensions(APPatchExtension):
         # Initialize random seed with the one used for generation + the player ID, so that cosmetic stuff set
         # to "random" always generate the same for successive patchings for a given slot
         seed: int = patch_data["seed"]
-        random.seed(seed + caller.player)
+        random.seed(seed + cast(int, caller.player))
 
         assembler = Z80Assembler(CAVE_DATA, DEFINES, rom, ages_rom)
         dictionary, texts = get_modded_seasons_text_data(rom_data)

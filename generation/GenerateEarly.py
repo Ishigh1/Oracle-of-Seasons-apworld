@@ -225,7 +225,7 @@ def randomize_shop_prices(world: OracleOfSeasonsWorld) -> None:
         value = min(VALID_RUPEE_PRICE_VALUES, key=lambda x: abs(x - value))
         subrosia_total_price += value
         world.shop_prices[f"subrosianMarket{i}"] = value
-    world.shop_prices["subrosianMarket"] = subrosia_total_price // 2
+    world.shop_requirements["subrosianMarket"] = subrosia_total_price // 2
 
 
 def compute_rupee_requirements(world: OracleOfSeasonsWorld) -> None:
@@ -240,7 +240,7 @@ def compute_rupee_requirements(world: OracleOfSeasonsWorld) -> None:
         if not shop_name.endswith("Scrub"):
             shop_name = shop_name[:-1]
         # Divide the requirement by 2 as the player will likely skip/grind
-        world.shop_rupee_requirements[shop_name] = cumulated_requirement // 2
+        world.shop_requirements[shop_name] = cumulated_requirement // 2
 
 
 def create_random_rings_pool(world: OracleOfSeasonsWorld) -> None:

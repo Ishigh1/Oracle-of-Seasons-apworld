@@ -299,7 +299,7 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
 def build_rupee_item_dict(
     world: OracleOfSeasonsWorld, rupee_item_count: int, filler_item_count: int
 ) -> tuple[dict[str, int], int]:
-    sorted_shop_values = sorted(world.shop_rupee_requirements.values())
+    sorted_shop_values = sorted(world.shop_requirements.values())
     total_cost = sorted_shop_values[-1]
 
     return build_currency_item_dict(

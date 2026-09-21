@@ -1,6 +1,7 @@
-from typing import Any
+from typing import Any, Iterable, cast
 
 from BaseClasses import Item, ItemClassification, Location, LocationProgressType, Region
+
 from ..data.Constants import (
     ESSENCES,
     LOCATION_GROUPS,
@@ -19,7 +20,12 @@ from ..data.regions import (
     SECRET_REGIONS,
     RegionNames,
 )
-from ..options import OracleOfSeasonsGoal, OracleOfSeasonsLogicDifficulty, OracleOfSeasonsOldMenShuffle, OracleOfSeasonsStartingPosition
+from ..options import (
+    OracleOfSeasonsGoal,
+    OracleOfSeasonsLogicDifficulty,
+    OracleOfSeasonsOldMenShuffle,
+    OracleOfSeasonsStartingPosition,
+)
 from ..world import OracleOfSeasonsWorld
 
 
@@ -67,7 +73,7 @@ def create_location(
 
 def create_regions(world: OracleOfSeasonsWorld) -> None:
     # Create regions
-    for region_name in RegionNames:
+    for region_name in cast(Iterable[RegionNames], RegionNames):
         region = Region(region_name, world.player, world.multiworld)
         world.multiworld.regions.append(region)
 

@@ -1,11 +1,16 @@
 import json
 from collections import defaultdict
-from typing import cast, Type, Any
+from typing import Any, cast
 
+from BaseClasses import Location
 from Options import Option
-from ..options import OracleOfSeasonsOptions
+from worlds.tloz_oos.data.locations import LOCATIONS_DATA
+
+from ..data.Constants import VALID_RUPEE_PRICE_VALUES
+from ..options import OracleOfSeasonsOptions, OracleOfSeasonsShopPrices
 from ..patching.procedure_patch import OoSProcedurePatch
 from ..world import OracleOfSeasonsWorld
+from .create_regions import location_is_active
 
 
 def oos_create_ap_procedure_patch(world: OracleOfSeasonsWorld) -> OoSProcedurePatch:
@@ -14,25 +19,53 @@ def oos_create_ap_procedure_patch(world: OracleOfSeasonsWorld) -> OoSProcedurePa
     patch.player = world.player
     patch.player_name = world.multiworld.get_player_name(world.player)
 
-    del world.shop_prices["subrosianMarket"] # This was only used for rulebuilder and doesn't have a meaning in patch data
+    if (
+        world.options.shop_prices == OracleOfSeasonsShopPrices.option_vanilla
+        or world.options.shop_prices == OracleOfSeasonsShopPrices.option_free
+    ):
+        shop_prices = world.shop_prices
+    else:
+        # Make excludable items cheaper so they have a chance to be bought
+        # TODO: Would be better if it used a different "value" system, probably, when implemented in AP
+        shop_prices = {}
+        for location_name, location_data in LOCATIONS_DATA.items():
+            if "symbolic_name" not in location_data:
+                continue
+            symbolic_name = location_data["symbolic_name"]
+            if symbolic_name not in world.shop_prices:
+                continue
+            if not location_is_active(world, location_name, location_data):
+                continue
+            location = world.get_location(location_name)
+            item = location.item
+            assert item is not None
+            if not item.excludable or (
+                # Potion is very good, as renewable, so it goes in the non-excludable pile
+                "renewable" in location_data and item.player == world.player and item.name == "Potion"
+            ):
+                shop_prices[symbolic_name] = world.shop_prices[symbolic_name]
+                continue
+            new_price = world.shop_prices[symbolic_name] / 10
+            shop_prices[symbolic_name] = min(VALID_RUPEE_PRICE_VALUES, key=lambda x: abs(x - new_price))
 
-    type_hints = cast(dict[str, Type[Option[Any]]], cast(object, OracleOfSeasonsOptions.type_hints))
+    type_hints = cast(dict[str, type[Option[Any]]], cast(object, OracleOfSeasonsOptions.type_hints))
     patch_data = {
         "version": f"{world.version()}",
         "seed": world.multiworld.seed,
         "options": world.options.as_dict(
-            *[option_name for option_name in type_hints
-              if hasattr(type_hints[option_name], "include_in_patch")]),
+            *[option_name for option_name in type_hints if hasattr(type_hints[option_name], "include_in_patch")]
+        ),
         "samasa_gate_sequence": " ".join([str(x) for x in world.samasa_gate_code]),
         "lost_woods_item_sequence": world.lost_woods_item_sequence,
         "lost_woods_main_sequence": world.lost_woods_main_sequence,
         "default_seasons": world.default_seasons,
         "old_man_rupee_values": world.old_man_rupee_values,
-        "dungeon_entrances": {a.replace(" entrance", ""): b.replace("enter ", "")
-                              for a, b in world.dungeon_entrances.items()},
+        "dungeon_entrances": {
+            a.replace(" entrance", ""): b.replace("enter ", "") for a, b in world.dungeon_entrances.items()
+        },
         "locations": {},
         "subrosia_portals": world.portal_connections,
-        "shop_prices": world.shop_prices,
+        "shop_prices": shop_prices,
         "subrosia_seaside_location": world.random.randint(0, 3),
         "region_hints": world.region_hints,
         "boss_mapping": world.boss_mapping,
@@ -44,14 +77,12 @@ def oos_create_ap_procedure_patch(world: OracleOfSeasonsWorld) -> OoSProcedurePa
             continue
         assert loc.item
         if loc.item.player == loc.player:
-            patch_data["locations"][loc.name] = {
-                "item": loc.item.name
-            }
+            patch_data["locations"][loc.name] = {"item": loc.item.name}
         else:
             patch_data["locations"][loc.name] = {
                 "item": loc.item.name,
                 "player": world.multiworld.get_player_name(loc.item.player),
-                "progression": loc.item.advancement
+                "progression": loc.item.advancement,
             }
 
     patch_data_item_hints = []
@@ -60,7 +91,7 @@ def oos_create_ap_procedure_patch(world: OracleOfSeasonsWorld) -> OoSProcedurePa
             # Joke hint
             patch_data_item_hints.append(None)
             continue
-        location = item_hint.location
+        location = cast(Location, item_hint.location)
         player = location.player
         if player == world.player:
             player_name = None

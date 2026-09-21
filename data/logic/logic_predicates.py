@@ -338,8 +338,8 @@ def oos_can_complete_d11_puzzle() -> Rule:
 def oos_has_rupees_for_shop(shop_name: str) -> Rule:
     return Or(
         And(oos_option_hard_logic(), oos_has_shovel()),
-        from_world_field(f"shop_rupee_requirements.{shop_name}", 0, "eq"),
-        And(oos_can_farm_rupees(), Has("Rupees", FromWorldAttr(f"shop_rupee_requirements.{shop_name}"))),
+        from_world_field(f"shop_requirements.{shop_name}", 0, "eq"),
+        And(oos_can_farm_rupees(), Has("Rupees", FromWorldAttr(f"shop_requirements.{shop_name}"))),
     )
 
 
@@ -350,11 +350,11 @@ def oos_can_farm_rupees() -> Rule:
 
 def oos_can_buy_market() -> Rule:
     return Or(
-        from_world_field("shop_prices.subrosianMarket", 0, "eq"),
+        from_world_field("shop_requirements.subrosianMarket", 0, "eq"),
         And(
             oos_can_farm_ore_chunks(),
             Or(
-                Has("Ore Chunks", FromWorldAttr("shop_prices.subrosianMarket")),
+                Has("Ore Chunks", FromWorldAttr("shop_requirements.subrosianMarket")),
                 from_option(
                     OracleOfSeasonsGoldenOreSpotsShuffle, OracleOfSeasonsGoldenOreSpotsShuffle.option_false, "eq"
                 ),

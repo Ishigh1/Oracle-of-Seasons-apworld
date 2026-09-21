@@ -91,7 +91,7 @@ class OracleOfSeasonsWorld(World):
         self.samasa_gate_code: list[int] = SAMASA_GATE_CODE.copy()
         self.shop_prices: dict[str, int] = VANILLA_SHOP_PRICES.copy()
         self.shop_order: list[list[str]] = []
-        self.shop_rupee_requirements: dict[str, int] = {}
+        self.shop_requirements: dict[str, int] = {}
         self.essences_in_game: list[str] = list(ESSENCES)
         self.random_rings_pool: list[str] = []
         self.remaining_progressive_gasha_seeds = 0
@@ -261,8 +261,7 @@ class OracleOfSeasonsWorld(World):
             },
             "essences_in_game": self.essences_in_game,
             "subrosia_portals": self.portal_connections,
-            "shop_rupee_requirements": self.shop_rupee_requirements,
-            "shop_costs": self.shop_prices,
+            "shop_rupee_requirements": self.shop_requirements,
             "boss_mapping": self.boss_mapping,
         }
 
