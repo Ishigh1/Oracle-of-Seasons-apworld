@@ -462,51 +462,51 @@ ITEMS_DATA: dict[str, dict[str, Any]] = {
     },
 
     "Cuccodex": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x55
     },
     "Lon Lon Egg": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x56
     },
     "Ghastly Doll": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x57
     },
     "Iron Pot": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x35
     },
     "Lava Soup": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x38
     },
     "Goron Vase": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x39
     },
     "Fish": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x3a
     },
     "Megaphone": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x3b
     },
     "Mushroom": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x3c
     },
     "Wooden Bird": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x3d
     },
     "Engine Grease": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x3e
     },
     "Phonograph": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x3f
     },
 
@@ -523,7 +523,7 @@ ITEMS_DATA: dict[str, dict[str, Any]] = {
         "id": 0x44
     },
     "Star Ore": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x45
     },
     "Ribbon": {
@@ -540,7 +540,7 @@ ITEMS_DATA: dict[str, dict[str, Any]] = {
     #       'id': 0x48
     #   },
     "Rusty Bell": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x4a
     },
     "Pirate's Bell": {
@@ -568,15 +568,15 @@ ITEMS_DATA: dict[str, dict[str, Any]] = {
         "id": 0x4f
     },
     "Red Ore": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x50
     },
     "Blue Ore": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x51
     },
     "Hard Ore": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x52
     },
     "Member's Card": {
@@ -584,7 +584,7 @@ ITEMS_DATA: dict[str, dict[str, Any]] = {
         "id": 0x53
     },
     "Master's Plaque": {
-        "classification": ItemClassification.progression_deprioritized,
+        "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x54
     },
     "Bombchu Upgrade": {
