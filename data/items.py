@@ -534,11 +534,10 @@ ITEMS_DATA: dict[str, dict[str, Any]] = {
         "classification": ItemClassification.progression,
         "id": 0x47
     },
-    #   "ricky's gloves": {
-    #       'classification': ItemClassification.progression,
-    #       'pretty_name': "Ricky's Gloves",
-    #       'id': 0x48
-    #   },
+    "Ricky's Gloves": {
+      "classification": ItemClassification.progression_deprioritized_skip_balancing,
+      "id": 0x48
+    },
     "Rusty Bell": {
         "classification": ItemClassification.progression_deprioritized_skip_balancing,
         "id": 0x4a

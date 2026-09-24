@@ -366,7 +366,12 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
         ("suburbs fairy fountain (winter)", "suburbs fairy fountain", False, oos_can_remove_season(SEASON_WINTER)),
         ("suburbs fairy fountain", "sunken city entrance", False, oos_season_in_eastern_suburbs(SEASON_SPRING)),
         ("sunken city entrance", "suburbs fairy fountain", False, oos_not_season_in_eastern_suburbs(SEASON_WINTER)),
-        ("sunken city entrance", "suburbs fairy fountain (winter)", False, oos_season_in_eastern_suburbs(SEASON_WINTER)),
+        (
+            "sunken city entrance",
+            "suburbs fairy fountain (winter)",
+            False,
+            oos_season_in_eastern_suburbs(SEASON_WINTER),
+        ),
         # WOODS OF WINTER / 2D SECTOR ################################################################################
         ("suburbs fairy fountain (winter)", "moblin road", False, True_()),
         ("moblin road", "suburbs fairy fountain (winter)", False, oos_season_in_eastern_suburbs(SEASON_WINTER)),
@@ -655,7 +660,8 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                 And(
                     oos_is_default_season("EYEGLASS_LAKE", SEASON_AUTUMN),
                     oos_can_break_mushroom(False),
-                    # TODO: Maybe change that by removing the anti-softlock mechanism that also adds an anti-ricky protection
+                    # TODO: Maybe change that by removing the anti-softlock
+                    #  mechanism that also adds an anti-ricky protection
                     # Alternatively, move the rock up to prevent ricky from jumping while preserving the anti-softlock
                 ),
             ),
@@ -717,6 +723,12 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
         ),
         ("north horon", "underwater item below natzu bridge", False, oos_can_swim(False)),
         ("north horon", "temple remains lower stump", False, oos_can_jump_3_wide_pit()),
+        (
+            "north horon",
+            "spool swamp north",
+            False,
+            Has("Ricky's Gloves")
+        ),
         ("temple remains lower stump", "north horon", False, Or(oos_can_jump_3_wide_pit(), oos_has_switch_hook())),
         ("ghastly stump", "maple encounter", False, oos_can_meet_maple()),
         (
@@ -1015,7 +1027,10 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
         ),
         (
             # Go back to the entrance, useful when starting/coming from Sunken
-            "sunken city dimitri", "sunken city entrance", False, True_()
+            "sunken city dimitri",
+            "sunken city entrance",
+            False,
+            True_(),
         ),
         (
             "sunken city",
@@ -1476,7 +1491,8 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                     oos_has_winter(),
                     Has("_triggered_volcano"),
                     And(
-                        # You can only reach the portal from here with the default Winter if you made the zipper jump first
+                        # You can only reach the portal from here with the default Winter,
+                        # if you made the zipper jump first
                         # Otherwise you would have turned it Autumn first
                         oos_season_in_temple_remains(SEASON_WINTER),
                         oos_can_remove_snow(False),
@@ -1487,7 +1503,8 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             ),
         ),
         ("temple remains lower portal access", "temple remains lower portal", True, True_()),
-        # There is an added ledge in rando that enables jumping from the portal down to the stump, whatever the season is
+        # There is an added ledge in rando that enables jumping from the portal down to the stump,
+        # whatever the season is
         ("temple remains lower portal", "temple remains lower stump", False, True_()),
         (
             "temple remains lower stump",
@@ -1856,7 +1873,8 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             "dragon keyhole",
             False,
             And(
-                # Rule specifically to get to the dragon keyhole from a side entrance, only useful for rooster's adventure
+                # Rule specifically to get to the dragon keyhole from a side entrance,
+                # only useful for rooster's adventure
                 oos_is_default_season("SUNKEN_CITY", SEASON_WINTER),  # to reach cave
                 oos_has_feather(),  # to jump in cave
                 oos_has_bracelet(),  # to grab the rooster

@@ -238,6 +238,10 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
         item_pool_dict[jewel_name] = 1
     extra_items += 4
 
+    # Add the 3rd sword to the pool
+    item_pool_dict["Progressive Sword"] += 1
+    extra_items += 1
+
     if rupee_item_count > 0:
         rupee_item_pool, filler_item_count = build_rupee_item_dict(world, rupee_item_count, filler_item_count)
         item_pool_dict.update(rupee_item_pool)

@@ -130,6 +130,8 @@
 09/4e76/: |
     ld a,(wFluteIcon)
     cp $01
+    nop
+    nop
 # say goodbye when reaching spool
 09/6ccc/: |
     ld a,(wFluteIcon)

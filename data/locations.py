@@ -59,7 +59,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
     },
     "Holodrum Plain: Blaino's Gym Prize": {
         "region_id": "blaino prize",
-        "vanilla_item": "Progressive Sword",  # Ricky's gloves are useless in current logic
+        "vanilla_item": "Ricky's Gloves",
         "room": 0x03b4,
         "collect": COLLECT_TOUCH,
         "map_tile": 0x78,

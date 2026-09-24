@@ -9,7 +9,6 @@ import yaml
 import Utils
 from settings import get_settings
 from worlds.Files import APPatchExtension, APProcedurePatch, APTokenMixin
-from .functions.boss_rando import place_bosses
 
 from ..common.patching.RomData import RomData
 from ..common.patching.rooms.encoding import write_room_data
@@ -43,11 +42,12 @@ from .functions import (
     set_fixed_subrosia_seaside_location,
     set_heart_beep_interval_from_settings,
     set_old_men_rupee_values,
-    set_player_start_inventory,
     set_portal_warps,
     write_chest_contents,
 )
+from .functions.boss_rando import place_bosses
 from .functions.room_edits import apply_room_edits
+from .functions.start_inventory import set_player_start_inventory
 from .functions.text_edits import define_dungeon_items_text_constants, make_text_data
 from .puzzle_rando import randomize_puzzles
 
@@ -167,7 +167,6 @@ class OoSPatchExtensions(APPatchExtension):
 
 
 class OoSProcedurePatch(APProcedurePatch, APTokenMixin):
-    hash = (ROM_HASH,)
     patch_file_ending: str = ".apoos"
     result_file_ending: str = ".gbc"
 

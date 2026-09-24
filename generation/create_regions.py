@@ -177,6 +177,7 @@ def create_events(world: OracleOfSeasonsWorld) -> None:
     create_event(world, "d2 wild bombs", "_wild_bombs")
     create_event(world, "d4 miniboss room wild embers", "_wild_ember_seeds")
     create_event(world, "d5 armos chest", "_wild_ember_seeds")
+    create_event(world, "d5 armos chest", "_wild_bombs")
     create_event(world, "d7 entrance wild embers", "_wild_ember_seeds")
     create_event(world, "frypolar room wild mystery", "_wild_mystery_seeds")
     # Various events to help with logic
