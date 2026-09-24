@@ -2,7 +2,6 @@ import logging
 
 from BaseClasses import Item, ItemClassification
 
-from ..data import ITEMS_DATA
 from ..data.Constants import (
     DUNGEON_NAMES,
     ESSENCES,
@@ -12,6 +11,7 @@ from ..data.Constants import (
     VALID_ORE_ITEM_VALUES,
     VALID_RUPEE_ITEM_VALUES,
 )
+from ..data.items import ITEMS_DATA
 from ..data.locations import LOCATIONS_DATA
 from ..generation.create_regions import location_is_active
 from ..options import (

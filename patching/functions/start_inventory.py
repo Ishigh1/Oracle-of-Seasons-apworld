@@ -3,10 +3,10 @@ from typing import Any
 
 from ...common.patching.z80asm.Assembler import Z80Assembler
 from ...common.patching.z80asm.Util import parse_hex_string_to_value
-from ...data import ITEMS_DATA
 from ...data.Constants import (
     SEED_ITEMS,
 )
+from ...data.items import ITEMS_DATA
 from ..Constants import (
     DEFINES,
 )

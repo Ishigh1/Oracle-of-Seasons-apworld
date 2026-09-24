@@ -162,7 +162,7 @@ def create_regions(world: OracleOfSeasonsWorld) -> None:
 
 def create_event(world: OracleOfSeasonsWorld, region_name: str, event_item_name: str) -> None:
     region = world.multiworld.get_region(region_name, world.player)
-    location = Location(world.player, region_name + ".event", None, region)
+    location = Location(world.player, region_name + f".{event_item_name}", None, region)
     region.locations.append(location)
     location.place_locked_item(Item(event_item_name, ItemClassification.progression, None, world.player))
 

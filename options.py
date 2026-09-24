@@ -17,7 +17,7 @@ from Options import (
     Visibility,
 )
 
-from .data.Items import ITEMS_DATA
+from .data.items import ITEMS_DATA
 
 
 class OracleOfSeasonsGoal(Choice):

@@ -6,8 +6,8 @@ from BaseClasses import CollectionState, Item, Location, MultiWorld
 from Options import Option
 from rule_builder.rules import Has
 from worlds.AutoWorld import World
+
 from .common.Util import build_item_name_to_id_dict, build_location_name_to_id_dict
-from .data import ITEMS_DATA
 from .data.Constants import (
     DEFAULT_SEASONS,
     DUNGEON_CONNECTIONS,
@@ -23,6 +23,7 @@ from .data.Constants import (
     SEASON_NAMES,
     VANILLA_SHOP_PRICES,
 )
+from .data.items import ITEMS_DATA
 from .data.locations import LOCATIONS_DATA
 from .options import OracleOfSeasonsOptions
 from .settings import OracleOfSeasonsSettings

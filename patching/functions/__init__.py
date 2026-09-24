@@ -10,7 +10,6 @@ from ...common.patching.RomData import RomData
 from ...common.patching.text import normalize_text
 from ...common.patching.Util import get_available_random_colors_from_sprite_name, simple_hex
 from ...common.patching.z80asm.Assembler import GameboyAddress, Z80Assembler
-from ...data import ITEMS_DATA
 from ...data.Constants import (
     COLLECT_CHEST,
     COLLECT_DIVE,
@@ -28,6 +27,7 @@ from ...data.Constants import (
     TREASURE_SPAWN_INSTANT,
     TREASURE_SPAWN_POOF,
 )
+from ...data.items import ITEMS_DATA
 from ...data.locations import LOCATIONS_DATA
 from ...options import (
     OracleOfSeasonsAnimalCompanion,

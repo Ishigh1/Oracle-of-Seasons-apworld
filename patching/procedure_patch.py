@@ -167,6 +167,7 @@ class OoSPatchExtensions(APPatchExtension):
 
 
 class OoSProcedurePatch(APProcedurePatch, APTokenMixin):
+    hash: str = ""
     patch_file_ending: str = ".apoos"
     result_file_ending: str = ".gbc"
 
