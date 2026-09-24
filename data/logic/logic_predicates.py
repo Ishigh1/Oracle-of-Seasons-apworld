@@ -940,6 +940,7 @@ def oos_can_kill_d2_hardhat() -> Rule:
         ),
         oos_can_use_gale_seeds_offensively(),
         And(oos_option_medium_logic(), Or(oos_has_bombchus_to_fight(), oos_has_bombs_to_fight())),
+        And(oos_option_medium_logic(), oos_has_cane())
     )
 
 
