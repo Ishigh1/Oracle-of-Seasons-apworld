@@ -115,10 +115,10 @@ def create_connections(world: OracleOfSeasonsWorld, options):
                 if not entrance_desc[4]:
                     continue
 
-            region_1 = world.get_region(entrance_desc[0])
-            region_2 = world.get_region(entrance_desc[1])
-            is_two_way = entrance_desc[2]
-            rule = entrance_desc[3]
+            region_1 = world.get_region(cast(str, entrance_desc[0]))
+            region_2 = world.get_region(cast(str, entrance_desc[1]))
+            is_two_way = cast(bool, entrance_desc[2])
+            rule = cast(Rule | None, entrance_desc[3])
 
             world.create_entrance(region_1, region_2, rule)
             if is_two_way:

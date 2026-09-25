@@ -3,4 +3,4 @@ from worlds.tloz_oos import OracleOfSeasonsWorld
 
 Rule = BaseRule[OracleOfSeasonsWorld]
 
-LogicLine = tuple[str, str, bool, Rule] | tuple[str, str, bool, Rule, bool]
+LogicLine = tuple[str, str, bool, Rule | None] | tuple[str, str, bool, Rule | None, bool]

@@ -59,7 +59,7 @@ def generate_early(world: OracleOfSeasonsWorld) -> None:
 
     randomize_shop_order(world)
     randomize_shop_prices(world)
-    compute_rupee_requirements(world)
+    compute_shop_requirements(world)
 
     create_random_rings_pool(world)
 
@@ -218,17 +218,15 @@ def randomize_shop_prices(world: OracleOfSeasonsWorld) -> None:
         for location_code in shop:
             value = world.random.gauss(average, deviation) * shop_price_factor
             world.shop_prices[location_code] = min(VALID_RUPEE_PRICE_VALUES, key=lambda x: abs(x - value))
+
     # Subrosia market special cases
-    subrosia_total_price = 0
     for i in range(2, 6):
         value = world.random.gauss(average, deviation) * 0.5
         value = min(VALID_RUPEE_PRICE_VALUES, key=lambda x: abs(x - value))
-        subrosia_total_price += value
         world.shop_prices[f"subrosianMarket{i}"] = value
-    world.shop_requirements["subrosianMarket"] = subrosia_total_price // 2
 
 
-def compute_rupee_requirements(world: OracleOfSeasonsWorld) -> None:
+def compute_shop_requirements(world: OracleOfSeasonsWorld) -> None:
     # Compute global rupee requirements for each shop, based on shop order and item prices
     cumulated_requirement = 0
     for shop in world.shop_order:
@@ -241,6 +239,11 @@ def compute_rupee_requirements(world: OracleOfSeasonsWorld) -> None:
             shop_name = shop_name[:-1]
         # Divide the requirement by 2 as the player will likely skip/grind
         world.shop_requirements[shop_name] = cumulated_requirement // 2
+
+    subrosia_total_price = 0
+    for i in range(2, 6):
+        subrosia_total_price += world.shop_prices[f"subrosianMarket{i}"]
+    world.shop_requirements["subrosianMarket"] = subrosia_total_price // 2
 
 
 def create_random_rings_pool(world: OracleOfSeasonsWorld) -> None:
