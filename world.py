@@ -95,8 +95,8 @@ class OracleOfSeasonsWorld(World):
         self.shop_requirements: dict[str, int] = {}
         self.essences_in_game: list[str] = list(ESSENCES)
         self.random_rings_pool: list[str] = []
-        self.remaining_progressive_gasha_seeds = 0
-        self.remaining_progressive_containers = 0
+        self.remaining_progression_gasha_seeds = 0
+        self.remaining_progression_containers = 0
         self.item_mapping_collect: dict[str, tuple[str, int]] = {}
 
         self.boss_mapping = {i: i for i in range(1, 9)}

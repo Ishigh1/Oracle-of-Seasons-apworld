@@ -68,12 +68,12 @@ def create_item(world: OracleOfSeasonsWorld, name: str) -> Item:
     ):
         classification = ItemClassification.progression_deprioritized_skip_balancing
     # As many Gasha Seeds become progression as the number of deterministic Gasha Nuts
-    elif world.remaining_progressive_gasha_seeds > 0 and name == "Gasha Seed":
-        world.remaining_progressive_gasha_seeds -= 1
+    elif world.remaining_progression_gasha_seeds > 0 and name == "Gasha Seed":
+        world.remaining_progression_gasha_seeds -= 1
         classification = ItemClassification.progression_deprioritized
     # Some number of containers depending on logic difficulty becomes prog
-    elif world.remaining_progressive_containers > 0 and name == "Heart Container":
-        world.remaining_progressive_containers -= 1
+    elif world.remaining_progression_containers > 0 and name == "Heart Container":
+        world.remaining_progression_containers -= 1
         classification = ItemClassification.progression_skip_balancing
 
     # Players in Medium+ are expected to know the default paths through Lost Woods, Phonograph becomes filler

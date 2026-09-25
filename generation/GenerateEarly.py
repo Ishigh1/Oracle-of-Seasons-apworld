@@ -26,7 +26,7 @@ def generate_early(world: OracleOfSeasonsWorld) -> None:
     if len(conflicting_rings) > 0:
         raise OptionError("Required Rings and Excluded Rings contain the same element(s)", conflicting_rings)
 
-    world.remaining_progressive_gasha_seeds = world.options.deterministic_gasha_locations.value
+    world.remaining_progression_gasha_seeds = world.options.deterministic_gasha_locations.value
 
     pick_essences_in_game(world)
     if len(world.essences_in_game) < world.options.treehouse_old_man_requirement:
@@ -88,11 +88,11 @@ def generate_early(world: OracleOfSeasonsWorld) -> None:
         world.item_mapping_collect[f"rupees from {old_man}"] = ("Rupees", rupees)
 
     if world.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_casual:
-        world.remaining_progressive_containers = 7
+        world.remaining_progression_containers = 5
     elif world.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_medium:
-        world.remaining_progressive_containers = 5
+        world.remaining_progression_containers = 4
     else:
-        world.remaining_progressive_containers = 2
+        world.remaining_progression_containers = 2
 
     dungeon_for_d4_5_bosses = world.random.sample([1, 2, 4, 5, 6, 7, 8], 2)
     world.boss_mapping[dungeon_for_d4_5_bosses[0]] = 4

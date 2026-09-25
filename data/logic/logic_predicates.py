@@ -1,6 +1,6 @@
 from rule_builder.field_resolvers import FromOption, FromWorldAttr
 from rule_builder.options import OptionFilter
-from rule_builder.rules import And, AtLeast, CanReachRegion, Has, HasFromList, HasGroup, Or, True_
+from rule_builder.rules import And, AtLeast, CanReachRegion, Has, HasFromList, HasGroup, Or, True_, False_
 
 from ...options import (
     OracleOfSeasonsAnimalCompanion,
@@ -208,6 +208,8 @@ def oos_has_boss_key(dungeon_id: int) -> Rule:
 
 
 def oos_has_hearts(hearts: int, logic: int = OracleOfSeasonsLogicDifficulty.option_casual) -> Rule:
+    if hearts > 11:
+        return False_()
     if hearts <= 3:
         return True_()
     return Or(
