@@ -34,6 +34,7 @@ from .logic_predicates import (
     oos_can_kill_normal_enemy_no_cane,
     oos_can_kill_spiked_beetle,
     oos_can_kill_stalfos,
+    oos_can_kill_vire,
     oos_can_push_enemy,
     oos_can_remove_rockslide,
     oos_can_swim,
@@ -829,40 +830,16 @@ def make_d6_logic() -> list[LogicLine]:
                     And(
                         oos_has_small_keys(6, 1),
                         # Go through beamos room
-                        And(oos_can_remove_rockslide(False), oos_has_feather()),
-                        # Kill Vire (the rest doesn't matter because
-                        # we don't care about not being able to not spend a key somewhere)
-                        oos_has_hearts_by_difficulty(4, 3),
-                        Or(
-                            oos_has_sword(False),
-                            oos_has_fools_ore(),
-                            And(oos_option_medium_logic(), oos_has_bombs_to_fight()),
-                            And(
-                                # Fist Ring doesn't damage Vire
-                                Has("expert's ring"),
-                                oos_option_medium_logic(),
-                            ),
-                        ),
+                        oos_can_remove_rockslide(False),
+                        oos_has_feather(),
+                        oos_can_kill_vire(),
                     ),
                     And(
                         oos_has_small_keys(6, 2),
                         Or(
                             # Go through beamos room
                             And(oos_can_remove_rockslide(False), oos_has_feather()),
-                            # Kill Vire
-                            And(
-                                oos_has_hearts_by_difficulty(4, 3),
-                                Or(
-                                    oos_has_sword(False),
-                                    oos_has_fools_ore(),
-                                    And(oos_option_medium_logic(), oos_has_bombs_to_fight()),
-                                    And(
-                                        # Fist Ring doesn't damage Vire
-                                        Has("expert's ring"),
-                                        oos_option_medium_logic(),
-                                    ),
-                                ),
-                            ),
+                            oos_can_kill_vire(),
                         ),
                     ),
                     oos_has_small_keys(6, 3),
@@ -873,21 +850,7 @@ def make_d6_logic() -> list[LogicLine]:
             "d6 vire chest",
             "d6 enter vire",
             False,
-            And(
-                oos_has_small_keys(6, 3),
-                # Kill Vire
-                oos_has_hearts_by_difficulty(4, 3),
-                Or(
-                    oos_has_sword(False),
-                    oos_has_fools_ore(),
-                    And(oos_option_medium_logic(), oos_has_bombs_to_fight()),
-                    And(
-                        # Fist Ring doesn't damage Vire
-                        Has("expert's ring"),
-                        oos_option_medium_logic(),
-                    ),
-                ),
-            ),
+            And(oos_has_small_keys(6, 3), oos_can_kill_vire()),
         ),
         (
             "d6 enter vire",

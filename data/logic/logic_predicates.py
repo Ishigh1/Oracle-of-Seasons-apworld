@@ -208,12 +208,22 @@ def oos_has_boss_key(dungeon_id: int) -> Rule:
 
 
 def oos_has_hearts(hearts: int, logic: int = OracleOfSeasonsLogicDifficulty.option_casual) -> Rule:
-    if hearts <= 3 or hearts > 10:
+    if hearts <= 3:
         return True_()
-    return Has("Heart Container", hearts - 3, options=[OptionFilter(OracleOfSeasonsLogicDifficulty, logic, "ge")])
+    return Or(
+        Has("Heart Container", hearts - 3, options=[OptionFilter(OracleOfSeasonsLogicDifficulty, logic, "ge")]),
+        And(
+            oos_option_medium_logic(),
+            Has("Heart Ring L-2"),
+        ),
+        And(
+            oos_option_hard_logic(),
+            Has("Heart Ring L-1"),
+        ),
+    )
 
 
-def oos_has_hearts_by_difficulty(hearts_casual: int = 20, hearts_medium: int = 20, hearts_hard: int = 20) -> Rule:
+def oos_has_hearts_by_difficulty(hearts_casual: int = -1, hearts_medium: int = -1, hearts_hard: int = -1) -> Rule:
     return Or(
         oos_has_hearts(hearts_casual, OracleOfSeasonsLogicDifficulty.option_casual),
         oos_has_hearts(hearts_medium, OracleOfSeasonsLogicDifficulty.option_medium),
@@ -940,7 +950,7 @@ def oos_can_kill_d2_hardhat() -> Rule:
         ),
         oos_can_use_gale_seeds_offensively(),
         And(oos_option_medium_logic(), Or(oos_has_bombchus_to_fight(), oos_has_bombs_to_fight())),
-        And(oos_option_medium_logic(), oos_has_cane())
+        And(oos_option_medium_logic(), oos_has_cane()),
     )
 
 
@@ -988,6 +998,27 @@ def oos_can_kill_magunesu() -> Rule:
         oos_has_sword(),
         oos_has_fools_ore(),
         # Has("expert's ring")
+    )
+
+
+def oos_can_kill_vire() -> Rule:
+    return And(
+        oos_has_hearts_by_difficulty(4, 3),
+        Or(
+            oos_has_sword(False),
+            oos_has_fools_ore(),
+            And(oos_option_medium_logic(), oos_has_bombs_to_fight()),
+            And(
+                # Fist Ring doesn't damage Vire
+                Has("expert's ring"),
+                oos_option_medium_logic(),
+            ),
+            And(
+                oos_option_hard_logic(),
+                oos_has_hearts(4),
+                oos_has_bombchus(4),  # Require more of them, as it's likely one of the few weapons at this point
+            ),
+        ),
     )
 
 
