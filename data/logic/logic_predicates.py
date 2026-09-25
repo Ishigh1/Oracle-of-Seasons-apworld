@@ -1005,7 +1005,7 @@ def oos_can_kill_vire() -> Rule:
     return And(
         oos_has_hearts_by_difficulty(4, 3),
         Or(
-            oos_has_sword(False),
+            oos_has_sword(True),
             oos_has_fools_ore(),
             And(oos_option_medium_logic(), oos_has_bombs_to_fight()),
             And(
