@@ -232,9 +232,12 @@
 08/4c9d/: db shopPrices.syrupShop2
 08/4c9e/: db shopPrices.syrupShop3
 
-08/4ca1/: db shopPrices.advanceShop1
-08/4ca2/: db shopPrices.advanceShop2
-08/4ca3/: db shopPrices.advanceShop3
+08/4ca1/: |
+  /ifdef advanceShop
+  db shopPrices.advanceShop1
+  db shopPrices.advanceShop2
+  db shopPrices.advanceShop3
+  /endif
 
 09/77b1/: db shopPrices.subrosianMarket2
 09/77c9/: db shopPrices.subrosianMarket3

@@ -73,6 +73,7 @@ class OracleOfSeasonsWorld(World):
         "Ore Chunks (10)": "Ore Chunks",
         "Ore Chunks (25)": "Ore Chunks",
         "Ore Chunks (50)": "Ore Chunks",
+        "Ore Chunks (100)": "Ore Chunks",
     }
 
     @classmethod

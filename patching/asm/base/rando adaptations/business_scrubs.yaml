@@ -48,18 +48,18 @@
 
 # Adapt @rupeeValues to match new subids
 0f/759c/rupeeEnumCosts: |
+    /ifdef scrubRefillOnly
+    db $00,$00,$00,$00
+    /else
     db shopPrices.spoolSwampScrub
     db shopPrices.samasaCaveScrub
     db shopPrices.d2Scrub
     db shopPrices.d4Scrub
+    /endif
     db $07      ; 30 Rupees
 
 # Adapt @itemPrices to match new subids
 0f/75bd/scrubPricesAsText: |
-    ; dw text.spoolSwampScrubPrice
-    ; dw text.samasaCaveScrubPrice
-    ; dw text.d2ScrubPrice
-    ; dw text.d4ScrubPrice
     dw $0030
 
 

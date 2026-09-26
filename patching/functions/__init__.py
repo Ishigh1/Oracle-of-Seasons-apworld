@@ -405,6 +405,8 @@ def define_option_constants(assembler: Z80Assembler, patch_data: dict[str, Any])
     assembler.define_byte("option.defaultSeedType", 0x20 + patch_data["options"]["default_seed"])
     assembler.define_byte("option.receivedDamageModifier", options["combat_difficulty"])
     assembler.define_byte("option.openAdvanceShop", options["advance_shop"])
+    if options["advance_shop"]:
+        assembler.define_byte("advanceShop", 0x01)
 
     assembler.define_byte("option.requiredEssences", options["required_essences"])
     assembler.define_byte("option.goldenBeastsRequirement", options["golden_beasts_requirement"])
@@ -426,6 +428,8 @@ def define_option_constants(assembler: Z80Assembler, patch_data: dict[str, Any])
     assembler.define_byte("option.smallKeySprite", 0x43 if master_keys_as_boss_keys else 0x42)
 
     scrubs_all_refill = not patch_data["options"]["shuffle_business_scrubs"]
+    if scrubs_all_refill:
+        assembler.define_byte("scrubRefillOnly", 0x01)
     assembler.define_byte("var.spoolSwampScrubSubid", 0x04 if scrubs_all_refill else 0x00)
     assembler.define_byte("var.samasaCaveScrubSubid", 0x04 if scrubs_all_refill else 0x01)
     assembler.define_byte("var.d2ScrubSubid", 0x04 if scrubs_all_refill else 0x02)
@@ -860,10 +864,6 @@ def set_faq_trap(assembler: Z80Assembler) -> None:
     assembler.define_byte("option.startingRoom", 0xEC, True)
     assembler.define_byte("option.startingPosY", 0x50, True)
     assembler.define_byte("option.startingPosX", 0x78, True)
-
-    assembler.define_byte("option.startingGroup", 0x00, True)
-    assembler.define_byte("option.startingRoom", 0x64, True)
-    assembler.define_byte("option.startingPosX", 0x58, True)
 
 
 def randomize_ai_for_april_fools(rom: RomData):

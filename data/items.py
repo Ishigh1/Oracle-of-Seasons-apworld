@@ -200,6 +200,12 @@ ITEMS_DATA: dict[str, dict[str, Any]] = {
         "subid": 0x00,
         "repeatable": True
     },
+    "Ore Chunks (100)": {
+        "classification": ItemClassification.filler,
+        "id": 0x37,
+        "subid": 0x03,
+        "repeatable": True
+    },
     "Heart Container": {
         "classification": ItemClassification.useful,
         "id": 0x2a

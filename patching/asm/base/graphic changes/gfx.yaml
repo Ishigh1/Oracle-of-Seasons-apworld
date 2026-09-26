@@ -155,7 +155,7 @@
 3f/67bd/: db $5d,$00,$23  # Potion (GFX #4b)
 3f/67c0/: db $65,$0c,$23  # Ribbon (GFX #4c)
 3f/67c3/: db $5c,$0c,$20  # Ore Chunks x10 (GFX #4d)
-3f/67c6/: db $5c,$0c,$10  # Ore Chunks x25 (GFX #4e)
+3f/67c6/: db $5c,$0c,$00  # Ore Chunks x100 (GFX #4e)
 
 # Add custom palette variants for rod of seasons to be able to know which
 # season it gives at first sight

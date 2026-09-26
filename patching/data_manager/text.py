@@ -67,6 +67,9 @@ def apply_text_edits(texts: dict[str, str]) -> None:
     # Brand-new texts, for 20 bombs
     texts["TX_0094"] = texts["TX_004d"].replace("ten", "twenty")
 
+    texts["TX_0095"] = ("You got 🟥100\n"
+                        "Ore Chunks⬜!")
+
     # Trade items
     # Cuccodex is fine
     texts["TX_005b"] = ("You got a\n"
