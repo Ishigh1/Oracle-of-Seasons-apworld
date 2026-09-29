@@ -115,6 +115,9 @@ def apply_text_edits(texts: dict[str, str]) -> None:
     texts["TX_301c"] = ("You got the\n"
                         "\\call(fd)!")
 
+    # Remove appraisal text
+    texts["TX_3003"] = texts["TX_3003"].replace("\\stop\n \\optAppraise \\optList\n", "\n \\optList")
+
     # Cross items
     # Obtain text
     texts_to_blank.append("TX_003b")  # Strange flute
@@ -167,7 +170,8 @@ def apply_text_edits(texts: dict[str, str]) -> None:
     texts["TX_0208"] = texts["TX_0208"].replace("Maze", "Dungeon")
 
     # Now unused text from Maku talking
-    texts["TX_1700"] = texts["TX_1701"] = ""
+    texts_to_blank.append("TX_1700")
+    texts_to_blank.append("TX_1701")
 
     texts["TX_020b"] = "Linked\nHero's Cave"
     texts["TX_0602"] = "Unknown Dungeon"

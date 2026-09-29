@@ -75,6 +75,10 @@
 # skip forced ring appraisal and ring list with vasu (prevents softlock).
 0b/4a2b/: dw $394a
 
+# Make it so that option 0 on vasu is list, and remove appraisal
+0b/4a64/: db $ff
+0b/4a68/: db $00
+
 # inject a new ring object data providing one subid per ring type to TREASURE_RING
 15//ringsObjectData: |
     db $09,$ff,$ff,$0e
