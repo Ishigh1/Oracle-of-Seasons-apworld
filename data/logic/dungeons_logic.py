@@ -1,4 +1,4 @@
-from rule_builder.rules import And, CanReachRegion, Has, Or, True_
+from rule_builder.rules import And, Has, Or, True_
 from worlds.tloz_oos.data.logic import LogicLine
 
 from ... import OracleOfSeasonsWorld
@@ -92,6 +92,7 @@ from .logic_predicates import (
     oos_self_locking_small_key,
     oos_shoot_beams,
 )
+from .rulebuilder import OoSCanReachRegion
 
 
 def make_d0_logic() -> list[LogicLine]:
@@ -641,7 +642,7 @@ def make_d5_logic() -> list[LogicLine]:
             False,
             And(
                 oos_self_locking_small_key("Unicorn's Cave: Treadmills Basement Item", 5),
-                CanReachRegion("d5 drop ball"),
+                OoSCanReachRegion("d5 drop ball"),
                 oos_has_small_keys(5, 3),
                 oos_has_magnet_gloves(),
                 Or(oos_can_kill_magunesu(), And(oos_option_medium_logic(), oos_has_feather())),
@@ -676,7 +677,7 @@ def make_d5_logic() -> list[LogicLine]:
                 # Magnet ball button
                 Or(
                     And(
-                        CanReachRegion("d5 drop ball"),
+                        OoSCanReachRegion("d5 drop ball"),
                         oos_has_magnet_gloves(),
                     ),
                     oos_has_cane(),

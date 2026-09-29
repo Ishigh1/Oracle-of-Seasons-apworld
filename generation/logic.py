@@ -1,8 +1,14 @@
+import cProfile
+import io
+import pstats
+import time
+from collections import defaultdict
+from pstats import SortKey
 from typing import cast
 
 from BaseClasses import CollectionState, EntranceType, Item, Region
 from Options import Accessibility
-from rule_builder.rules import And, CanReachRegion, Or, True_
+from rule_builder.rules import And, Or, True_
 
 from ..data.Constants import DUNGEON_NAMES, PORTAL_CONNECTIONS, OracleOfSeasonsConnectionType
 from ..data.logic import LogicLine
@@ -32,7 +38,7 @@ from ..data.logic.logic_predicates import (
     oos_option_medium_logic,
 )
 from ..data.logic.overworld_logic import make_holodrum_logic
-from ..data.logic.rulebuilder import Rule
+from ..data.logic.rulebuilder import OoSCanReachRegion, Rule
 from ..data.logic.subrosia_logic import make_subrosia_logic
 from ..world import OracleOfSeasonsWorld
 
@@ -64,6 +70,8 @@ def create_randomizable_connections(
 
 
 def create_connections(world: OracleOfSeasonsWorld, options):
+    profiler = cProfile.Profile()
+    profiler.enable()
     all_logic: list[list[LogicLine]] = [
         make_holodrum_logic(world, options),
         make_subrosia_logic(options),
@@ -78,6 +86,101 @@ def create_connections(world: OracleOfSeasonsWorld, options):
         make_d8_logic(),
         make_d11_logic(options),
     ]
+    if not world.options.shuffle_dungeons:
+        dungeon_entrances: list[LogicLine] = []
+        for reg1, reg2 in world.dungeon_entrances.items():
+            dungeon_entrances.append((reg1, reg2, True, True_()))
+        all_logic.append(dungeon_entrances)
+
+    if not world.options.shuffle_portals:
+        portal_connections: list[LogicLine] = []
+        for reg1, reg2 in PORTAL_CONNECTIONS.items():
+            portal_connections.append((reg1, reg2, True, True_()))
+        all_logic.append(portal_connections)
+
+    region_replacement: dict[str, str] = world.region_replacement
+    reverse_replacement: dict[str, list[str]] = defaultdict(lambda: [])
+    connection_data: dict[tuple[str, str], Rule] = {}
+    known_connections: dict[str, list[tuple[str, str]]] = defaultdict(lambda: [])
+    needed_regions: set[str] = set()
+    for logic_array in all_logic:
+        for entrance_desc in logic_array:
+            assert len(entrance_desc) == 4
+
+            region_1 = cast(str, entrance_desc[0])
+            region_2 = cast(str, entrance_desc[1])
+            is_two_way = cast(bool, entrance_desc[2])
+            rule = cast(Rule, entrance_desc[3])
+
+            if region_1 in region_replacement:
+                region_1 = region_replacement[region_1]
+            if region_2 in region_replacement:
+                region_2 = region_replacement[region_2]
+
+            if region_1 == region_2:
+                continue
+
+            resolved_rule = rule.resolve(world)
+            if resolved_rule.always_false:
+                continue
+            if is_two_way and resolved_rule.always_true:
+                # This connection is superfluous
+                needed_regions.add(region_1)
+                needed_regions.discard(region_2)
+                region_replacement[region_2] = region_1
+                reverse_replacement[region_1].append(region_2)
+                if region_2 in reverse_replacement:
+                    to_link_back = reverse_replacement[region_2]
+                    for region in to_link_back:
+                        region_replacement[region] = region_1
+                    reverse_replacement[region_1].extend(to_link_back)
+
+                if region_2 in known_connections:
+                    for connection_pair in known_connections.pop(region_2):
+                        if connection_pair in connection_data:
+                            # That connection may have been severed already
+                            (region_a, region_b) = connection_pair
+                            rule = connection_data.pop(connection_pair)
+                            if region_a == region_2:
+                                new_pair = (region_1, region_b)
+                            else:
+                                new_pair = (region_a, region_1)
+                            if new_pair in connection_data:
+                                connection_data[new_pair] |= rule
+                            else:
+                                connection_data[new_pair] = rule
+                                known_connections[new_pair[0]].append(new_pair)
+                                known_connections[new_pair[1]].append(new_pair)
+                pass
+            else:
+                needed_regions.add(region_1)
+                needed_regions.add(region_2)
+                connection_pair = (region_1, region_2)
+                if connection_pair in connection_data:
+                    connection_data[connection_pair] |= rule
+                else:
+                    connection_data[connection_pair] = rule
+                    known_connections[region_1].append(connection_pair)
+                    known_connections[region_2].append(connection_pair)
+                if is_two_way:
+                    connection_pair = (region_2, region_1)
+                    if connection_pair in connection_data:
+                        connection_data[connection_pair] |= rule
+                    else:
+                        connection_data[connection_pair] = rule
+                        known_connections[region_1].append(connection_pair)
+                        known_connections[region_2].append(connection_pair)
+
+    for region in needed_regions:
+        world.multiworld.regions.append(Region(region, world.player, world.multiworld))
+
+    for regions, rule in connection_data.items():
+        region_1, region_2 = regions
+        if region_1 == region_2:
+            continue
+        region_1 = world.get_region(region_1)
+        region_2 = world.get_region(region_2)
+        world.create_entrance(region_1, region_2, rule=rule)
 
     if world.options.shuffle_dungeons:
         create_randomizable_connections(
@@ -87,11 +190,6 @@ def create_connections(world: OracleOfSeasonsWorld, options):
             OracleOfSeasonsConnectionType.CONNECT_DUNGEON_OVERWORLD,
             OracleOfSeasonsConnectionType.CONNECT_DUNGEON_INSIDE,
         )
-    else:
-        dungeon_entrances = []
-        for reg1, reg2 in world.dungeon_entrances.items():
-            dungeon_entrances.append([reg1, reg2, True, None])
-        all_logic.append(dungeon_entrances)
 
     if world.options.shuffle_portals:
         create_randomizable_connections(
@@ -101,28 +199,12 @@ def create_connections(world: OracleOfSeasonsWorld, options):
             OracleOfSeasonsConnectionType.CONNECT_PORTAL_OVERWORLD,
             OracleOfSeasonsConnectionType.CONNECT_PORTAL_SUBROSIA,
         )
-    else:
-        portal_connections = []
-        for reg1, reg2 in PORTAL_CONNECTIONS.items():
-            portal_connections.append([reg1, reg2, True, None])
-        all_logic.append(portal_connections)
-
-    # Create connections
-    for logic_array in all_logic:
-        for entrance_desc in logic_array:
-            if len(entrance_desc) == 5:
-                # This is a conditional transition
-                if not entrance_desc[4]:
-                    continue
-
-            region_1 = world.get_region(cast(str, entrance_desc[0]))
-            region_2 = world.get_region(cast(str, entrance_desc[1]))
-            is_two_way = cast(bool, entrance_desc[2])
-            rule = cast(Rule | None, entrance_desc[3])
-
-            world.create_entrance(region_1, region_2, rule)
-            if is_two_way:
-                world.create_entrance(region_2, region_1, rule)
+    profiler.disable()
+    s = io.StringIO()
+    sortby = SortKey.CUMULATIVE
+    ps = pstats.Stats(profiler, stream=s).sort_stats(sortby)
+    ps.print_stats()
+    print(s.getvalue())
 
 
 class AlwaysAllowRule:
@@ -142,29 +224,29 @@ def apply_self_locking_rules(world: OracleOfSeasonsWorld):
     # Process self-locking keys first
     key_rules = {
         "Hero's Cave: Final Chest": AlwaysAllowRule(
-            world, CanReachRegion("enter d0"), f"Small Key ({DUNGEON_NAMES[0]})", f"Master Key ({DUNGEON_NAMES[0]})"
+            world, OoSCanReachRegion("enter d0"), f"Small Key ({DUNGEON_NAMES[0]})", f"Master Key ({DUNGEON_NAMES[0]})"
         ),
         "Gnarled Root Dungeon: Item in Basement": AlwaysAllowRule(
-            world, CanReachRegion("d1 railway chest"), f"Small Key ({DUNGEON_NAMES[1]})"
+            world, OoSCanReachRegion("d1 railway chest"), f"Small Key ({DUNGEON_NAMES[1]})"
         ),
         "Poison Moth's Lair (1F): Chest in Mimics Room": AlwaysAllowRule(
-            world, And(CanReachRegion("d3 water room"), oos_can_kill_normal_enemy()), f"Small Key ({DUNGEON_NAMES[3]})"
+            world, And(OoSCanReachRegion("d3 water room"), oos_can_kill_normal_enemy()), f"Small Key ({DUNGEON_NAMES[3]})"
         ),
         "Dancing Dragon Dungeon (1F): Crumbling Room Chest": AlwaysAllowRule(
-            world, CanReachRegion("d4 final minecart"), f"Small Key ({DUNGEON_NAMES[4]})"
+            world, OoSCanReachRegion("d4 final minecart"), f"Small Key ({DUNGEON_NAMES[4]})"
         ),
         "Dancing Dragon Dungeon (1F): Eye Diving Spot Item": AlwaysAllowRule(
-            world, And(CanReachRegion("d4 final minecart"), oos_has_flippers()), f"Small Key ({DUNGEON_NAMES[4]})"
+            world, And(OoSCanReachRegion("d4 final minecart"), oos_has_flippers()), f"Small Key ({DUNGEON_NAMES[4]})"
         ),
         "Unicorn's Cave: Magnet Gloves Chest": AlwaysAllowRule(
-            world, CanReachRegion("enter d5"), f"Small Key ({DUNGEON_NAMES[5]})"
+            world, OoSCanReachRegion("enter d5"), f"Small Key ({DUNGEON_NAMES[5]})"
         ),
         "Unicorn's Cave: Treadmills Basement Item": AlwaysAllowRule(
             world,
             And(
-                CanReachRegion("enter d5"),
+                OoSCanReachRegion("enter d5"),
                 oos_has_small_keys(5, 3),
-                CanReachRegion("d5 drop ball"),
+                OoSCanReachRegion("d5 drop ball"),
                 oos_has_magnet_gloves(),
                 Or(oos_can_kill_magunesu(), And(oos_option_medium_logic(), oos_has_feather())),
             ),
@@ -173,7 +255,7 @@ def apply_self_locking_rules(world: OracleOfSeasonsWorld):
         "Explorer's Crypt (B1F): Chest in Jumping Stalfos Room": AlwaysAllowRule(
             world,
             And(
-                CanReachRegion("enter d7"),
+                OoSCanReachRegion("enter d7"),
                 oos_has_small_keys(7, 4),
                 Or(oos_can_jump_5_wide_pit(), And(oos_option_hard_logic(), oos_can_jump_1_wide_pit(False))),
                 oos_can_kill_stalfos(),
@@ -183,7 +265,7 @@ def apply_self_locking_rules(world: OracleOfSeasonsWorld):
         "Explorer's Crypt (1F): Chest Right of Entrance": AlwaysAllowRule(
             world,
             And(
-                CanReachRegion("enter d7"),
+                OoSCanReachRegion("enter d7"),
                 oos_can_kill_normal_enemy(),
                 oos_has_small_keys(7, 1),
             ),
@@ -217,11 +299,11 @@ def apply_self_locking_rules(world: OracleOfSeasonsWorld):
         location = world.get_location(loc_name)
         region = cast(Region, location.parent_region)
         parent_region = cast(Region, region.entrances[0].parent_region)
-        location.always_allow = AlwaysAllowRule(world, CanReachRegion(parent_region.name), item_name)
+        location.always_allow = AlwaysAllowRule(world, OoSCanReachRegion(parent_region.name), item_name)
 
     # Great Furnace special case
     location = world.get_location("Subrosia: Item Smelted in Great Furnace")
-    location.always_allow = AlwaysAllowRule(world, CanReachRegion("great furnace"), "Red Ore", "Blue Ore")
+    location.always_allow = AlwaysAllowRule(world, OoSCanReachRegion("great furnace"), "Red Ore", "Blue Ore")
 
 
 def apply_rule_forbiddance(world: OracleOfSeasonsWorld):

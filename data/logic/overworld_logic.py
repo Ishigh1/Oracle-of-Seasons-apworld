@@ -1,15 +1,4 @@
-from rule_builder.rules import And, CanReachRegion, Has, Or, True_
-
-from ... import OracleOfSeasonsWorld
-from ...options import (
-    OracleOfSeasonsIncludeSecretLocations,
-    OracleOfSeasonsLogicDifficulty,
-    OracleOfSeasonsOptions,
-    OracleOfSeasonsRemoveD0AltEntrance,
-    OracleOfSeasonsRemoveD2AltEntrance,
-    OracleOfSeasonsTarmGateRequirement,
-)
-from ..Constants import SEASON_AUTUMN, SEASON_SPRING, SEASON_SUMMER, SEASON_WINTER
+from rule_builder.rules import And, Has, Or, True_
 from . import LogicLine
 from .logic_predicates import (
     oos_can_beat_required_golden_beasts,
@@ -113,9 +102,17 @@ from .logic_predicates import (
     oos_season_in_temple_remains,
     oos_season_in_western_coast,
     oos_season_in_woods_of_winter,
-    oos_self_locking_item,
+    oos_self_locking_item, oos_gasha_locations_enlabled, oos_secrets_enabled, oos_is_companion_dimitri,
 )
-from .rulebuilder import from_option
+from .rulebuilder import OoSCanReachRegion, from_option, from_world_field
+from ..Constants import SEASON_AUTUMN, SEASON_SPRING, SEASON_SUMMER, SEASON_WINTER
+from ... import OracleOfSeasonsWorld
+from ...options import (
+    OracleOfSeasonsIncludeSecretLocations,
+    OracleOfSeasonsOptions,
+    OracleOfSeasonsRemoveD0AltEntrance,
+    OracleOfSeasonsRemoveD2AltEntrance,
+    OracleOfSeasonsTarmGateRequirement, OracleOfSeasonsAdvanceShop, OracleOfSeasonsBusinessScrubsShuffle, )
 
 
 def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOptions) -> list[LogicLine]:
@@ -124,65 +121,57 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             world.origin_region_name,
             "gasha tree 1",
             False,
-            oos_can_harvest_gasha(1),
-            options.deterministic_gasha_locations >= 1,
+            oos_can_harvest_gasha(1)
         ),
-        ("gasha tree 1", "gasha tree 2", False, oos_can_harvest_gasha(2), options.deterministic_gasha_locations >= 2),
-        ("gasha tree 2", "gasha tree 3", False, oos_can_harvest_gasha(3), options.deterministic_gasha_locations >= 3),
-        ("gasha tree 3", "gasha tree 4", False, oos_can_harvest_gasha(4), options.deterministic_gasha_locations >= 4),
-        ("gasha tree 4", "gasha tree 5", False, oos_can_harvest_gasha(5), options.deterministic_gasha_locations >= 5),
-        ("gasha tree 5", "gasha tree 6", False, oos_can_harvest_gasha(6), options.deterministic_gasha_locations >= 6),
-        ("gasha tree 6", "gasha tree 7", False, oos_can_harvest_gasha(7), options.deterministic_gasha_locations >= 7),
-        ("gasha tree 7", "gasha tree 8", False, oos_can_harvest_gasha(8), options.deterministic_gasha_locations >= 8),
-        ("gasha tree 8", "gasha tree 9", False, oos_can_harvest_gasha(9), options.deterministic_gasha_locations >= 9),
+        ("gasha tree 1", "gasha tree 2", False, oos_can_harvest_gasha(2)),
+        ("gasha tree 2", "gasha tree 3", False, oos_can_harvest_gasha(3)),
+        ("gasha tree 3", "gasha tree 4", False, oos_can_harvest_gasha(4)),
+        ("gasha tree 4", "gasha tree 5", False, oos_can_harvest_gasha(5)),
+        ("gasha tree 5", "gasha tree 6", False, oos_can_harvest_gasha(6)),
+        ("gasha tree 6", "gasha tree 7", False, oos_can_harvest_gasha(7)),
+        ("gasha tree 7", "gasha tree 8", False, oos_can_harvest_gasha(8)),
+        ("gasha tree 8", "gasha tree 9", False, oos_can_harvest_gasha(9)),
         (
             "gasha tree 9",
             "gasha tree 10",
             False,
             oos_can_harvest_gasha(10),
-            options.deterministic_gasha_locations >= 10,
         ),
         (
             "gasha tree 10",
             "gasha tree 11",
             False,
             oos_can_harvest_gasha(11),
-            options.deterministic_gasha_locations >= 11,
         ),
         (
             "gasha tree 11",
             "gasha tree 12",
             False,
             oos_can_harvest_gasha(12),
-            options.deterministic_gasha_locations >= 12,
         ),
         (
             "gasha tree 12",
             "gasha tree 13",
             False,
             oos_can_harvest_gasha(13),
-            options.deterministic_gasha_locations >= 13,
         ),
         (
             "gasha tree 13",
             "gasha tree 14",
             False,
             oos_can_harvest_gasha(14),
-            options.deterministic_gasha_locations >= 14,
         ),
         (
             "gasha tree 14",
             "gasha tree 15",
             False,
             oos_can_harvest_gasha(15),
-            options.deterministic_gasha_locations >= 15,
         ),
         (
             "gasha tree 15",
             "gasha tree 16",
             False,
             oos_can_harvest_gasha(16),
-            options.deterministic_gasha_locations >= 16,
         ),
         (
             "maple encounter",
@@ -236,13 +225,15 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
         ("horon village portal", "horon village", False, Or(oos_can_trigger_lever(), oos_can_jump_6_wide_pit())),
         ("horon village", "horon village tree", False, oos_can_harvest_tree(True)),
         ("horon village", "horon shop", False, oos_has_rupees_for_shop("horonShop")),
-        ("horon village", "advance shop", False, oos_has_rupees_for_shop("advanceShop"), bool(options.advance_shop)),
+        ("horon village", "advance shop", False,
+         And(from_option(OracleOfSeasonsAdvanceShop, OracleOfSeasonsAdvanceShop.option_true), oos_has_rupees_for_shop("advanceShop"), )),
         ("horon village", "member's shop", False, And(Has("Member's Card"), oos_has_rupees_for_shop("memberShop"))),
         (
             "horon village",
             "clock shop secret",
             False,
             And(
+                oos_secrets_enabled(),
                 oos_has_shovel(),
                 Or(
                     oos_has_noble_sword(),
@@ -251,7 +242,6 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                     And(oos_option_medium_logic(), Or(oos_has_sword(), oos_has_bombchus(3))),
                 ),
             ),
-            bool(options.secret_locations),
         ),
         # WESTERN COAST ##############################################################################################
         ("horon village", "western coast", True, True_()),
@@ -279,7 +269,12 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                 oos_can_break_bush(True),
             ),
         ),
-        ("western coast after ship", "western coast", False, And(Has("_met_pirates"), Has("Pirate's Bell"))),
+        (
+            "western coast after ship",
+            "western coast",
+            False,
+            And(OoSCanReachRegion("subrosia pirates sector"), Has("Pirate's Bell")),
+        ),
         (
             "western coast after ship",
             "coast stump",
@@ -296,7 +291,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                 Or(
                     oos_has_shovel(),
                     oos_is_default_season("WESTERN_COAST", SEASON_WINTER, False),
-                    And(CanReachRegion("coast stump"), oos_can_remove_season(SEASON_WINTER)),
+                    And(OoSCanReachRegion("coast stump"), oos_can_remove_season(SEASON_WINTER)),
                 ),
             ),
         ),
@@ -312,7 +307,8 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             False,
             And(oos_is_default_season("WESTERN_COAST", SEASON_AUTUMN), oos_can_break_mushroom(False)),
         ),
-        ("d7 entrance", "graveyard secret", False, oos_has_shovel(), bool(options.secret_locations)),
+        ("d7 entrance", "graveyard secret", False,
+         And(oos_has_shovel(), oos_secrets_enabled())),
         (
             "d7 entrance",
             "western coast after ship",
@@ -723,12 +719,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
         ),
         ("north horon", "underwater item below natzu bridge", False, oos_can_swim(False)),
         ("north horon", "temple remains lower stump", False, oos_can_jump_3_wide_pit()),
-        (
-            "north horon",
-            "spool swamp north",
-            False,
-            Has("Ricky's Gloves")
-        ),
+        ("north horon", "spool swamp north", False, Has("Ricky's Gloves")),
         ("temple remains lower stump", "north horon", False, Or(oos_can_jump_3_wide_pit(), oos_has_switch_hook())),
         ("ghastly stump", "maple encounter", False, oos_can_meet_maple()),
         (
@@ -834,8 +825,10 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             "floodgate keyhole",
             "spool swamp scrub",
             False,
-            oos_has_rupees_for_shop("spoolSwampScrub"),
-            bool(options.shuffle_business_scrubs),
+            And(
+                from_option(OracleOfSeasonsBusinessScrubsShuffle, OracleOfSeasonsBusinessScrubsShuffle.option_true),
+                oos_has_rupees_for_shop("spoolSwampScrub"),
+            ),
         ),
         ("floodgate keyhole", "spool stump", False, Has("Floodgate Key")),
         ("spool stump", "d3 entrance", False, oos_season_in_spool_swamp(SEASON_SUMMER)),
@@ -987,6 +980,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             "deku secret",
             False,
             And(
+                oos_secrets_enabled(),
                 oos_can_use_seeds(),
                 oos_has_ember_seeds(),
                 oos_has_scent_seeds(),
@@ -994,7 +988,6 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                 oos_has_gale_seeds(),
                 oos_has_mystery_seeds(),
             ),
-            bool(options.secret_locations),
         ),
         # SUNKEN CITY ############################################################################################
         (
@@ -1066,6 +1059,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             "diver secret",
             False,
             And(
+                oos_secrets_enabled(),
                 oos_has_flippers(),
                 Or(
                     And(
@@ -1077,7 +1071,6 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                     oos_has_fools_ore(),
                 ),
             ),
-            bool(options.secret_locations),
         ),
         ("mount cucco", "sunken city", False, oos_has_flippers()),
         ("sunken city", "mount cucco", False, And(oos_has_flippers(), oos_season_in_sunken_city(SEASON_SUMMER))),
@@ -1332,7 +1325,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             False,
             And(
                 oos_season_in_tarm_ruins(SEASON_AUTUMN),
-                CanReachRegion("lost woods top statue"),
+                OoSCanReachRegion("lost woods top statue"),
                 Or(
                     # A bit tight and diagonal, above water
                     oos_can_jump_3_wide_pit(),
@@ -1397,15 +1390,17 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             And(oos_is_default_season("TARM_RUINS", SEASON_SPRING), oos_can_break_flowers()),
         ),
         # SAMASA DESERT ######################################################################################
-        ("suburbs", "samasa desert", False, Has("_met_pirates")),
+        ("suburbs", "samasa desert", False, OoSCanReachRegion("subrosia pirates sector")),
         ("samasa desert", "samasa desert pit", False, oos_has_bracelet()),
         ("samasa desert", "samasa desert chest", False, oos_has_flippers()),
         (
             "samasa desert",
             "samasa desert scrub",
             False,
-            oos_has_rupees_for_shop("samasaCaveScrub"),
-            bool(options.shuffle_business_scrubs),
+            And(
+                from_option(OracleOfSeasonsBusinessScrubsShuffle, OracleOfSeasonsBusinessScrubsShuffle.option_true),
+                oos_has_rupees_for_shop("samasaCaveScrub"),
+            )
         ),
         ("samasa desert", "subrosia pirates sector", False, True_()),
         # d11 in samasa rules
@@ -1413,15 +1408,16 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             "samasa desert",
             "d11 entrance",
             True,
-            True_(),
-            options.linked_heros_cave.is_samasa,
+            from_world_field("options.linked_heros_cave.is_samasa", True)
         ),
         (
             "samasa desert",
             "d11 alt entrance",
             False,
-            oos_can_break_bush(),
-            options.linked_heros_cave.is_alt_entrance,
+            And(
+                from_world_field("options.linked_heros_cave.is_alt_entrance", True),
+                oos_can_break_bush(),
+            ),
         ),
         # TEMPLE REMAINS ####################################################################################
         ("temple remains lower stump", "maple encounter", False, oos_can_meet_maple()),
@@ -1548,7 +1544,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
         ("maku tree", "maku tree, 3 essences", False, oos_has_essences(3)),
         ("maku tree", "maku tree, 5 essences", False, oos_has_essences(5)),
         ("maku tree", "maku tree, 7 essences", False, oos_has_essences(7)),
-        ("north horon", "d9 entrance", False, CanReachRegion("maku seed")),
+        ("north horon", "d9 entrance", False, OoSCanReachRegion("maku seed")),
         (
             "d9 entrance",
             "onox beaten",
@@ -1606,7 +1602,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                     And(
                         oos_season_in_western_coast(SEASON_SPRING),
                         Has("Pirate's Bell"),
-                        Has("_met_pirates"),
+                        OoSCanReachRegion("subrosia pirates sector"),
                     ),
                 ),
                 Or(
@@ -1663,223 +1659,259 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             ),
         ),
         # GASHA TREES #############################################################################################
-        ("horon village", "horon gasha spot", False, True_(), options.deterministic_gasha_locations >= 1),
+        ("horon village", "horon gasha spot", False, True_()),
         (
             "impa's house",
             "impa gasha spot",
             False,
-            oos_can_break_bush(True, True),
-            options.deterministic_gasha_locations >= 1,
+            And(
+                oos_gasha_locations_enlabled(),
+                oos_can_break_bush(True, True),
+            )
         ),
         (
             "suburbs",
             "suburbs gasha spot",
             False,
-            oos_can_break_bush(True, True),
-            options.deterministic_gasha_locations >= 1,
+            And(
+                oos_gasha_locations_enlabled(),
+                oos_can_break_bush(True, True),
+            )
         ),
         (
             "ghastly stump",
             "holodrum plain gasha spot",
             False,
             And(
+                oos_gasha_locations_enlabled(),
                 oos_can_break_bush(True, False),  # Zoras make the bombchus not viable
                 oos_has_shovel(),
             ),
-            options.deterministic_gasha_locations >= 1,
         ),
         (
             "d1 island",
             "holodrum plain island gasha spot",
             False,
             And(
+                oos_gasha_locations_enlabled(),
                 oos_can_swim(True),
                 Or(
                     oos_can_break_bush(False, False),
                     oos_can_summon_dimitri(),  # Only Dimitri can be brought here
                 ),
             ),
-            options.deterministic_gasha_locations >= 1,
         ),
         (
             "floodgate keyhole",
             "spool swamp north gasha spot",
             False,
+            And(
+                oos_gasha_locations_enlabled(),
             oos_has_bracelet(),
-            options.deterministic_gasha_locations >= 1,
+            )
         ),
         (
             "spool swamp south near gasha spot",
             "spool swamp south gasha spot",
             False,
-            oos_has_bracelet(),
-            options.deterministic_gasha_locations >= 1,
+            And(
+                oos_gasha_locations_enlabled(),
+                oos_has_bracelet(),
+            )
         ),
         (
             "sunken city",
             "sunken city gasha spot",
             False,
             And(
+                oos_gasha_locations_enlabled(),
                 oos_season_in_sunken_city(SEASON_SUMMER),
                 oos_can_swim(False),
-                oos_can_break_bush(False, False),  # Technically doable by positioning link with a sword
+                oos_can_break_bush(False, False),  # Bombchus is technically doable by positioning link with a sword
             ),
-            options.deterministic_gasha_locations >= 1,
         ),
         ("sunken city dimitri", "sunken city gasha spot", False, True_(), options.deterministic_gasha_locations >= 1),
         (
             "goron mountain entrance",
             "goron mountain left gasha spot",
             False,
-            oos_has_shovel(),
-            options.deterministic_gasha_locations >= 1,
+            And(
+                oos_gasha_locations_enlabled(),
+                oos_has_shovel(),
+            )
         ),
         (
             "goron mountain entrance",
             "goron mountain right gasha spot",
             False,
-            oos_has_bracelet(),
-            options.deterministic_gasha_locations >= 1,
+            And(
+                oos_gasha_locations_enlabled(),
+                oos_has_bracelet(),
+            )
         ),
         (
             "d5 stump",
             "eyeglass lake gasha spot",
             False,
             And(
+                oos_gasha_locations_enlabled(),
                 oos_has_shovel(),
                 oos_can_break_bush(True, True),
             ),
-            options.deterministic_gasha_locations >= 1,
         ),
         (
             "mount cucco",
             "mt cucco gasha spot",
             False,
             And(
+                oos_gasha_locations_enlabled(),
                 oos_season_in_mt_cucco(SEASON_AUTUMN),
                 oos_can_break_mushroom(False),
             ),
-            options.deterministic_gasha_locations >= 1,
         ),
-        ("d6 sector", "tarm ruins gasha spot", False, oos_has_shovel(), options.deterministic_gasha_locations >= 1),
-        ("samasa desert", "samasa desert gasha spot", False, True_(), options.deterministic_gasha_locations >= 1),
+        ("d6 sector", "tarm ruins gasha spot", False, And(oos_gasha_locations_enlabled(), oos_has_shovel()),),
+        ("samasa desert", "samasa desert gasha spot", False, True_()),
         (
             "western coast after ship",
             "western coast gasha spot",
-            False,
+            True,
             True_(),
-            options.deterministic_gasha_locations >= 1,
         ),
-        ("north horon", "onox gasha spot", False, oos_has_shovel(), options.deterministic_gasha_locations >= 1),
-        ("natzu west", "natzu west (ricky)", True, True_(), options.animal_companion == "ricky"),
-        ("natzu west (ricky)", "natzu east (ricky)", True, oos_can_summon_ricky(), options.animal_companion == "ricky"),
-        ("natzu east (ricky)", "sunken city entrance", True, True_(), options.animal_companion == "ricky"),
-        ("natzu east (ricky)", "moblin keep bridge", False, True_(), options.animal_companion == "ricky"),
-        ("natzu east (ricky)", "natzu river bank", True, oos_can_summon_ricky(), options.animal_companion == "ricky"),
+        ("north horon", "onox gasha spot", False, And(oos_gasha_locations_enlabled(), oos_has_shovel()),),
+        ("natzu west", "natzu west (ricky)", True, oos_is_companion_ricky()),
+        ("natzu west (ricky)", "natzu east (ricky)", True, And(oos_is_companion_ricky(), oos_can_summon_ricky())),
+        ("natzu east (ricky)", "sunken city entrance", True, oos_is_companion_ricky()),
+        ("natzu east (ricky)", "moblin keep bridge", True, oos_is_companion_ricky()),
+        ("natzu east (ricky)", "natzu river bank", True, And(oos_is_companion_ricky(), oos_can_summon_ricky())),
         (
             "natzu east (ricky)",
             "natzu deku",
             False,
-            oos_can_break_bush(True),
-            bool(options.animal_companion == "ricky" and options.secret_locations),
+            And(
+                oos_is_companion_dimitri(),
+                oos_secrets_enabled(),
+                oos_can_break_bush(True),
+            )
         ),
         ("natzu west", "natzu west (dimitri)", True, True_(), options.animal_companion == "dimitri"),
         (
             "natzu west (dimitri)",
             "natzu east (dimitri)",
             True,
-            oos_can_swim(True),
-            options.animal_companion == "dimitri",
+            And(
+                oos_is_companion_dimitri(),
+                oos_can_swim(True),
+            )
         ),
         (
             "natzu east (dimitri)",
             "sunken city entrance",
             True,
-            oos_can_jump_1_wide_pit(False),
-            options.animal_companion == "dimitri",
+            And(
+                oos_is_companion_dimitri(),
+                oos_can_jump_1_wide_pit(False),
+            )
         ),
         (
             "natzu east (dimitri)",
             "natzu region, across water",
             False,
-            oos_can_jump_5_wide_liquid(),
-            options.animal_companion == "dimitri",
+            And(
+                oos_is_companion_dimitri(),
+                oos_can_jump_5_wide_liquid()
+            )
         ),
         (
             "natzu east (dimitri)",
             "moblin keep bridge",
             False,
-            Or(oos_can_summon_dimitri(), And(oos_option_medium_logic(), oos_has_flippers(), Has("Swimmer's Ring"))),
-            options.animal_companion == "dimitri",
+            And(
+                oos_is_companion_dimitri(),
+                Or(oos_can_summon_dimitri(), And(oos_option_medium_logic(), oos_has_flippers(), Has("Swimmer's Ring"))),
+            )
         ),
         ("natzu east (dimitri)", "natzu river bank", True, True_(), options.animal_companion == "dimitri"),
         (
             "natzu west (dimitri)",
             "natzu deku",
             False,
-            oos_can_summon_dimitri(),
-            bool(options.animal_companion == "dimitri" and options.secret_locations),
+            And(
+                oos_is_companion_dimitri(),
+                oos_secrets_enabled(),
+                oos_can_summon_dimitri(),
+            )
         ),
         ("sunken city entrance", "moblin keep", False, oos_can_dimitri_clip(), options.animal_companion == "dimitri"),
         (
             "moblin keep bridge",
             "natzu east (dimitri)",
             False,
-            oos_can_swim(True),
-            options.animal_companion == "dimitri",
+            And(
+                oos_is_companion_dimitri(),
+                oos_can_swim(True),
+            )
         ),
         ("natzu west", "natzu west (moosh)", True, True_(), options.animal_companion == "moosh"),
         (
             "natzu west (moosh)",
             "natzu east (moosh)",
             True,
-            Or(
-                oos_can_summon_moosh(),
-                And(oos_option_medium_logic(), oos_can_break_bush(True), oos_can_jump_3_wide_pit()),
-            ),
-            options.animal_companion == "moosh",
+            And(
+                oos_is_companion_moosh(),
+                Or(
+                    oos_can_summon_moosh(),
+                    And(oos_option_medium_logic(), oos_can_break_bush(True), oos_can_jump_3_wide_pit()),
+                ),
+            )
         ),
         (
             "natzu east (moosh)",
             "sunken city entrance",
             True,
-            Or(
-                oos_can_summon_moosh(),
-                oos_can_jump_3_wide_liquid(),  # Not a liquid, but it's a diagonal jump so that's the same
-            ),
-            options.animal_companion == "moosh",
+            And(
+                oos_is_companion_moosh(),
+                Or(
+                    oos_can_summon_moosh(),
+                    oos_can_jump_3_wide_liquid(),  # Not a liquid, but it's a diagonal jump so that's the same
+                ),
+            )
         ),
         (
             "natzu east (moosh)",
             "moblin keep bridge",
-            False,
-            Or(oos_can_summon_moosh(), And(oos_can_break_bush(), oos_can_jump_3_wide_pit())),
-            options.animal_companion == "moosh",
+            True,
+            And(
+                oos_is_companion_moosh(),
+                Or(oos_can_summon_moosh(), And(oos_can_break_bush(), oos_can_jump_3_wide_pit())),
+            )
         ),
         ("natzu east (moosh)", "natzu river bank", True, True_(), options.animal_companion == "moosh"),
         (
             "natzu west (moosh)",
             "natzu deku",
             False,
-            Or(
-                oos_can_summon_moosh(),
-                oos_can_jump_4_wide_liquid(),
-                And(oos_can_jump_4_wide_pit(), oos_can_break_bush()),
-            ),
-            bool(options.animal_companion == "moosh" and options.secret_locations),
+            And(
+                oos_is_companion_moosh(),
+                oos_secrets_enabled(),
+                Or(
+                    oos_can_summon_moosh(),
+                    oos_can_jump_4_wide_liquid(),
+                    And(oos_can_jump_4_wide_pit(), oos_can_break_bush()),
+                ),
+            )
         ),
         (
             "d4 entrance",
             "dragon keyhole",
             False,
             And(
+                oos_option_hell_logic(),
                 # Rule specifically to get to the dragon keyhole from a side entrance,
                 # only useful for rooster's adventure
                 oos_is_default_season("SUNKEN_CITY", SEASON_WINTER),  # to reach cave
                 oos_has_feather(),  # to jump in cave
                 oos_has_bracelet(),  # to grab the rooster
             ),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
         ),
         # Item assumptions for the rest of that logic :
         # Bracelet
@@ -1888,162 +1920,153 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             "dragon keyhole",
             "rooster adventure",
             False,
-            And(oos_has_gale_seeds(), oos_has_satchel(), Or(oos_has_shovel(), Has("Spring Banana"))),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
+            And(oos_option_hell_logic(), oos_has_gale_seeds(), oos_has_satchel(), Or(oos_has_shovel(), Has("Spring Banana"))),
         ),
         (
             "rooster adventure",
             "goron mountain entrance",
             False,
-            oos_roosters("cucco mountain", 0, 0, 0),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
+            And(oos_option_hell_logic(), oos_roosters("cucco mountain", 0, 0, 0)),
         ),
         (
             "rooster adventure",
             "moblin keep",
             False,
-            Or(
-                And(oos_roosters("sunken", 1, 1, 0), oos_is_companion_ricky()),
-                And(
-                    oos_roosters("horon", 1, 1, 0),
-                    Or(oos_has_flute(), And(oos_is_companion_moosh(), oos_can_jump_3_wide_pit())),
-                ),
-            ),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
+            And(
+                oos_option_hell_logic(), Or(
+                    And(oos_roosters("sunken", 1, 1, 0), oos_is_companion_ricky()),
+                    And(
+                        oos_roosters("horon", 1, 1, 0),
+                        Or(oos_has_flute(), And(oos_is_companion_moosh(), oos_can_jump_3_wide_pit())),
+                    ),
+                ), )
         ),
         (
             "rooster adventure",
             "sunken city entrance",
             False,
-            oos_roosters("sunken", 0, 0, 0),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
+            And(oos_option_hell_logic(), oos_roosters("sunken", 0, 0, 0), )
         ),
         (
             "rooster adventure",
             "sunken city gasha spot",
             False,
-            And(oos_roosters("sunken", 1, 0, 1), oos_season_in_sunken_city(SEASON_WINTER)),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell
-            and options.deterministic_gasha_locations >= 1,
+            And(
+                oos_option_hell_logic(), oos_gasha_locations_enlabled(), And(oos_roosters("sunken", 1, 0, 1), oos_season_in_sunken_city(SEASON_WINTER)),
+            ),
         ),
         (
             "rooster adventure",
             "syrup trade",
             False,
-            And(oos_roosters("sunken", 1, 0, 1), Has("Mushroom")),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
+            And(oos_option_hell_logic(), oos_roosters("sunken", 1, 0, 1), Has("Mushroom")),
         ),
         (
             "rooster adventure",
             "suburbs",
             False,
-            oos_roosters("suburbs", 0, 0, 0),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
+            And(oos_option_hell_logic(), oos_roosters("suburbs", 0, 0, 0)),
         ),
         (
             "rooster adventure",
             "eastern suburbs spring cave",
             False,
             And(
+                oos_option_hell_logic(),
                 oos_roosters("suburbs", 1, 0, 1),
                 oos_season_in_eastern_suburbs(SEASON_SPRING),
                 Or(oos_has_magnet_gloves(), oos_can_jump_3_wide_pit()),
             ),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
         ),
         (
             "rooster adventure",
             "windmill heart piece",
             False,
-            oos_roosters("suburbs", 1, 1, 0),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
+            And(oos_option_hell_logic(), oos_roosters("suburbs", 1, 1, 0), )
         ),
         (
             "rooster adventure",
             "samasa desert chest",
             False,
             And(
+                oos_option_hell_logic(),
                 oos_roosters("suburbs", 1, 1, 0),
-                Has("_met_pirates"),
+                OoSCanReachRegion("subrosia pirates sector"),
             ),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
         ),
         (
             "rooster adventure",
             "moblin road",
             False,
-            oos_roosters("moblin road", 0, 0, 0),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
+            And(oos_option_hell_logic(), oos_roosters("moblin road", 0, 0, 0), )
         ),
         (
             "rooster adventure",
             "holly's house",
             False,
-            oos_roosters("moblin road", 1, 1, 0),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
+            And(oos_option_hell_logic(), oos_roosters("moblin road", 1, 1, 0), )
         ),
         (
             "rooster adventure",
             "horon heart piece",
             False,
-            oos_roosters("horon", 1, 1, 0),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
+            And(oos_option_hell_logic(), oos_roosters("horon", 1, 1, 0), )
         ),
         (
             "rooster adventure",
             "graveyard heart piece",
             False,
-            And(
+            And(oos_option_hell_logic(),
                 oos_roosters("horon", 1, 1, 0),
-                Has("_met_pirates"),
+                OoSCanReachRegion("subrosia pirates sector"),
                 Has("Pirate's Bell"),
                 oos_is_default_season("WESTERN_COAST", SEASON_SUMMER),
-            ),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
+                ),
         ),
         (
             "rooster adventure",
             "spool swamp north",
             False,
-            oos_roosters("swamp", 0, 0, 0),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
+            And(oos_option_hell_logic(), oos_roosters("swamp", 0, 0, 0), )
         ),
         (
             "rooster adventure",
             "lost woods deku",
             False,
             And(
+                oos_option_hell_logic(),
                 oos_roosters("swamp", 1, 1, 0),
                 oos_has_required_jewels(),
-                Or(oos_season_in_lost_woods(SEASON_SUMMER), CanReachRegion("lost woods top statue")),
+                Or(oos_season_in_lost_woods(SEASON_SUMMER), OoSCanReachRegion("lost woods top statue")),
             ),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
         ),
         (
             "rooster adventure",
             "spool swamp cave",
             False,
-            Or(
-                And(
-                    oos_can_swim(True),
-                    oos_roosters("horon", 0, 0, 0),
-                ),
-                And(
-                    # We can assume jump 3 holes here, coming from the north
-                    Has("Floodgate Key"),
-                    Or(
-                        oos_is_default_season("SPOOL_SWAMP", SEASON_SPRING, False), oos_can_remove_season(SEASON_SPRING)
+            And(
+                oos_option_hell_logic(),
+                Or(
+                    And(
+                        oos_can_swim(True),
+                        oos_roosters("horon", 0, 0, 0),
                     ),
-                    oos_roosters("swamp", 0, 0, 0),
-                ),
-            ),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
+                    And(
+                        # We can assume jump 3 holes here, coming from the north
+                        Has("Floodgate Key"),
+                        Or(
+                            oos_is_default_season("SPOOL_SWAMP", SEASON_SPRING, False), oos_can_remove_season(SEASON_SPRING)
+                        ),
+                        oos_roosters("swamp", 0, 0, 0),
+                    ),
+                ), )
         ),
         (
             "rooster adventure",
             "temple remains upper stump",
             False,
             And(
+                oos_option_hell_logic(),
                 oos_can_jump_3_wide_pit(),
                 oos_roosters("cucco mountain", 0, 0, 0),
                 Or(
@@ -2053,18 +2076,17 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                     And(oos_season_in_temple_remains(SEASON_SPRING), oos_can_break_flowers()),
                 ),
             ),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
         ),
         (
             "rooster adventure",
             "temple remains upper portal",
             False,
             And(
+                oos_option_hell_logic(),
                 Has("_triggered_volcano"),
                 oos_can_jump_3_wide_pit(),
                 oos_roosters("cucco mountain", 1, 1, 0),
                 Or(oos_has_magnet_gloves(), oos_can_jump_6_wide_pit()),
             ),
-            options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell,
         ),
     ]

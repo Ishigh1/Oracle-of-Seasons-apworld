@@ -1,4 +1,4 @@
-from rule_builder.rules import And, CanReachRegion, Has, Or, True_
+from rule_builder.rules import And, Has, Or, True_
 
 from ...options import (
     OracleOfSeasonsOptions,
@@ -31,6 +31,7 @@ from .logic_predicates import (
     oos_option_medium_logic,
     oos_self_locking_item,
 )
+from .rulebuilder import OoSCanReachRegion
 
 
 def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
@@ -43,8 +44,7 @@ def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
         ("great furnace portal", "subrosia furnace sector", True, True_()),
         ("volcanoes west portal", "subrosia volcano sector", True, True_()),
         ("d8 entrance portal", "d8 entrance", True, True_()),
-        # TODO when alt starting locations are implemented,
-        #  there probably needs to be a way to re-use this forced transition
+
         ("pirates after bell", "western coast after ship", False, True_()),
         # Regions ###############################################################
         ("subrosia temple sector", "subrosia market sector", False, oos_can_jump_1_wide_liquid(False)),
@@ -212,7 +212,7 @@ def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             "great furnace",
             False,
             And(
-                CanReachRegion("tower of autumn"),
+                OoSCanReachRegion("tower of autumn"),
                 Or(Has("Red Ore"), oos_self_locking_item("Subrosia: Item Smelted in Great Furnace", "Red Ore")),
                 Or(Has("Blue Ore"), oos_self_locking_item("Subrosia: Item Smelted in Great Furnace", "Blue Ore")),
             ),

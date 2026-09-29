@@ -2,7 +2,7 @@ import os
 from threading import Event
 from typing import Any, ClassVar, TextIO, cast
 
-from BaseClasses import CollectionState, Item, Location, MultiWorld
+from BaseClasses import CollectionState, Item, Location, MultiWorld, Region
 from Options import Option
 from rule_builder.rules import Has
 from worlds.AutoWorld import World
@@ -107,6 +107,8 @@ class OracleOfSeasonsWorld(World):
         self.item_hints: list[Item | None] = []
         self.num_prog: int = 1  # initialized at 1 so that before pre_fill, any prog counts as all the progs
 
+        self.region_replacement: dict[str, str] = {}
+
         self.inventory_locations: list[Location] | None = None
         self.nothing_items: list[Item] | None = None
 
@@ -116,20 +118,27 @@ class OracleOfSeasonsWorld(World):
         generate_early(self)
 
     def create_regions(self) -> None:
-        from .generation.create_regions import create_regions
+        from .generation.create_regions import create_locations
+        from .generation.logic import create_connections
 
-        create_regions(self)
+        create_connections(self, self.options)
+        create_locations(self)
+
+    def get_region(self, region_name: str) -> Region:
+        if region_name in self.region_replacement:
+            region_name = self.region_replacement[region_name]
+        return super().get_region(region_name)
 
     def set_rules(self) -> None:
         from .generation.logic import apply_rule_forbiddance, apply_self_locking_rules, create_connections
 
-        create_connections(self, self.options)
         apply_self_locking_rules(self)
         apply_rule_forbiddance(self)
         self.set_completion_rule(Has("_beaten_game"))
 
     def create_item(self, name: str) -> Item:
         from .generation.create_items import create_item
+
         return create_item(self, name)
 
     def create_items(self) -> None:
@@ -247,11 +256,7 @@ class OracleOfSeasonsWorld(World):
         slot_data = {
             "version": f"{self.version()}",
             "options": self.options.as_dict(
-                *[
-                    option_name
-                    for option_name in options
-                    if hasattr(options[option_name], "include_in_slot_data")
-                ]
+                *[option_name for option_name in options if hasattr(options[option_name], "include_in_slot_data")]
             ),
             # "samasa_gate_sequence": ' '.join([str(x) for x in self.samasa_gate_code]),
             "lost_woods_item_sequence": self.lost_woods_item_sequence,
