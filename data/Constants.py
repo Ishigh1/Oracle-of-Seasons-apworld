@@ -183,7 +183,6 @@ VANILLA_SHOP_PRICES = {
     "subrosianMarket3": 40,
     "subrosianMarket4": 50,
     "subrosianMarket5": 60,
-    "subrosianMarket": 180,
     "spoolSwampScrub": 100,
     "samasaCaveScrub": 100,
     "d2Scrub": 30,
