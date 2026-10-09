@@ -30,6 +30,7 @@ from .logic_predicates import (
     oos_option_hell_logic,
     oos_option_medium_logic,
     oos_self_locking_item,
+    oos_option_hard_logic,
 )
 
 
@@ -61,7 +62,12 @@ def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             Or(
                 oos_has_magnet_gloves(),
                 # As it is a "diagonal" pit, it is considered as a 3.5-wide pit
-                oos_can_jump_3_wide_liquid(allow_bombchus=True),
+                oos_can_jump_3_wide_liquid(),
+                And(
+                    # It's very tight, but a good jump clears the hole
+                    oos_option_hard_logic(), # Maybe upgrade to hell if too many complain
+                    oos_can_jump_2_wide_pit()
+                )
             ),
         ),
         (
