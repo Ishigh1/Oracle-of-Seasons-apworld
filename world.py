@@ -215,6 +215,7 @@ class OracleOfSeasonsWorld(World):
                 nothing_item.code = None
 
                 if inventory_item.advancement:
+                    inventory_item.location = None
                     self.multiworld.push_precollected(inventory_item)
                     new_filler = self.create_filler()
                     empty_location.item = new_filler
