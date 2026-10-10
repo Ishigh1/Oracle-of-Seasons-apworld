@@ -5,7 +5,7 @@ from ... import OracleOfSeasonsWorld
 from ...options import (
     OracleOfSeasonsOptions,
 )
-from ..regions import RegionNames
+from ..regions import RegionName
 from .boss_logic import CanBeatBoss
 from .logic_predicates import (
     oos_can_break_bush,
@@ -97,25 +97,25 @@ from .logic_predicates import (
 def make_d0_logic() -> list[LogicLine]:
     return [
         # 0 keys
-        (RegionNames.enter_d0, RegionNames.d0_key_chest, False, True_()),
+        (RegionName.enter_d0, RegionName.d0_key_chest, False, True_()),
         (
-            RegionNames.enter_d0,
-            RegionNames.d0_rupee_chest,
+            RegionName.enter_d0,
+            RegionName.d0_rupee_chest,
             False,
             # If hole is removed, stairs are added inside dungeon to make the chest reachable
             oos_option_no_d0_alt_entrance(),
         ),
-        (RegionNames.d0_rupee_chest, RegionNames.enter_d0, False, True_()),
+        (RegionName.d0_rupee_chest, RegionName.enter_d0, False, True_()),
         (
-            RegionNames.enter_d0,
-            RegionNames.d0_hidden_2d_section,
+            RegionName.enter_d0,
+            RegionName.d0_hidden_2d_section,
             False,
             Or(oos_can_kill_normal_enemy(), oos_has_boomerang(), oos_has_switch_hook()),
         ),
         # 1 key
         (
-            RegionNames.enter_d0,
-            RegionNames.d0_sword_chest,
+            RegionName.enter_d0,
+            RegionName.d0_sword_chest,
             False,
             Or(
                 oos_has_small_keys(0, 1),
@@ -130,8 +130,8 @@ def make_d1_logic() -> list[LogicLine]:
     return [
         # 0 keys
         (
-            "enter d1",
-            "d1 stalfos drop",
+            RegionName.enter_d1,
+            RegionName.d1_stalfos_drop,
             False,
             Or(
                 oos_can_kill_stalfos(),
@@ -142,34 +142,39 @@ def make_d1_logic() -> list[LogicLine]:
                 ),
             ),
         ),
-        ("enter d1", "d1 floormaster room", False, oos_can_use_ember_seeds(True)),
-        ("d1 floormaster room", "d1 boss", False, And(oos_has_boss_key(1), CanBeatBoss(1))),
+        (RegionName.enter_d1, RegionName.d1_floormaster_room, False, oos_can_use_ember_seeds(True)),
+        (RegionName.d1_floormaster_room, RegionName.d1_boss, False, And(oos_has_boss_key(1), CanBeatBoss(1))),
         # 1 key
-        ("enter d1", "d1 stalfos chest", False, And(oos_has_small_keys(1, 1), oos_can_kill_stalfos())),
         (
-            "d1 stalfos chest",
-            "d1 goriya chest",
+            RegionName.enter_d1,
+            RegionName.d1_stalfos_chest,
+            False,
+            And(oos_has_small_keys(1, 1), oos_can_kill_stalfos()),
+        ),
+        (
+            RegionName.d1_stalfos_chest,
+            RegionName.d1_goriya_chest,
             False,
             And(oos_can_use_ember_seeds(True), oos_can_kill_normal_enemy(True)),
         ),
-        ("d1 stalfos chest", "d1 lever room", False, True_()),
+        (RegionName.d1_stalfos_chest, RegionName.d1_lever_room, False, True_()),
         (
-            "d1 stalfos chest",
-            "d1 block-pushing room",
+            RegionName.d1_stalfos_chest,
+            RegionName.d1_block_pushing_room,
             False,
             Or(oos_can_kill_normal_enemy(), And(oos_option_hard_logic(), oos_has_bracelet())),
         ),
         (
-            "d1 stalfos chest",
-            "d1 railway chest",
+            RegionName.d1_stalfos_chest,
+            RegionName.d1_railway_chest,
             False,
             Or(oos_can_trigger_lever(), And(oos_option_hard_logic(), oos_has_bracelet())),
         ),
-        ("d1 railway chest", "d1 button chest", False, True_()),
+        (RegionName.d1_railway_chest, RegionName.d1_button_chest, False, True_()),
         # 2 keys
         (
-            "d1 railway chest",
-            "d1 basement",
+            RegionName.d1_railway_chest,
+            RegionName.d1_basement,
             False,
             Or(
                 oos_self_locking_small_key("Gnarled Root Dungeon: Item in Basement", 1),
@@ -183,24 +188,34 @@ def make_d2_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOptions) 
     return [
         # 0 keys
         (
-            "enter d2",
-            "d2 torch room",
+            RegionName.enter_d2,
+            RegionName.d2_torch_room,
             # Do not allow for turning back if the dungeon is excluded
             not options.exclude_dungeons_without_essence.value or "Gift of Time" in world.essences_in_game,
             True_(),
         ),
-        ("d2 torch room", "d2 left from entrance", False, True_()),
-        ("d2 torch room", "d2 rope drop", False, Or(oos_can_kill_normal_enemy(), oos_has_switch_hook())),
-        ("d2 torch room", "d2 arrow room", False, oos_can_use_ember_seeds(True)),
-        ("d2 arrow room", "d2 torch room", False, oos_can_kill_normal_enemy()),
-        ("d2 arrow room", "d2 rupee room", False, oos_can_remove_rockslide(False)),
-        ("d2 arrow room", "d2 rope chest", False, Or(oos_can_kill_normal_enemy(), oos_has_switch_hook())),
-        ("d2 arrow room", "d2 blade chest", False, oos_can_kill_normal_enemy()),
-        ("d2 blade chest", "d2 arrow room", False, True_()),  # Backwards path
-        ("d2 blade chest", "d2 alt entrances", True, oos_has_bracelet()),
+        (RegionName.d2_torch_room, RegionName.d2_left_from_entrance, False, True_()),
         (
-            "d2 blade chest",
-            "d2 roller chest",
+            RegionName.d2_torch_room,
+            RegionName.d2_rope_drop,
+            False,
+            Or(oos_can_kill_normal_enemy(), oos_has_switch_hook()),
+        ),
+        (RegionName.d2_torch_room, RegionName.d2_arrow_room, False, oos_can_use_ember_seeds(True)),
+        (RegionName.d2_arrow_room, RegionName.d2_torch_room, False, oos_can_kill_normal_enemy()),
+        (RegionName.d2_arrow_room, RegionName.d2_rupee_room, False, oos_can_remove_rockslide(False)),
+        (
+            RegionName.d2_arrow_room,
+            RegionName.d2_rope_chest,
+            False,
+            Or(oos_can_kill_normal_enemy(), oos_has_switch_hook()),
+        ),
+        (RegionName.d2_arrow_room, RegionName.d2_blade_chest, False, oos_can_kill_normal_enemy()),
+        (RegionName.d2_blade_chest, RegionName.d2_arrow_room, False, True_()),  # Backwards path
+        (RegionName.d2_blade_chest, RegionName.d2_alt_entrances, True, oos_has_bracelet()),
+        (
+            RegionName.d2_blade_chest,
+            RegionName.d2_roller_chest,
             False,
             And(
                 oos_can_remove_rockslide(False),
@@ -208,8 +223,8 @@ def make_d2_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOptions) 
             ),
         ),
         (
-            "d2 alt entrances",
-            "d2 spiral chest",
+            RegionName.d2_alt_entrances,
+            RegionName.d2_spiral_chest,
             False,
             And(
                 oos_can_break_bush(False, True),
@@ -225,17 +240,22 @@ def make_d2_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOptions) 
             ),
         ),
         (
-            "d2 alt entrances",
-            "d2 scrub",
+            RegionName.d2_alt_entrances,
+            RegionName.d2_scrub,
             False,
             oos_has_rupees_for_shop("d2Scrub"),
             bool(options.shuffle_business_scrubs),
         ),
         # 2 keys
-        ("d2 roller chest", "d2 spinner", False, And(oos_has_small_keys(2, 2), oos_can_kill_facade())),
         (
-            "d2 spinner",
-            "d2 wild bombs",
+            RegionName.d2_roller_chest,
+            RegionName.d2_spinner,
+            False,
+            And(oos_has_small_keys(2, 2), oos_can_kill_facade()),
+        ),
+        (
+            RegionName.d2_spinner,
+            RegionName.d2_wild_bombs,
             False,
             And(
                 Or(
@@ -250,20 +270,20 @@ def make_d2_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOptions) 
         ),
         # You can take the Facade miniboss teleporter to reach dungeon entrance, even if you entered the dungeon
         # through the alt-entrance
-        ("d2 spinner", "d2 torch room", False, True_()),
-        ("d2 spinner", "dodongo owl", False, oos_can_use_mystery_seeds()),
+        (RegionName.d2_spinner, RegionName.d2_torch_room, False, True_()),
+        (RegionName.d2_spinner, RegionName.dodongo_owl, False, oos_can_use_mystery_seeds()),
         (
-            "d2 spinner",
-            "d2 boss",
+            RegionName.d2_spinner,
+            RegionName.d2_boss,
             False,
             And(Or(oos_can_remove_rockslide(False), oos_has_small_keys(2, 3)), oos_has_boss_key(2), CanBeatBoss(2)),
         ),
         # 3 keys
-        ("d2 arrow room", "d2 hardhat room", False, oos_has_small_keys(2, 3)),
-        ("d2 hardhat room", "d2 pot chest", False, oos_can_break_pot()),
+        (RegionName.d2_arrow_room, RegionName.d2_hardhat_room, False, oos_has_small_keys(2, 3)),
+        (RegionName.d2_hardhat_room, RegionName.d2_pot_chest, False, oos_can_break_pot()),
         (
-            "d2 hardhat room",
-            "d2 moblin chest",
+            RegionName.d2_hardhat_room,
+            RegionName.d2_moblin_chest,
             False,
             And(
                 oos_can_kill_d2_hardhat(),
@@ -274,18 +294,23 @@ def make_d2_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOptions) 
                 ),
             ),
         ),
-        ("d2 hardhat room", "d2 wild bombs", False, And(oos_can_kill_d2_hardhat(), oos_can_harvest_regrowing_bush())),
-        ("d2 spinner", "d2 terrace chest", False, oos_has_small_keys(2, 3)),
+        (
+            RegionName.d2_hardhat_room,
+            RegionName.d2_wild_bombs,
+            False,
+            And(oos_can_kill_d2_hardhat(), oos_can_harvest_regrowing_bush()),
+        ),
+        (RegionName.d2_spinner, RegionName.d2_terrace_chest, False, oos_has_small_keys(2, 3)),
     ]
 
 
 def make_d3_logic() -> list[LogicLine]:
     return [
         # 0 keys
-        ("enter d3", "spiked beetles owl", False, oos_can_use_mystery_seeds()),
+        (RegionName.enter_d3, RegionName.spiked_beetles_owl, False, oos_can_use_mystery_seeds()),
         (
-            "enter d3",
-            "d3 center",
+            RegionName.enter_d3,
+            RegionName.d3_center,
             False,
             Or(
                 oos_can_kill_spiked_beetle(),
@@ -298,21 +323,26 @@ def make_d3_logic() -> list[LogicLine]:
                 And(oos_option_medium_logic(), oos_can_flip_spiked_beetle(), oos_has_bracelet()),
             ),
         ),
-        ("d3 center", "d3 water room", False, oos_has_feather()),
-        ("d3 center", "d3 mimic stairs", False, Or(oos_has_bracelet(), And(oos_can_break_pot(), oos_has_cane()))),
-        ("d3 center", "trampoline owl", False, And(oos_has_feather(), oos_can_use_mystery_seeds())),
-        ("d3 center", "d3 trampoline chest", False, oos_has_feather()),
-        ("d3 center", "d3 zol chest", False, oos_has_feather()),
-        ("d3 mimic stairs", "d3 water room", True, True_()),
-        ("d3 mimic stairs", "d3 roller chest", False, oos_has_bracelet()),
-        ("d3 mimic stairs", "d3 quicksand terrace", False, oos_has_feather()),
-        ("d3 quicksand terrace", "omuai owl", False, And(oos_can_use_mystery_seeds())),
-        ("d3 mimic stairs", "d3 moldorm chest", False, oos_can_kill_moldorm()),
-        ("d3 mimic stairs", "d3 bombed wall chest", False, oos_can_remove_rockslide(False)),
+        (RegionName.d3_center, RegionName.d3_water_room, False, oos_has_feather()),
+        (
+            RegionName.d3_center,
+            RegionName.d3_mimic_stairs,
+            False,
+            Or(oos_has_bracelet(), And(oos_can_break_pot(), oos_has_cane())),
+        ),
+        (RegionName.d3_center, RegionName.trampoline_owl, False, And(oos_has_feather(), oos_can_use_mystery_seeds())),
+        (RegionName.d3_center, RegionName.d3_trampoline_chest, False, oos_has_feather()),
+        (RegionName.d3_center, RegionName.d3_zol_chest, False, oos_has_feather()),
+        (RegionName.d3_mimic_stairs, RegionName.d3_water_room, True, True_()),
+        (RegionName.d3_mimic_stairs, RegionName.d3_roller_chest, False, oos_has_bracelet()),
+        (RegionName.d3_mimic_stairs, RegionName.d3_quicksand_terrace, False, oos_has_feather()),
+        (RegionName.d3_quicksand_terrace, RegionName.omuai_owl, False, And(oos_can_use_mystery_seeds())),
+        (RegionName.d3_mimic_stairs, RegionName.d3_moldorm_chest, False, oos_can_kill_moldorm()),
+        (RegionName.d3_mimic_stairs, RegionName.d3_bombed_wall_chest, False, oos_can_remove_rockslide(False)),
         # 2 keys
         (
-            "d3 water room",
-            "d3 mimic chest",
+            RegionName.d3_water_room,
+            RegionName.d3_mimic_chest,
             False,
             And(
                 Or(
@@ -323,8 +353,8 @@ def make_d3_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "d3 mimic stairs",
-            "d3 omuai stairs",
+            RegionName.d3_mimic_stairs,
+            RegionName.d3_omuai_stairs,
             False,
             And(
                 Or(
@@ -338,11 +368,16 @@ def make_d3_logic() -> list[LogicLine]:
                 oos_can_kill_armored_enemy(False, False),
             ),
         ),
-        ("d3 omuai stairs", "d3 quicksand terrace", False, True_()),
-        ("d3 omuai stairs", "d3 giant blade room", False, Or(oos_has_feather(), oos_option_hard_logic())),
+        (RegionName.d3_omuai_stairs, RegionName.d3_quicksand_terrace, False, True_()),
         (
-            "d3 omuai stairs",
-            "d3 boss",
+            RegionName.d3_omuai_stairs,
+            RegionName.d3_giant_blade_room,
+            False,
+            Or(oos_has_feather(), oos_option_hard_logic()),
+        ),
+        (
+            RegionName.d3_omuai_stairs,
+            RegionName.d3_boss,
             False,
             And(oos_has_boss_key(3), Or(oos_has_feather(), oos_option_medium_logic()), CanBeatBoss(3)),
         ),
@@ -352,19 +387,24 @@ def make_d3_logic() -> list[LogicLine]:
 def make_d4_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
     return [
         # 0 keys
-        ("enter d4", "d4 north of entrance", False, Or(oos_has_flippers(), oos_has_cape())),
-        ("d4 north of entrance", "d4 pot puzzle", False, And(oos_can_remove_rockslide(False), oos_has_bracelet())),
+        (RegionName.enter_d4, RegionName.d4_north_of_entrance, False, Or(oos_has_flippers(), oos_has_cape())),
         (
-            "d4 north of entrance",
-            "d4 maze chest",
+            RegionName.d4_north_of_entrance,
+            RegionName.d4_pot_puzzle,
+            False,
+            And(oos_can_remove_rockslide(False), oos_has_bracelet()),
+        ),
+        (
+            RegionName.d4_north_of_entrance,
+            RegionName.d4_maze_chest,
             False,
             Or(oos_can_trigger_lever_from_minecart(), And(oos_option_hard_logic(), oos_has_bracelet())),
         ),
-        ("d4 maze chest", "d4 dark room", False, oos_has_feather()),
+        (RegionName.d4_maze_chest, RegionName.d4_dark_room, False, oos_has_feather()),
         # 1 key
         (
-            "enter d4",
-            "d4 water ring room",
+            RegionName.enter_d4,
+            RegionName.d4_water_ring_room,
             False,
             And(
                 oos_has_small_keys(4, 1),
@@ -390,8 +430,8 @@ def make_d4_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             ),
         ),
         (
-            "enter d4",
-            "d4 roller minecart",
+            RegionName.enter_d4,
+            RegionName.d4_roller_minecart,
             False,
             And(
                 oos_has_small_keys(4, 1),
@@ -408,8 +448,8 @@ def make_d4_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             ),
         ),
         (
-            "d4 roller minecart",
-            "d4 pool",
+            RegionName.d4_roller_minecart,
+            RegionName.d4_pool,
             False,
             And(
                 Or(oos_has_flippers(), oos_option_medium_logic()),
@@ -423,14 +463,14 @@ def make_d4_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
         ),
         # 2 keys
         (
-            "d4 roller minecart",
-            "greater distance owl",
+            RegionName.d4_roller_minecart,
+            RegionName.greater_distance_owl,
             False,
             And(oos_has_small_keys(4, 2), oos_can_use_mystery_seeds()),
         ),
         (
-            "d4 roller minecart",
-            "d4 stalfos stairs",
+            RegionName.d4_roller_minecart,
+            RegionName.d4_stalfos_stairs,
             False,
             And(
                 oos_has_small_keys(4, 2),
@@ -445,21 +485,32 @@ def make_d4_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
                 oos_can_jump_2_wide_pit(),
             ),
         ),
-        ("d4 stalfos stairs", "d4 terrace", False, True_()),
-        ("d4 terrace", "d4 scrub", False, oos_has_rupees_for_shop("d4Scrub"), bool(options.shuffle_business_scrubs)),
-        ("d4 stalfos stairs", "d4 torch chest", False, And(oos_has_seed_thrower(), oos_has_ember_seeds())),
-        ("d4 stalfos stairs", "d4 miniboss room", False, True_()),
-        ("d4 miniboss room", "d4 miniboss room wild embers", False, oos_can_harvest_regrowing_bush()),
+        (RegionName.d4_stalfos_stairs, RegionName.d4_terrace, False, True_()),
         (
-            "d4 miniboss room",
-            "d4 final minecart",
+            RegionName.d4_terrace,
+            RegionName.d4_scrub,
+            False,
+            oos_has_rupees_for_shop("d4Scrub"),
+            bool(options.shuffle_business_scrubs),
+        ),
+        (
+            RegionName.d4_stalfos_stairs,
+            RegionName.d4_torch_chest,
+            False,
+            And(oos_has_seed_thrower(), oos_has_ember_seeds()),
+        ),
+        (RegionName.d4_stalfos_stairs, RegionName.d4_miniboss_room, False, True_()),
+        (RegionName.d4_miniboss_room, RegionName.d4_miniboss_room_wild_embers, False, oos_can_harvest_regrowing_bush()),
+        (
+            RegionName.d4_miniboss_room,
+            RegionName.d4_final_minecart,
             False,
             And(oos_can_use_ember_seeds(False), oos_can_kill_armored_enemy(False, False)),
         ),
         # 5 keys
         (
-            "d4 final minecart",
-            "d4 cracked floor room",
+            RegionName.d4_final_minecart,
+            RegionName.d4_cracked_floor_room,
             False,
             Or(
                 oos_has_small_keys(4, 5),
@@ -467,8 +518,8 @@ def make_d4_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             ),
         ),
         (
-            "d4 final minecart",
-            "d4 dive spot",
+            RegionName.d4_final_minecart,
+            RegionName.d4_dive_spot,
             False,
             And(
                 Or(
@@ -488,18 +539,18 @@ def make_d4_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             ),
         ),
         (
-            "d4 final minecart",
-            "d4 basement stairs",
+            RegionName.d4_final_minecart,
+            RegionName.d4_basement_stairs,
             False,
             And(
                 oos_has_small_keys(4, 5),
                 Or(oos_has_boomerang(), oos_has_seed_thrower(), oos_has_switch_hook(), oos_option_hard_logic()),
             ),
         ),
-        ("d4 basement stairs", "gohma owl", False, oos_can_use_mystery_seeds()),
+        (RegionName.d4_basement_stairs, RegionName.gohma_owl, False, oos_can_use_mystery_seeds()),
         (
-            "d4 basement stairs",
-            "enter gohma",
+            RegionName.d4_basement_stairs,
+            RegionName.enter_gohma,
             False,
             And(
                 oos_has_boss_key(4),
@@ -512,7 +563,7 @@ def make_d4_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
                 ),
             ),
         ),
-        ("enter gohma", "d4 boss", False, CanBeatBoss(4)),
+        (RegionName.enter_gohma, RegionName.d4_boss, False, CanBeatBoss(4)),
     ]
 
 
@@ -520,8 +571,8 @@ def make_d5_logic() -> list[LogicLine]:
     return [
         # 0 keys
         (
-            "enter d5",
-            "d5 left chest",
+            RegionName.enter_d5,
+            RegionName.d5_left_chest,
             False,
             Or(
                 oos_has_magnet_gloves(),
@@ -533,24 +584,39 @@ def make_d5_logic() -> list[LogicLine]:
                 ),
             ),
         ),
-        ("enter d5", "d5 spiral chest", False, And(oos_can_kill_moldorm(True), oos_can_kill_normal_enemy(True))),
-        ("enter d5", "d5 terrace chest", False, oos_has_magnet_gloves()),
-        ("d5 terrace chest", "armos knights owl", False, oos_can_use_mystery_seeds()),
-        ("d5 terrace chest", "d5 armos chest", False, And(oos_can_kill_moldorm(), oos_can_kill_normal_enemy())),
-        ("enter d5", "d5 cart bay", False, Or(oos_has_flippers(), oos_can_jump_2_wide_liquid(allow_bombchus=True))),
         (
-            "d5 cart bay",
-            "d5 terrace chest",
+            RegionName.enter_d5,
+            RegionName.d5_spiral_chest,
+            False,
+            And(oos_can_kill_moldorm(True), oos_can_kill_normal_enemy(True)),
+        ),
+        (RegionName.enter_d5, RegionName.d5_terrace_chest, False, oos_has_magnet_gloves()),
+        (RegionName.d5_terrace_chest, RegionName.armos_knights_owl, False, oos_can_use_mystery_seeds()),
+        (
+            RegionName.d5_terrace_chest,
+            RegionName.d5_armos_chest,
+            False,
+            And(oos_can_kill_moldorm(), oos_can_kill_normal_enemy()),
+        ),
+        (
+            RegionName.enter_d5,
+            RegionName.d5_cart_bay,
+            False,
+            Or(oos_has_flippers(), oos_can_jump_2_wide_liquid(allow_bombchus=True)),
+        ),
+        (
+            RegionName.d5_cart_bay,
+            RegionName.d5_terrace_chest,
             False,
             And(
                 oos_has_feather(),
                 oos_can_remove_rockslide(False),  # Bombchus can be thrown from the middle platform
             ),
         ),
-        ("d5 cart bay", "d5 cart chest", False, oos_can_trigger_lever_from_minecart()),
+        (RegionName.d5_cart_bay, RegionName.d5_cart_chest, False, oos_can_trigger_lever_from_minecart()),
         (
-            "d5 cart bay",
-            "d5 spinner chest",
+            RegionName.d5_cart_bay,
+            RegionName.d5_spinner_chest,
             False,
             Or(
                 oos_has_magnet_gloves(),
@@ -569,8 +635,8 @@ def make_d5_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "d5 cart bay",
-            "d5 drop ball",
+            RegionName.d5_cart_bay,
+            RegionName.d5_drop_ball,
             False,
             And(
                 oos_can_trigger_lever_from_minecart(),
@@ -587,21 +653,21 @@ def make_d5_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "enter d5",
-            "d5 pot room",
+            RegionName.enter_d5,
+            RegionName.d5_pot_room,
             False,
             And(oos_has_magnet_gloves(), oos_can_remove_rockslide(False), oos_has_feather()),
         ),
         (
-            "d5 cart bay",
-            "d5 pot room",
+            RegionName.d5_cart_bay,
+            RegionName.d5_pot_room,
             False,
             Or(oos_has_feather(), And(oos_option_hard_logic(), oos_can_use_pegasus_seeds())),
         ),
-        ("d5 pot room", "d5 gibdo/zol chest", False, oos_can_kill_normal_enemy()),
+        (RegionName.d5_pot_room, RegionName.d5_gibdo_zol_chest, False, oos_can_kill_normal_enemy()),
         (
-            "d5 cart bay",
-            "d5 syger lobby",
+            RegionName.d5_cart_bay,
+            RegionName.d5_syger_lobby,
             False,
             Or(
                 oos_has_magnet_gloves(),
@@ -609,19 +675,19 @@ def make_d5_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "d5 pot room",
-            "d5 syger lobby",
+            RegionName.d5_pot_room,
+            RegionName.d5_syger_lobby,
             False,
             Or(
                 oos_has_magnet_gloves(),
                 oos_has_cape(),
             ),
         ),
-        ("d5 syger lobby", "d5 stalfos room", False, True_()),
+        (RegionName.d5_syger_lobby, RegionName.d5_stalfos_room, False, True_()),
         # 5 keys
         (
-            "d5 syger lobby",
-            "d5 post syger",
+            RegionName.d5_syger_lobby,
+            RegionName.d5_post_syger,
             False,
             And(
                 oos_has_small_keys(5, 3),
@@ -630,26 +696,26 @@ def make_d5_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "enter d5",
-            "d5 magnet ball chest",
+            RegionName.enter_d5,
+            RegionName.d5_magnet_ball_chest,
             False,
             oos_self_locking_small_key("Unicorn's Cave: Magnet Gloves Chest", 5),
         ),
         (
-            "enter d5",
-            "d5 basement",
+            RegionName.enter_d5,
+            RegionName.d5_basement,
             False,
             And(
                 oos_self_locking_small_key("Unicorn's Cave: Treadmills Basement Item", 5),
-                CanReachRegion("d5 drop ball"),
+                CanReachRegion(RegionName.d5_drop_ball),
                 oos_has_small_keys(5, 3),
                 oos_has_magnet_gloves(),
                 Or(oos_can_kill_magunesu(), And(oos_option_medium_logic(), oos_has_feather())),
             ),
         ),
         (
-            "d5 pot room",
-            "d5 magnet ball chest",
+            RegionName.d5_pot_room,
+            RegionName.d5_magnet_ball_chest,
             False,
             And(
                 Or(
@@ -668,15 +734,15 @@ def make_d5_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "d5 post syger",
-            "d5 basement",
+            RegionName.d5_post_syger,
+            RegionName.d5_basement,
             False,
             And(
                 Or(oos_has_small_keys(5, 5), oos_self_locking_small_key("Unicorn's Cave: Treadmills Basement Item", 5)),
                 # Magnet ball button
                 Or(
                     And(
-                        CanReachRegion("d5 drop ball"),
+                        CanReachRegion(RegionName.d5_drop_ball),
                         oos_has_magnet_gloves(),
                     ),
                     oos_has_cane(),
@@ -694,8 +760,8 @@ def make_d5_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "d5 post syger",
-            "d5 boss",
+            RegionName.d5_post_syger,
+            RegionName.d5_boss,
             False,
             And(
                 oos_has_small_keys(5, 5),
@@ -726,8 +792,8 @@ def make_d6_logic() -> list[LogicLine]:
     return [
         # 0 keys
         (
-            "enter d6",
-            "d6 1F east",
+            RegionName.enter_d6,
+            RegionName.d6_1F_east,
             False,
             Or(
                 # In room 4b3:
@@ -741,17 +807,17 @@ def make_d6_logic() -> list[LogicLine]:
                 oos_option_hard_logic(),
             ),
         ),
-        ("d6 1F east", "d6 rupee room", False, oos_can_remove_rockslide(False)),
-        ("d6 1F east", "d6 1F terrace", False, True_()),
+        (RegionName.d6_1F_east, RegionName.d6_rupee_room, False, oos_can_remove_rockslide(False)),
+        (RegionName.d6_1F_east, RegionName.d6_1F_terrace, False, True_()),
         (
-            "enter d6",
-            "d6 1F terrace",
+            RegionName.enter_d6,
+            RegionName.d6_1F_terrace,
             False,
             And(oos_has_small_keys(6, 2), Or(oos_has_magnet_gloves(), oos_has_cane())),
         ),
         (
-            "d6 1F terrace",
-            "d6 magnet ball drop",
+            RegionName.d6_1F_terrace,
+            RegionName.d6_magnet_ball_drop,
             False,
             Or(
                 And(oos_has_feather(), oos_has_magnet_gloves()),
@@ -763,10 +829,10 @@ def make_d6_logic() -> list[LogicLine]:
                 ),
             ),
         ),
-        ("d6 1F terrace", "d6 crystal trap room", False, True_()),
+        (RegionName.d6_1F_terrace, RegionName.d6_crystal_trap_room, False, True_()),
         (
-            "d6 1F terrace",
-            "d6 U-room",
+            RegionName.d6_1F_terrace,
+            RegionName.d6_U_room,
             False,
             And(
                 oos_can_break_crystal(),
@@ -790,8 +856,8 @@ def make_d6_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "d6 U-room",
-            "d6 torch stairs",
+            RegionName.d6_U_room,
+            RegionName.d6_torch_stairs,
             False,
             And(
                 Or(
@@ -803,16 +869,16 @@ def make_d6_logic() -> list[LogicLine]:
                 oos_can_use_ember_seeds(False),
             ),
         ),
-        ("d6 torch stairs", "d6 escape room", False, oos_has_feather()),
-        ("d6 escape room", "d6 vire chest", False, oos_can_kill_stalfos()),
+        (RegionName.d6_torch_stairs, RegionName.d6_escape_room, False, oos_has_feather()),
+        (RegionName.d6_escape_room, RegionName.d6_vire_chest, False, oos_can_kill_stalfos()),
         # 3 keys
-        ("enter d6", "d6 beamos room", False, oos_has_small_keys(6, 3)),
-        ("d6 beamos room", "d6 2F gibdo chest", False, True_()),
-        ("d6 beamos room", "d6 2F armos chest", False, oos_can_remove_rockslide(False)),
-        ("d6 2F armos chest", "d6 armos hall", False, oos_has_feather()),
+        (RegionName.enter_d6, RegionName.d6_beamos_room, False, oos_has_small_keys(6, 3)),
+        (RegionName.d6_beamos_room, RegionName.d6_2F_gibdo_chest, False, True_()),
+        (RegionName.d6_beamos_room, RegionName.d6_2F_armos_chest, False, oos_can_remove_rockslide(False)),
+        (RegionName.d6_2F_armos_chest, RegionName.d6_armos_hall, False, oos_has_feather()),
         (
-            "enter d6",
-            "d6 spinner north",
+            RegionName.enter_d6,
+            RegionName.d6_spinner_north,
             False,
             And(
                 oos_can_break_crystal(),
@@ -847,14 +913,14 @@ def make_d6_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "d6 vire chest",
-            "d6 enter vire",
+            RegionName.d6_vire_chest,
+            RegionName.d6_enter_vire,
             False,
             And(oos_has_small_keys(6, 3), oos_can_kill_vire()),
         ),
         (
-            "d6 enter vire",
-            "d6 pre-boss room",
+            RegionName.d6_enter_vire,
+            RegionName.d6_pre_boss_room,
             False,
             And(
                 Or(
@@ -884,8 +950,8 @@ def make_d6_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "d6 pre-boss room",
-            "d6 boss",
+            RegionName.d6_pre_boss_room,
+            RegionName.d6_boss,
             False,
             And(oos_has_boss_key(6), CanBeatBoss(6)),
         ),
@@ -895,20 +961,20 @@ def make_d6_logic() -> list[LogicLine]:
 def make_d7_logic() -> list[LogicLine]:
     return [
         # 0 keys
-        ("enter d7", "poe curse owl", False, oos_can_use_mystery_seeds()),
-        ("enter d7", "d7 wizzrobe chest", False, oos_can_kill_normal_enemy_no_cane()),
-        ("enter d7", "d7 bombed wall chest", False, oos_can_remove_rockslide(False)),
-        ("enter d7", "d7 entrance wild embers", False, oos_can_harvest_regrowing_bush()),
+        (RegionName.enter_d7, RegionName.poe_curse_owl, False, oos_can_use_mystery_seeds()),
+        (RegionName.enter_d7, RegionName.d7_wizzrobe_chest, False, oos_can_kill_normal_enemy_no_cane()),
+        (RegionName.enter_d7, RegionName.d7_bombed_wall_chest, False, oos_can_remove_rockslide(False)),
+        (RegionName.enter_d7, RegionName.d7_entrance_wild_embers, False, oos_can_harvest_regrowing_bush()),
         # 1 key
         (
-            "enter d7",
-            "enter poe A",
+            RegionName.enter_d7,
+            RegionName.enter_poe_A,
             False,
             And(oos_has_small_keys(7, 1), oos_has_seed_thrower(), oos_can_use_ember_seeds(True)),
         ),
         (
-            "enter poe A",
-            "d7 pot room",
+            RegionName.enter_poe_A,
+            RegionName.d7_pot_room,
             False,
             And(
                 Or(
@@ -929,8 +995,8 @@ def make_d7_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "enter d7",
-            "d7 pot room",
+            RegionName.enter_d7,
+            RegionName.d7_pot_room,
             False,
             And(
                 # Poe skip
@@ -941,12 +1007,17 @@ def make_d7_logic() -> list[LogicLine]:
                 oos_has_bracelet(),
             ),
         ),
-        ("d7 pot room", "d7 zol button", False, oos_has_feather()),
-        ("d7 pot room", "d7 armos puzzle", False, Or(oos_can_jump_3_wide_pit(), oos_has_magnet_gloves())),
-        ("d7 pot room", "d7 magunesu chest", False, oos_has_cane()),
+        (RegionName.d7_pot_room, RegionName.d7_zol_button, False, oos_has_feather()),
         (
-            "d7 armos puzzle",
-            "d7 magunesu chest",
+            RegionName.d7_pot_room,
+            RegionName.d7_armos_puzzle,
+            False,
+            Or(oos_can_jump_3_wide_pit(), oos_has_magnet_gloves()),
+        ),
+        (RegionName.d7_pot_room, RegionName.d7_magunesu_chest, False, oos_has_cane()),
+        (
+            RegionName.d7_armos_puzzle,
+            RegionName.d7_magunesu_chest,
             False,
             And(
                 oos_can_kill_magunesu(),
@@ -962,10 +1033,15 @@ def make_d7_logic() -> list[LogicLine]:
             ),
         ),
         # 2 keys
-        ("d7 pot room", "d7 quicksand chest", False, And(oos_has_small_keys(7, 2), oos_has_feather())),
         (
-            "d7 pot room",
-            "d7 water stairs",
+            RegionName.d7_pot_room,
+            RegionName.d7_quicksand_chest,
+            False,
+            And(oos_has_small_keys(7, 2), oos_has_feather()),
+        ),
+        (
+            RegionName.d7_pot_room,
+            RegionName.d7_water_stairs,
             False,
             And(
                 # poe skip 2 : https://youtu.be/MIMm6q_yGyQ
@@ -980,8 +1056,8 @@ def make_d7_logic() -> list[LogicLine]:
         ),
         # 3 keys
         (
-            "d7 pot room",
-            "enter poe B",
+            RegionName.d7_pot_room,
+            RegionName.enter_poe_B,
             False,
             And(
                 oos_has_small_keys(7, 3),
@@ -993,10 +1069,15 @@ def make_d7_logic() -> list[LogicLine]:
                 ),
             ),
         ),
-        ("enter poe B", "d7 water stairs", False, And(oos_has_flippers(), oos_has_hearts_by_difficulty(5, 3))),
         (
-            "d7 water stairs",
-            "d7 darknut bridge trampolines",
+            RegionName.enter_poe_B,
+            RegionName.d7_water_stairs,
+            False,
+            And(oos_has_flippers(), oos_has_hearts_by_difficulty(5, 3)),
+        ),
+        (
+            RegionName.d7_water_stairs,
+            RegionName.d7_darknut_bridge_trampolines,
             False,
             Or(
                 And(
@@ -1008,8 +1089,8 @@ def make_d7_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "d7 water stairs",
-            "d7 past darknut bridge",
+            RegionName.d7_water_stairs,
+            RegionName.d7_past_darknut_bridge,
             False,
             Or(
                 # Just jump to the other side directly
@@ -1030,8 +1111,8 @@ def make_d7_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "d7 past darknut bridge",
-            "d7 darknut bridge trampolines",
+            RegionName.d7_past_darknut_bridge,
+            RegionName.d7_darknut_bridge_trampolines,
             False,
             Or(
                 # Reach trampolines directly
@@ -1051,11 +1132,11 @@ def make_d7_logic() -> list[LogicLine]:
                 ),
             ),
         ),
-        ("d7 darknut bridge trampolines", "d7 spike chest", False, oos_can_kill_stalfos()),
+        (RegionName.d7_darknut_bridge_trampolines, RegionName.d7_spike_chest, False, oos_can_kill_stalfos()),
         # 4 keys
         (
-            "d7 water stairs",
-            "d7 maze chest",
+            RegionName.d7_water_stairs,
+            RegionName.d7_maze_chest,
             False,
             And(
                 oos_has_small_keys(7, 4),
@@ -1092,8 +1173,8 @@ def make_d7_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "d7 maze chest",
-            "d7 B2F drop",
+            RegionName.d7_maze_chest,
+            RegionName.d7_B2F_drop,
             False,
             Or(
                 oos_has_magnet_gloves(),
@@ -1107,8 +1188,8 @@ def make_d7_logic() -> list[LogicLine]:
         ),
         # 5 keys
         (
-            "enter d7",
-            "d7 stalfos chest",
+            RegionName.enter_d7,
+            RegionName.d7_stalfos_chest,
             False,
             And(
                 oos_has_small_keys(7, 4),
@@ -1118,8 +1199,8 @@ def make_d7_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "d7 maze chest",
-            "d7 stalfos chest",
+            RegionName.d7_maze_chest,
+            RegionName.d7_stalfos_chest,
             False,
             And(
                 oos_has_small_keys(7, 5),
@@ -1127,10 +1208,10 @@ def make_d7_logic() -> list[LogicLine]:
                 oos_can_kill_stalfos(),
             ),
         ),
-        ("d7 stalfos chest", "shining blue owl", False, oos_can_use_mystery_seeds()),
+        (RegionName.d7_stalfos_chest, RegionName.shining_blue_owl, False, oos_can_use_mystery_seeds()),
         (
-            "enter d7",
-            "d7 right of entrance",
+            RegionName.enter_d7,
+            RegionName.d7_right_of_entrance,
             False,
             And(
                 oos_can_kill_normal_enemy(),
@@ -1144,8 +1225,8 @@ def make_d7_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "d7 maze chest",
-            "d7 boss",
+            RegionName.d7_maze_chest,
+            RegionName.d7_boss,
             False,
             And(oos_has_boss_key(7), CanBeatBoss(7)),
         ),
@@ -1156,8 +1237,8 @@ def make_d8_logic() -> list[LogicLine]:
     return [
         # 0 keys
         (
-            "enter d8",
-            "d8 eye drop",
+            RegionName.enter_d8,
+            RegionName.d8_eye_drop,
             False,
             And(
                 oos_can_break_pot(),
@@ -1176,8 +1257,8 @@ def make_d8_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "enter d8",
-            "d8 three eyes chest",
+            RegionName.enter_d8,
+            RegionName.d8_three_eyes_chest,
             False,
             And(
                 oos_has_feather(),
@@ -1217,10 +1298,10 @@ def make_d8_logic() -> list[LogicLine]:
                 ),
             ),
         ),
-        ("enter d8", "d8 hardhat room", False, oos_can_kill_magunesu()),
+        (RegionName.enter_d8, RegionName.d8_hardhat_room, False, oos_can_kill_magunesu()),
         (
-            "d8 hardhat room",
-            "d8 hardhat drop",
+            RegionName.d8_hardhat_room,
+            RegionName.d8_hardhat_drop,
             False,
             Or(
                 And(
@@ -1234,8 +1315,8 @@ def make_d8_logic() -> list[LogicLine]:
         ),
         # 1 key
         (
-            "d8 hardhat room",
-            "d8 spike room",
+            RegionName.d8_hardhat_room,
+            RegionName.d8_spike_room,
             False,
             And(
                 oos_has_hearts_by_difficulty(6, 5, 3),
@@ -1249,12 +1330,12 @@ def make_d8_logic() -> list[LogicLine]:
             ),
         ),
         # 2 keys
-        ("d8 spike room", "d8 spinner", False, oos_has_small_keys(8, 2)),
-        ("d8 spinner", "silent watch owl", False, oos_can_use_mystery_seeds()),
-        ("d8 spinner", "d8 magnet ball room", False, True_()),
+        (RegionName.d8_spike_room, RegionName.d8_spinner, False, oos_has_small_keys(8, 2)),
+        (RegionName.d8_spinner, RegionName.silent_watch_owl, False, oos_can_use_mystery_seeds()),
+        (RegionName.d8_spinner, RegionName.d8_magnet_ball_room, False, True_()),
         (
-            "d8 spinner",
-            "d8 armos chest",
+            RegionName.d8_spinner,
+            RegionName.d8_armos_chest,
             False,
             Or(
                 oos_has_magnet_gloves(),
@@ -1270,15 +1351,15 @@ def make_d8_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "d8 spinner",
-            "d8 spinner chest",
+            RegionName.d8_spinner,
+            RegionName.d8_spinner_chest,
             False,
             oos_has_magnet_gloves(),
             # Jump 2 liquid also, but this is covered earlier
         ),
         (
-            "d8 spinner",
-            "frypolar entrance",
+            RegionName.d8_spinner,
+            RegionName.frypolar_entrance,
             False,
             Or(
                 oos_has_magnet_gloves(),
@@ -1290,10 +1371,10 @@ def make_d8_logic() -> list[LogicLine]:
                 ),
             ),
         ),
-        ("frypolar entrance", "frypolar owl", False, oos_can_use_mystery_seeds()),
+        (RegionName.frypolar_entrance, RegionName.frypolar_owl, False, oos_can_use_mystery_seeds()),
         (
-            "frypolar entrance",
-            "d8 darknut chest",
+            RegionName.frypolar_entrance,
+            RegionName.d8_darknut_chest,
             False,
             And(
                 Or(
@@ -1337,11 +1418,11 @@ def make_d8_logic() -> list[LogicLine]:
             ),
         ),
         # 3 keys
-        ("frypolar entrance", "frypolar room", False, oos_has_small_keys(8, 3)),
-        ("frypolar room", "frypolar room wild mystery", False, oos_can_harvest_regrowing_bush()),
+        (RegionName.frypolar_entrance, RegionName.frypolar_room, False, oos_has_small_keys(8, 3)),
+        (RegionName.frypolar_room, RegionName.frypolar_room_wild_mystery, False, oos_can_harvest_regrowing_bush()),
         (
-            "frypolar room",
-            "beat frypolar",
+            RegionName.frypolar_room,
+            RegionName.beat_frypolar,
             False,
             Or(
                 # Requirements to kill Frypolar
@@ -1370,10 +1451,10 @@ def make_d8_logic() -> list[LogicLine]:
                 # so the route is not *that* bad)
             ),
         ),
-        ("beat frypolar", "d8 spinner chest", False, True_()),
+        (RegionName.beat_frypolar, RegionName.d8_spinner_chest, False, True_()),
         (
-            "beat frypolar",
-            "d8 ice puzzle room",
+            RegionName.beat_frypolar,
+            RegionName.d8_ice_puzzle_room,
             False,
             And(
                 oos_has_hyper_slingshot(),
@@ -1381,8 +1462,8 @@ def make_d8_logic() -> list[LogicLine]:
             ),
         ),
         (
-            "d8 ice puzzle room",
-            "d8 pols voice chest",
+            RegionName.d8_ice_puzzle_room,
+            RegionName.d8_pols_voice_chest,
             False,
             Or(
                 oos_has_magic_boomerang(),
@@ -1392,17 +1473,17 @@ def make_d8_logic() -> list[LogicLine]:
             ),
         ),
         # 4 keys
-        ("d8 ice puzzle room", "d8 crystal room", False, oos_has_small_keys(8, 4)),
-        ("d8 crystal room", "magical ice owl", False, oos_can_use_mystery_seeds()),
-        ("d8 crystal room", "d8 ghost armos drop", False, oos_can_remove_rockslide(False)),
-        ("d8 crystal room", "d8 NE crystal", False, And(oos_has_bracelet(), oos_can_trigger_lever())),
-        ("d8 crystal room", "d8 SE crystal", False, oos_has_bracelet()),
-        ("d8 crystal room", "d8 SW lava chest", False, True_()),
-        ("d8 SE crystal", "d8 SE lava chest", False, True_()),
-        ("d8 SE crystal", "d8 spark chest", False, True_()),
+        (RegionName.d8_ice_puzzle_room, RegionName.d8_crystal_room, False, oos_has_small_keys(8, 4)),
+        (RegionName.d8_crystal_room, RegionName.magical_ice_owl, False, oos_can_use_mystery_seeds()),
+        (RegionName.d8_crystal_room, RegionName.d8_ghost_armos_drop, False, oos_can_remove_rockslide(False)),
+        (RegionName.d8_crystal_room, RegionName.d8_NE_crystal, False, And(oos_has_bracelet(), oos_can_trigger_lever())),
+        (RegionName.d8_crystal_room, RegionName.d8_SE_crystal, False, oos_has_bracelet()),
+        (RegionName.d8_crystal_room, RegionName.d8_SW_lava_chest, False, True_()),
+        (RegionName.d8_SE_crystal, RegionName.d8_SE_lava_chest, False, True_()),
+        (RegionName.d8_SE_crystal, RegionName.d8_spark_chest, False, True_()),
         (
-            "d8 ice puzzle room",
-            "d8 spark chest",
+            RegionName.d8_ice_puzzle_room,
+            RegionName.d8_spark_chest,
             False,
             And(
                 # Switch hook from the ice puzzle, then s&q
@@ -1411,12 +1492,22 @@ def make_d8_logic() -> list[LogicLine]:
             ),
         ),
         # 6 keys
-        ("d8 crystal room", "d8 NW crystal", False, And(oos_has_bracelet(), oos_has_small_keys(8, 6))),
-        ("d8 crystal room", "d8 SW crystal", False, And(oos_has_bracelet(), oos_has_small_keys(8, 6))),
+        (
+            RegionName.d8_crystal_room,
+            RegionName.d8_NW_crystal,
+            False,
+            And(oos_has_bracelet(), oos_has_small_keys(8, 6)),
+        ),
+        (
+            RegionName.d8_crystal_room,
+            RegionName.d8_SW_crystal,
+            False,
+            And(oos_has_bracelet(), oos_has_small_keys(8, 6)),
+        ),
         # 7 keys
         (
-            "d8 NW crystal",
-            "d8 boss",
+            RegionName.d8_NW_crystal,
+            RegionName.d8_boss,
             False,
             And(
                 CanBeatBoss(8),
@@ -1431,12 +1522,12 @@ def make_d11_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
     if not options.linked_heros_cave.value:
         return []
     return [
-        ("enter d11", "d11 floor 1 chest", False, oos_has_bracelet()),
-        ("d11 floor 1 chest", "d11 floor 2 keydrop", False, oos_can_jump_2_wide_pit()),
-        ("d11 floor 2 keydrop", "d11 floor 2 chest", False, oos_has_small_keys(11)),
+        (RegionName.enter_d11, RegionName.d11_floor_1_chest, False, oos_has_bracelet()),
+        (RegionName.d11_floor_1_chest, RegionName.d11_floor_2_keydrop, False, oos_can_jump_2_wide_pit()),
+        (RegionName.d11_floor_2_keydrop, RegionName.d11_floor_2_chest, False, oos_has_small_keys(11)),
         (
-            "d11 floor 2 chest",
-            "d11 floor 3 torch keydrop",
+            RegionName.d11_floor_2_chest,
+            RegionName.d11_floor_3_torch_keydrop,
             False,
             And(
                 Or(
@@ -1455,27 +1546,27 @@ def make_d11_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             ),
         ),
         (
-            "d11 floor 2 chest",
-            "d11 floor 3 flooded room",
+            RegionName.d11_floor_2_chest,
+            RegionName.d11_floor_3_flooded_room,
             False,
             And(oos_can_swim(False), oos_has_small_keys(11, 2), oos_can_use_ember_seeds(True), oos_has_seed_thrower()),
         ),
         (
-            "d11 floor 3 flooded room",
-            "d11 floor 3 flooded keydrop",
+            RegionName.d11_floor_3_flooded_room,
+            RegionName.d11_floor_3_flooded_keydrop,
             False,
             Or(oos_can_kill_normal_enemy(), oos_has_switch_hook()),
         ),
         (
-            "d11 floor 3 flooded room",
-            "d11 floor 3 chest",
+            RegionName.d11_floor_3_flooded_room,
+            RegionName.d11_floor_3_chest,
             False,
             And(oos_can_remove_rockslide(False), oos_has_small_keys(11, 3)),
         ),
-        ("d11 floor 3 chest", "d11 floor 4 chest", False, oos_has_magnet_gloves()),
+        (RegionName.d11_floor_3_chest, RegionName.d11_floor_4_chest, False, oos_has_magnet_gloves()),
         (
-            "d11 floor 4 chest",
-            "d11 floor 5 gauntlet",
+            RegionName.d11_floor_4_chest,
+            RegionName.d11_floor_5_gauntlet,
             False,
             And(
                 oos_can_jump_3_wide_pit(),
@@ -1516,8 +1607,8 @@ def make_d11_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             ),
         ),
         (
-            "d11 floor 4 chest",
-            "d11 floor 5 boomerang maze",
+            RegionName.d11_floor_4_chest,
+            RegionName.d11_floor_5_boomerang_maze,
             False,
             And(
                 oos_can_jump_3_wide_pit(),
@@ -1533,8 +1624,8 @@ def make_d11_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             ),
         ),
         (
-            "d11 floor 4 chest",
-            "d11 final chest",
+            RegionName.d11_floor_4_chest,
+            RegionName.d11_final_chest,
             False,
             And(
                 oos_can_jump_3_wide_pit(),
@@ -1544,22 +1635,22 @@ def make_d11_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             ),
         ),
         (
-            "enter d11",
-            "d11 alt entrance",
+            RegionName.enter_d11,
+            RegionName.d11_alt_entrance,
             False,
             True_(),
             options.linked_heros_cave.is_no_alt_entrance,
         ),
         (
-            "d11 alt entrance",
-            "enter d11",
+            RegionName.d11_alt_entrance,
+            RegionName.enter_d11,
             False,
             True_(),
             options.linked_heros_cave.is_alt_entrance,
         ),
         (
-            RegionNames.enter_d0,
-            "enter d11",
+            RegionName.enter_d0,
+            RegionName.enter_d11,
             False,
             True_(),
             options.linked_heros_cave.is_heros_cave,

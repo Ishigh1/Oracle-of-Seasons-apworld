@@ -3,6 +3,7 @@ from rule_builder.rules import And, CanReachRegion, Has, Or, True_
 from ...options import (
     OracleOfSeasonsOptions,
 )
+from ..regions import RegionName
 from . import LogicLine
 from .logic_predicates import (
     oos_can_break_sign,
@@ -27,37 +28,42 @@ from .logic_predicates import (
     oos_has_shield,
     oos_has_shovel,
     oos_has_switch_hook,
+    oos_option_hard_logic,
     oos_option_hell_logic,
     oos_option_medium_logic,
     oos_self_locking_item,
-    oos_option_hard_logic,
 )
 
 
 def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
     return [
         # Portals ###############################################################
-        ("volcanoes east portal", "subrosia temple sector", True, True_()),
-        ("subrosia market portal", "subrosia market sector", True, True_()),
-        ("strange brothers portal", "subrosia hide and seek sector", True, oos_has_feather()),
-        ("house of pirates portal", "subrosia pirates sector", True, True_()),
-        ("great furnace portal", "subrosia furnace sector", True, True_()),
-        ("volcanoes west portal", "subrosia volcano sector", True, True_()),
-        ("d8 entrance portal", "d8 entrance", True, True_()),
+        (RegionName.volcanoes_east_portal, RegionName.subrosia_temple_sector, True, True_()),
+        (RegionName.subrosia_market_portal, RegionName.subrosia_market_sector, True, True_()),
+        (RegionName.strange_brothers_portal, RegionName.subrosia_hide_and_seek_sector, True, oos_has_feather()),
+        (RegionName.house_of_pirates_portal, RegionName.subrosia_pirates_sector, True, True_()),
+        (RegionName.great_furnace_portal, RegionName.subrosia_furnace_sector, True, True_()),
+        (RegionName.volcanoes_west_portal, RegionName.subrosia_volcano_sector, True, True_()),
+        (RegionName.d8_entrance_portal, RegionName.d8_entrance, True, True_()),
         # TODO when alt starting locations are implemented,
         #  there probably needs to be a way to re-use this forced transition
-        ("pirates after bell", "western coast after ship", False, True_()),
+        (RegionName.pirates_after_bell, RegionName.western_coast_after_ship, False, True_()),
         # Regions ###############################################################
-        ("subrosia temple sector", "subrosia market sector", False, oos_can_jump_1_wide_liquid(False)),
         (
-            "subrosia market sector",
-            "subrosia temple sector",
+            RegionName.subrosia_temple_sector,
+            RegionName.subrosia_market_sector,
+            False,
+            oos_can_jump_1_wide_liquid(False),
+        ),
+        (
+            RegionName.subrosia_market_sector,
+            RegionName.subrosia_temple_sector,
             False,
             Or(oos_can_date_rosa(), oos_can_jump_1_wide_liquid(False)),
         ),
         (
-            "subrosia market sector",
-            "subrosia east junction",
+            RegionName.subrosia_market_sector,
+            RegionName.subrosia_east_junction,
             False,
             Or(
                 oos_has_magnet_gloves(),
@@ -65,14 +71,14 @@ def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
                 oos_can_jump_3_wide_liquid(),
                 And(
                     # It's very tight, but a good jump clears the hole
-                    oos_option_hard_logic(), # Maybe upgrade to hell if too many complain
-                    oos_can_jump_2_wide_pit()
-                )
+                    oos_option_hard_logic(),  # Maybe upgrade to hell if too many complain
+                    oos_can_jump_2_wide_pit(),
+                ),
             ),
         ),
         (
-            "subrosia east junction",
-            "subrosia market sector",
+            RegionName.subrosia_east_junction,
+            RegionName.subrosia_market_sector,
             False,
             Or(
                 # This backwards route adds itself on top of the two-way route right above this one, adding the option
@@ -85,17 +91,17 @@ def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
                 ),  # bombjump could deserve an upgrade but isn't quite worth a hell classification
             ),
         ),
-        ("subrosia temple sector", "subrosia bridge sector", True, oos_has_feather()),
+        (RegionName.subrosia_temple_sector, RegionName.subrosia_bridge_sector, True, oos_has_feather()),
         (
-            "subrosia volcano sector",
-            "subrosia bridge sector",
+            RegionName.subrosia_volcano_sector,
+            RegionName.subrosia_bridge_sector,
             False,
             And(oos_has_bracelet(), oos_can_jump_3_wide_liquid(allow_bombchus=True)),
         ),
-        ("subrosia volcano sector", "bomb temple remains", False, oos_has_bombs()),
+        (RegionName.subrosia_volcano_sector, RegionName.bomb_temple_remains, False, oos_has_bombs()),
         (
-            "subrosia hide and seek sector",
-            "subrosia market sector",
+            RegionName.subrosia_hide_and_seek_sector,
+            RegionName.subrosia_market_sector,
             False,
             And(
                 oos_has_bracelet(),
@@ -104,8 +110,8 @@ def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             ),
         ),
         (
-            "subrosia market sector",
-            "subrosia hide and seek sector",
+            RegionName.subrosia_market_sector,
+            RegionName.subrosia_hide_and_seek_sector,
             False,
             And(
                 # H&S skip, with bracelet : https://youtu.be/lH1yvshG3LE
@@ -118,88 +124,109 @@ def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             ),
         ),
         (
-            "subrosia hide and seek sector",
-            "subrosia temple sector",
+            RegionName.subrosia_hide_and_seek_sector,
+            RegionName.subrosia_temple_sector,
             True,
             oos_can_jump_4_wide_liquid(allow_bombchus=True),
         ),
-        ("subrosia hide and seek sector", "subrosia pirates sector", True, oos_has_feather()),
-        ("subrosia east junction", "subrosia furnace sector", False, oos_has_feather()),
+        (RegionName.subrosia_hide_and_seek_sector, RegionName.subrosia_pirates_sector, True, oos_has_feather()),
+        (RegionName.subrosia_east_junction, RegionName.subrosia_furnace_sector, False, oos_has_feather()),
         (
-            "subrosia furnace sector",
-            "subrosia east junction",
+            RegionName.subrosia_furnace_sector,
+            RegionName.subrosia_east_junction,
             False,
             Or(oos_has_feather(), And(oos_option_medium_logic(), oos_has_switch_hook())),
         ),
         # Locations ###############################################################
-        ("subrosia temple sector", "subrosian dance hall", False, True_()),
+        (RegionName.subrosia_temple_sector, RegionName.subrosian_dance_hall, False, True_()),
         (
-            "subrosia temple sector",
-            "subrosian smithy ore",
+            RegionName.subrosia_temple_sector,
+            RegionName.subrosian_smithy_ore,
             False,
             Or(Has("Hard Ore"), oos_self_locking_item("Subrosia: Smithy Hard Ore Reforge", "Hard Ore")),
         ),
         (
-            "subrosia temple sector",
-            "subrosian smithy bell",
+            RegionName.subrosia_temple_sector,
+            RegionName.subrosian_smithy_bell,
             False,
             Or(Has("Rusty Bell"), oos_self_locking_item("Subrosia: Smithy Rusty Bell Reforge", "Rusty Bell")),
         ),
-        ("subrosia temple sector", "smith secret", False, oos_has_shield(), bool(options.secret_locations)),
-        ("subrosia temple sector", "temple of seasons", False, True_()),
-        ("subrosia temple sector", "tower of winter", False, Or(oos_has_feather(), oos_can_trigger_far_switch())),
         (
-            "subrosia temple sector",
-            "tower of summer",
+            RegionName.subrosia_temple_sector,
+            RegionName.smith_secret,
+            False,
+            oos_has_shield(),
+            bool(options.secret_locations),
+        ),
+        (RegionName.subrosia_temple_sector, RegionName.temple_of_seasons, False, True_()),
+        (
+            RegionName.subrosia_temple_sector,
+            RegionName.tower_of_winter,
+            False,
+            Or(oos_has_feather(), oos_can_trigger_far_switch()),
+        ),
+        (
+            RegionName.subrosia_temple_sector,
+            RegionName.tower_of_summer,
             False,
             And(
                 oos_can_date_rosa(),
                 oos_has_bracelet(),
             ),
         ),
-        ("subrosia temple sector", "tower of autumn", False, And(oos_has_feather(), Has("Bomb Flower"))),
         (
-            "subrosia temple sector",
-            "subrosian secret",
+            RegionName.subrosia_temple_sector,
+            RegionName.tower_of_autumn,
+            False,
+            And(oos_has_feather(), Has("Bomb Flower")),
+        ),
+        (
+            RegionName.subrosia_temple_sector,
+            RegionName.subrosian_secret,
             False,
             And(oos_can_jump_1_wide_pit(False), oos_has_magic_boomerang()),
             bool(options.secret_locations),
         ),
-        ("subrosia market sector", "subrosia seaside", False, oos_has_shovel()),
+        (RegionName.subrosia_market_sector, RegionName.subrosia_seaside, False, oos_has_shovel()),
         (
-            "subrosia market sector",
-            "subrosia market star ore",
+            RegionName.subrosia_market_sector,
+            RegionName.subrosia_market_star_ore,
             False,
             Or(Has("Star Ore"), oos_self_locking_item("Subrosia: Market #1", "Star Ore")),
         ),
-        ("subrosia market sector", "subrosia market ore chunks", False, oos_can_buy_market()),
-        ("subrosia hide and seek sector", "subrosia hide and seek", False, oos_has_shovel()),
-        ("subrosia hide and seek sector", "tower of spring", False, oos_has_feather()),
+        (RegionName.subrosia_market_sector, RegionName.subrosia_market_ore_chunks, False, oos_can_buy_market()),
+        (RegionName.subrosia_hide_and_seek_sector, RegionName.subrosia_hide_and_seek, False, oos_has_shovel()),
+        (RegionName.subrosia_hide_and_seek_sector, RegionName.tower_of_spring, False, oos_has_feather()),
         (
-            "subrosia hide and seek sector",
-            "subrosian wilds chest",
+            RegionName.subrosia_hide_and_seek_sector,
+            RegionName.subrosian_wilds_chest,
             False,
             And(oos_has_feather(), Or(oos_has_magnet_gloves(), oos_can_jump_4_wide_pit())),
         ),
         (
-            "subrosian wilds chest",
-            "subrosian wilds digging spot",
+            RegionName.subrosian_wilds_chest,
+            RegionName.subrosian_wilds_digging_spot,
             False,
             And(Or(oos_can_jump_3_wide_pit(), oos_has_magnet_gloves()), oos_has_feather(), oos_has_shovel()),
         ),
-        ("subrosia hide and seek sector", "subrosian house", False, oos_has_feather()),
-        ("subrosia hide and seek sector", "subrosian 2d cave", False, oos_has_feather()),
-        ("subrosia bridge sector", "subrosia, open cave", False, True_()),
-        ("subrosia bridge sector", "subrosia, locked cave", False, And(oos_can_date_rosa(), oos_has_feather())),
+        (RegionName.subrosia_hide_and_seek_sector, RegionName.subrosian_house, False, oos_has_feather()),
+        (RegionName.subrosia_hide_and_seek_sector, RegionName.subrosian_2d_cave, False, oos_has_feather()),
+        (RegionName.subrosia_bridge_sector, RegionName.subrosia_open_cave, False, True_()),
         (
-            "subrosia bridge sector",
-            "subrosian chef trade",
+            RegionName.subrosia_bridge_sector,
+            RegionName.subrosia_locked_cave,
+            False,
+            And(oos_can_date_rosa(), oos_has_feather()),
+        ),
+        (
+            RegionName.subrosia_bridge_sector,
+            RegionName.subrosian_chef_trade,
             False,
             Or(Has("Iron Pot"), oos_self_locking_item("Subrosia: Subrosian Chef Trade", "Iron Pot")),
         ),
         (
-            "subrosia east junction",
-            "subrosia village chest",
+            RegionName.subrosia_east_junction,
+            RegionName.subrosia_village_chest,
             False,
             Or(
                 oos_has_magnet_gloves(),
@@ -214,21 +241,26 @@ def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             ),
         ),
         (
-            "subrosia furnace sector",
-            "great furnace",
+            RegionName.subrosia_furnace_sector,
+            RegionName.great_furnace,
             False,
             And(
-                CanReachRegion("tower of autumn"),
+                CanReachRegion(RegionName.tower_of_autumn),
                 Or(Has("Red Ore"), oos_self_locking_item("Subrosia: Item Smelted in Great Furnace", "Red Ore")),
                 Or(Has("Blue Ore"), oos_self_locking_item("Subrosia: Item Smelted in Great Furnace", "Blue Ore")),
             ),
         ),
-        ("subrosia furnace sector", "subrosian sign guy", False, oos_can_break_sign()),
-        ("subrosia furnace sector", "subrosian buried bomb flower", False, And(oos_has_feather(), oos_has_bracelet())),
-        ("subrosia temple sector", "subrosia temple digging spot", False, oos_has_shovel()),
+        (RegionName.subrosia_furnace_sector, RegionName.subrosian_sign_guy, False, oos_can_break_sign()),
         (
-            "subrosia temple sector",
-            "subrosia bath digging spot",
+            RegionName.subrosia_furnace_sector,
+            RegionName.subrosian_buried_bomb_flower,
+            False,
+            And(oos_has_feather(), oos_has_bracelet()),
+        ),
+        (RegionName.subrosia_temple_sector, RegionName.subrosia_temple_digging_spot, False, oos_has_shovel()),
+        (
+            RegionName.subrosia_temple_sector,
+            RegionName.subrosia_bath_digging_spot,
             False,
             And(
                 oos_can_jump_1_wide_pit(False),
@@ -236,7 +268,7 @@ def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
                 oos_has_shovel(),
             ),
         ),
-        ("subrosia market sector", "subrosia market digging spot", False, oos_has_shovel()),
-        ("subrosia bridge sector", "subrosia bridge digging spot", False, oos_has_shovel()),
-        ("subrosia pirates sector", "pirates after bell", False, Has("Pirate's Bell")),
+        (RegionName.subrosia_market_sector, RegionName.subrosia_market_digging_spot, False, oos_has_shovel()),
+        (RegionName.subrosia_bridge_sector, RegionName.subrosia_bridge_digging_spot, False, oos_has_shovel()),
+        (RegionName.subrosia_pirates_sector, RegionName.pirates_after_bell, False, Has("Pirate's Bell")),
     ]

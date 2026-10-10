@@ -1,4 +1,5 @@
-from typing import Any, Iterable, cast
+from collections.abc import Iterable
+from typing import Any, cast
 
 from BaseClasses import Item, ItemClassification, Location, LocationProgressType, Region
 
@@ -12,13 +13,14 @@ from ..data.Constants import (
 )
 from ..data.locations import LOCATIONS_DATA
 from ..data.regions import (
+    CONDITIONAL_REGIONS,
     D11_REGIONS,
     GASHA_REGIONS,
     GASHA_SPOT_REGIONS,
     NATZU_REGIONS,
     SCRUB_REGIONS,
     SECRET_REGIONS,
-    RegionNames,
+    RegionName,
 )
 from ..options import (
     OracleOfSeasonsGoal,
@@ -60,7 +62,7 @@ def location_is_active(world: OracleOfSeasonsWorld, location_name: str, location
 
 
 def create_location(
-        world: OracleOfSeasonsWorld, region_name: str, location_name: str, local: bool, event: bool
+    world: OracleOfSeasonsWorld, region_name: str, location_name: str, local: bool, event: bool
 ) -> Location:
     region = world.multiworld.get_region(region_name, world.player)
     location_id = None if event else world.location_name_to_id[location_name]
@@ -73,7 +75,9 @@ def create_location(
 
 def create_regions(world: OracleOfSeasonsWorld) -> None:
     # Create regions
-    for region_name in cast(Iterable[RegionNames], RegionNames):
+    for region_name in cast(Iterable[RegionName], RegionName):
+        if region_name in CONDITIONAL_REGIONS:
+            continue
         region = Region(region_name, world.player, world.multiworld)
         world.multiworld.regions.append(region)
 
@@ -126,9 +130,9 @@ def create_regions(world: OracleOfSeasonsWorld) -> None:
     exclude_locations_automatically(world)
 
     if world.options.start_position == OracleOfSeasonsStartingPosition.option_horon_village:
-        world.origin_region_name = RegionNames.impas_house
+        world.origin_region_name = RegionName.impas_house
     elif world.options.start_position == OracleOfSeasonsStartingPosition.option_sunken_city:
-        world.origin_region_name = RegionNames.sunken_city
+        world.origin_region_name = RegionName.sunken_city
         inventory_location = create_location(world, world.origin_region_name, "Server", True, True)
         inventory_location.address = -2
         inventory_location.show_in_spoiler = False
@@ -137,7 +141,7 @@ def create_regions(world: OracleOfSeasonsWorld) -> None:
         inventory_location_2.show_in_spoiler = False
         world.inventory_locations = [inventory_location, inventory_location_2]
     elif world.options.start_position == OracleOfSeasonsStartingPosition.option_samasa_desert:
-        world.origin_region_name = RegionNames.samasa_desert
+        world.origin_region_name = RegionName.samasa_desert
         inventory_location = create_location(world, world.origin_region_name, "Server", True, True)
         inventory_location.address = -2
         inventory_location.show_in_spoiler = False
@@ -146,9 +150,9 @@ def create_regions(world: OracleOfSeasonsWorld) -> None:
         inventory_location_2.show_in_spoiler = False
         world.inventory_locations = [inventory_location, inventory_location_2]
     elif world.options.start_position == OracleOfSeasonsStartingPosition.option_temple_of_seasons:
-        world.origin_region_name = RegionNames.subrosia_temple_sector
+        world.origin_region_name = RegionName.subrosia_temple_sector
     elif world.options.start_position == OracleOfSeasonsStartingPosition.option_tarm_entrance:
-        world.origin_region_name = RegionNames.spool_swamp_north
+        world.origin_region_name = RegionName.spool_swamp_north
         inventory_location = create_location(world, world.origin_region_name, "Server", True, True)
         inventory_location.address = -2
         inventory_location.show_in_spoiler = False

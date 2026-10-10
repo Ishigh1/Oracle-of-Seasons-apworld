@@ -22,8 +22,9 @@ from ...options import (
     OracleOfSeasonsTreehouseOldManRequirement,
 )
 from ..Constants import DUNGEON_NAMES, SEASON_AUTUMN, SEASON_ITEMS, SEASON_SPRING, SEASON_SUMMER, SEASON_WINTER
-from ..regions import GASHA_SPOT_REGIONS
+from ..regions import GASHA_SPOT_REGIONS, RegionName
 from .rulebuilder import ItemInLocation, LostWoods, Rule, from_bool, from_option, from_world_field
+
 
 # Items predicates ############################################################
 
@@ -305,7 +306,7 @@ def oos_can_reach_lost_woods_pedestal(allow_default: bool = False) -> Rule:
     return And(
         LostWoods(False, allow_default),
         Or(
-            CanReachRegion("lost woods phonograph"),
+            CanReachRegion(RegionName.lost_woods_phonograph),
             And(
                 # if sequence is vanilla, medium+ players are expected to know it
                 oos_option_medium_logic(),
@@ -319,7 +320,7 @@ def oos_can_complete_lost_woods_main_sequence(allow_default: bool = False) -> Ru
     return And(
         LostWoods(True, allow_default),
         Or(
-            CanReachRegion("lost woods deku"),
+            CanReachRegion(RegionName.lost_woods_deku),
             And(
                 # if sequence is vanilla, medium+ players are expected to know it
                 oos_option_medium_logic(),
@@ -381,13 +382,13 @@ def oos_can_farm_ore_chunks() -> Rule:
         And(oos_option_medium_logic(), Or(oos_has_magic_boomerang(), oos_has_sword())),
         And(
             oos_option_hard_logic(),
-            Or(CanReachRegion("subrosian dance hall"), oos_has_bracelet(), oos_has_switch_hook()),
+            Or(CanReachRegion(RegionName.subrosian_dance_hall), oos_has_bracelet(), oos_has_switch_hook()),
         ),
     )
 
 
 def oos_can_date_rosa() -> Rule:
-    return And(CanReachRegion("subrosia market sector"), Has("Ribbon"))
+    return And(CanReachRegion(RegionName.subrosia_market_sector), Has("Ribbon"))
 
 
 def oos_can_trigger_far_switch() -> Rule:
@@ -1057,7 +1058,10 @@ def oos_can_dimitri_clip() -> Rule:
 
 
 def oos_season_in_spool_swamp(season: int) -> Rule:
-    return Or(oos_is_default_season("SPOOL_SWAMP", season), And(oos_has_season(season), CanReachRegion("spool stump")))
+    return Or(
+        oos_is_default_season("SPOOL_SWAMP", season),
+        And(oos_has_season(season), CanReachRegion(RegionName.spool_stump)),
+    )
 
 
 def oos_season_in_eyeglass_lake(season: int) -> Rule:
@@ -1066,8 +1070,8 @@ def oos_season_in_eyeglass_lake(season: int) -> Rule:
         And(
             oos_has_season(season),
             Or(
-                CanReachRegion("d1 stump"),
-                CanReachRegion("d5 stump"),
+                CanReachRegion(RegionName.d1_stump),
+                CanReachRegion(RegionName.d5_stump),
             ),
         ),
     )
@@ -1079,8 +1083,8 @@ def oos_season_in_temple_remains(season: int) -> Rule:
         And(
             oos_has_season(season),
             Or(
-                CanReachRegion("temple remains lower stump"),
-                CanReachRegion("temple remains upper stump"),
+                CanReachRegion(RegionName.temple_remains_lower_stump),
+                CanReachRegion(RegionName.temple_remains_upper_stump),
             ),
         ),
     )
@@ -1088,7 +1092,8 @@ def oos_season_in_temple_remains(season: int) -> Rule:
 
 def oos_season_in_holodrum_plain(season: int) -> Rule:
     return Or(
-        oos_is_default_season("HOLODRUM_PLAIN", season), And(oos_has_season(season), CanReachRegion("ghastly stump"))
+        oos_is_default_season("HOLODRUM_PLAIN", season),
+        And(oos_has_season(season), CanReachRegion(RegionName.ghastly_stump)),
     )
 
 
@@ -1097,7 +1102,7 @@ def oos_season_in_western_coast(season: int) -> Rule:
         oos_is_default_season("WESTERN_COAST", season),
         And(
             oos_has_season(season),
-            CanReachRegion("coast stump"),
+            CanReachRegion(RegionName.coast_stump),
         ),
     )
 
@@ -1129,7 +1134,10 @@ def oos_season_in_woods_of_winter(season: int) -> Rule:
 
 
 def oos_season_in_central_woods_of_winter(season: int) -> Rule:
-    return Or(oos_is_default_season("WOODS_OF_WINTER", season), And(oos_has_season(season), CanReachRegion("d2 stump")))
+    return Or(
+        oos_is_default_season("WOODS_OF_WINTER", season),
+        And(oos_has_season(season), CanReachRegion(RegionName.d2_stump)),
+    )
 
 
 def oos_season_in_mt_cucco(season: int) -> Rule:
@@ -1297,4 +1305,4 @@ def oos_roosters(
 
 
 def oos_can_reach_rooster_adventure() -> Rule:
-    return oos_option_hell_logic() & CanReachRegion("rooster adventure")
+    return oos_option_hell_logic() & CanReachRegion(RegionName.rooster_adventure)
