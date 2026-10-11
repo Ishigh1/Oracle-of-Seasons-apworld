@@ -650,11 +650,11 @@ class OracleOfSeasonsShuffleFreestandingItems(DefaultOnToggle):
 
 class OracleOfSeasonsIncludeTradeSequence(DefaultOnToggle):
     """
-    Include the trade sequence in the randomization, excluding the pedestal
+    Include the trade sequence in the randomization, lost woods pedestal always being randomized
     (if enabled, each prerequisite and reward of the sequence will be shuffled)
     """
 
-    display_name = "Shuffle Freestanding Items"
+    display_name = "Shuffle Trade Sequence"
 
 
 class OracleOfSeasonsAdvanceShop(Toggle):
