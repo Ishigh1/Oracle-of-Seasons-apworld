@@ -2,7 +2,7 @@ import itertools
 
 from entrance_rando import randomize_entrances
 
-from ..data.Constants import PORTAL_CONNECTIONS, OracleOfSeasonsConnectionType
+from ..data.constants import PORTAL_CONNECTIONS, OracleOfSeasonsConnectionType
 from ..options import OracleOfSeasonsPortalShuffle
 from ..world import OracleOfSeasonsWorld
 

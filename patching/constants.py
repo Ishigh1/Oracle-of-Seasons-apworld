@@ -1,5 +1,5 @@
 from ..common.patching.z80asm.Assembler import GameboyAddress
-from ..data.Constants import *
+from ..data.constants import *
 
 # [x, y] = everything between x and y (included) is free
 # int = end of bank

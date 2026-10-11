@@ -13,6 +13,7 @@ class RegionName(StrEnum):
     old_man_trade = "old man trade"
     malon_trade = "malon trade"
     talon_trade = "talon trade"
+    syrup = "syrup"
     syrup_trade = "syrup trade"
     syrup_shop = "syrup shop"
     mrs_ruul_trade = "mrs. ruul trade"
@@ -539,3 +540,4 @@ CONDITIONAL_REGIONS.update(GASHA_SPOT_REGIONS)
 CONDITIONAL_REGIONS.update(SECRET_REGIONS)
 CONDITIONAL_REGIONS.add(RegionName.rooster_adventure)
 CONDITIONAL_REGIONS.add(RegionName.advance_shop)
+CONDITIONAL_REGIONS.add(RegionName.syrup_shop)

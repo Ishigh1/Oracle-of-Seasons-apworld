@@ -8,7 +8,7 @@ from rule_builder.rules import Has
 from worlds.AutoWorld import World
 
 from .common.Util import build_item_name_to_id_dict, build_location_name_to_id_dict
-from .data.Constants import (
+from .data.constants import (
     DEFAULT_SEASONS,
     DUNGEON_CONNECTIONS,
     ESSENCES,
@@ -111,7 +111,7 @@ class OracleOfSeasonsWorld(World):
         self.nothing_items: list[Item] | None = None
 
     def generate_early(self) -> None:
-        from .generation.GenerateEarly import generate_early
+        from .generation.generate_early import generate_early
 
         generate_early(self)
 

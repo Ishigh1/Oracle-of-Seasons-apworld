@@ -4,7 +4,7 @@ from BaseClasses import CollectionState, EntranceType, Item, Region
 from Options import Accessibility
 from rule_builder.rules import And, CanReachRegion, Or, True_
 
-from ..data.Constants import DUNGEON_NAMES, PORTAL_CONNECTIONS, OracleOfSeasonsConnectionType
+from ..data.constants import DUNGEON_NAMES, PORTAL_CONNECTIONS, OracleOfSeasonsConnectionType
 from ..data.logic import LogicLine
 from ..data.logic.dungeons_logic import (
     make_d0_logic,
@@ -31,14 +31,14 @@ from ..data.logic.logic_predicates import (
     oos_option_hard_logic,
     oos_option_medium_logic,
 )
-from ..data.logic.overworld_logic import make_holodrum_logic
+from ..data.logic.overworld_logic import make_holodrum_logic, make_gasha_logic
 from ..data.logic.rulebuilder import Rule
 from ..data.logic.subrosia_logic import make_subrosia_logic
 from ..world import OracleOfSeasonsWorld
 
 
 def create_randomizable_connections(
-    world: OracleOfSeasonsWorld, prefix: str, vanilla_connections: dict[str, str], outer_group: int, inner_group: int
+        world: OracleOfSeasonsWorld, prefix: str, vanilla_connections: dict[str, str], outer_group: int, inner_group: int
 ):
     for reg1, reg2 in vanilla_connections.items():
         region_1 = world.get_region(reg1)
@@ -77,6 +77,7 @@ def create_connections(world: OracleOfSeasonsWorld, options):
         make_d7_logic(),
         make_d8_logic(),
         make_d11_logic(options),
+        make_gasha_logic(world),
     ]
 
     if world.options.shuffle_dungeons:
@@ -197,21 +198,24 @@ def apply_self_locking_rules(world: OracleOfSeasonsWorld):
 
     # Process other self-locking items
     OTHER_SELF_LOCKING_ITEMS = {
-        "North Horon: Malon Trade": "Cuccodex",
-        "Maple Trade": "Lon Lon Egg",
-        "Holodrum Plain: Mrs. Ruul Trade": "Ghastly Doll",
-        "Subrosia: Subrosian Chef Trade": "Iron Pot",
-        "Sunken City: Ingo Trade": "Goron Vase",
-        "North Horon: Yelling Old Man Trade": "Fish",
-        "Horon Village: Tick Tock Trade": "Wooden Bird",
-        "Eastern Suburbs: Guru-Guru Trade": "Engine Grease",
-        "Subrosia: Smithy Hard Ore Reforge": "Hard Ore",
-        "Subrosia: Smithy Rusty Bell Reforge": "Rusty Bell",
         "Sunken City: Master's Plaque Trade": "Master's Plaque",
         "Subrosia: Market #1": "Star Ore",
     }
-    if not world.options.secret_locations:
-        OTHER_SELF_LOCKING_ITEMS["Goron Mountain: Biggoron Trade"] = "Lava Soup"
+    if world.options.trade_sequence:
+        OTHER_SELF_LOCKING_ITEMS.update({
+            "North Horon: Malon Trade": "Cuccodex",
+            "Maple Trade": "Lon Lon Egg",
+            "Holodrum Plain: Mrs. Ruul Trade": "Ghastly Doll",
+            "Subrosia: Subrosian Chef Trade": "Iron Pot",
+            "Sunken City: Ingo Trade": "Goron Vase",
+            "North Horon: Yelling Old Man Trade": "Fish",
+            "Horon Village: Tick Tock Trade": "Wooden Bird",
+            "Eastern Suburbs: Guru-Guru Trade": "Engine Grease",
+            "Subrosia: Smithy Hard Ore Reforge": "Hard Ore",
+            "Subrosia: Smithy Rusty Bell Reforge": "Rusty Bell",
+        })
+        if not world.options.secret_locations:
+            OTHER_SELF_LOCKING_ITEMS["Goron Mountain: Biggoron Trade"] = "Lava Soup"
 
     for loc_name, item_name in OTHER_SELF_LOCKING_ITEMS.items():
         location = world.get_location(loc_name)
@@ -232,9 +236,6 @@ def apply_rule_forbiddance(world: OracleOfSeasonsWorld):
         "Horon Village: Member's Shop #1",
         "Horon Village: Member's Shop #2",
         "Horon Village: Member's Shop #3",
-        "Sunken City: Syrup Shop #1",
-        "Sunken City: Syrup Shop #2",
-        "Sunken City: Syrup Shop #3",
     ]
     if world.options.advance_shop:
         rupee_shops.extend(
@@ -242,6 +243,14 @@ def apply_rule_forbiddance(world: OracleOfSeasonsWorld):
                 "Horon Village: Advance Shop #1",
                 "Horon Village: Advance Shop #2",
                 "Horon Village: Advance Shop #3",
+            ]
+        )
+    if world.options.trade_sequence:
+        rupee_shops.extend(
+            [
+                "Sunken City: Syrup Shop #1",
+                "Sunken City: Syrup Shop #2",
+                "Sunken City: Syrup Shop #3",
             ]
         )
 

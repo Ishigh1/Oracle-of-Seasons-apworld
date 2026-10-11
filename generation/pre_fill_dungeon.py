@@ -3,7 +3,7 @@ from typing import cast
 from BaseClasses import MultiWorld
 from Fill import fill_restrictive
 
-from ..data.Constants import DUNGEON_NAMES
+from ..data.constants import DUNGEON_NAMES
 from ..data.locations import LOCATIONS_DATA
 from ..world import OracleOfSeasonsWorld
 

@@ -21,7 +21,7 @@ from ...options import (
     OracleOfSeasonsTarmGateRequirement,
     OracleOfSeasonsTreehouseOldManRequirement,
 )
-from ..Constants import DUNGEON_NAMES, SEASON_AUTUMN, SEASON_ITEMS, SEASON_SPRING, SEASON_SUMMER, SEASON_WINTER
+from ..constants import DUNGEON_NAMES, SEASON_AUTUMN, SEASON_ITEMS, SEASON_SPRING, SEASON_SUMMER, SEASON_WINTER
 from ..regions import GASHA_SPOT_REGIONS, RegionName
 from .rulebuilder import ItemInLocation, LostWoods, Rule, from_bool, from_option, from_world_field
 

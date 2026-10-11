@@ -1,6 +1,7 @@
 from rule_builder.rules import And, CanReachRegion, Has, Or, True_
 
 from ...options import (
+    OracleOfSeasonsIncludeTradeSequence,
     OracleOfSeasonsOptions,
 )
 from ..regions import RegionName
@@ -33,6 +34,7 @@ from .logic_predicates import (
     oos_option_medium_logic,
     oos_self_locking_item,
 )
+from .rulebuilder import from_option
 
 
 def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
@@ -45,8 +47,6 @@ def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
         (RegionName.great_furnace_portal, RegionName.subrosia_furnace_sector, True, True_()),
         (RegionName.volcanoes_west_portal, RegionName.subrosia_volcano_sector, True, True_()),
         (RegionName.d8_entrance_portal, RegionName.d8_entrance, True, True_()),
-        # TODO when alt starting locations are implemented,
-        #  there probably needs to be a way to re-use this forced transition
         (RegionName.pirates_after_bell, RegionName.western_coast_after_ship, False, True_()),
         # Regions ###############################################################
         (
@@ -222,7 +222,16 @@ def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             RegionName.subrosia_bridge_sector,
             RegionName.subrosian_chef_trade,
             False,
-            Or(Has("Iron Pot"), oos_self_locking_item("Subrosia: Subrosian Chef Trade", "Iron Pot")),
+            Or(
+                And(
+                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_false),
+                    CanReachRegion(RegionName.dr_left_reward),
+                ),
+                And(
+                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_true),
+                    Or(Has("Iron Pot"), oos_self_locking_item("Subrosia: Subrosian Chef Trade", "Iron Pot")),
+                ),
+            ),
         ),
         (
             RegionName.subrosia_east_junction,

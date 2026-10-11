@@ -10,7 +10,7 @@ from rule_builder.options import OPERATORS, Operator, OptionFilter
 from rule_builder.rules import False_, HasAll, True_
 
 from ...world import OracleOfSeasonsWorld
-from ..Constants import SEASON_CHAOTIC, SEASON_ITEMS
+from ..constants import SEASON_CHAOTIC, SEASON_ITEMS
 from . import Rule
 
 

@@ -2,7 +2,7 @@ import logging
 
 from Options import OptionError
 
-from ..data.Constants import (
+from ..data.constants import (
     AVERAGE_PRICE_PER_LOCATION,
     DIRECTION_LEFT,
     DIRECTION_UP,
@@ -192,10 +192,11 @@ def randomize_shop_order(world: OracleOfSeasonsWorld) -> None:
     world.shop_order = [
         ["horonShop1", "horonShop2", "horonShop3"],
         ["memberShop1", "memberShop2", "memberShop3"],
-        ["syrupShop1", "syrupShop2", "syrupShop3"],
     ]
     if world.options.advance_shop:
         world.shop_order.append(["advanceShop1", "advanceShop2", "advanceShop3"])
+    if world.options.trade_sequence:
+        world.shop_order.append(["syrupShop1", "syrupShop2", "syrupShop3"])
     if world.options.shuffle_business_scrubs:
         world.shop_order.extend([["spoolSwampScrub"], ["samasaCaveScrub"], ["d2Scrub"], ["d4Scrub"]])
     world.random.shuffle(world.shop_order)

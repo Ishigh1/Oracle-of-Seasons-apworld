@@ -10,7 +10,7 @@ from ...common.patching.RomData import RomData
 from ...common.patching.text import normalize_text
 from ...common.patching.Util import get_available_random_colors_from_sprite_name, simple_hex
 from ...common.patching.z80asm.Assembler import GameboyAddress, Z80Assembler
-from ...data.Constants import (
+from ...data.constants import (
     COLLECT_CHEST,
     COLLECT_DIVE,
     COLLECT_DROP,
@@ -26,6 +26,7 @@ from ...data.Constants import (
     TREASURE_SPAWN_CHEST,
     TREASURE_SPAWN_INSTANT,
     TREASURE_SPAWN_POOF,
+    VANILLA_SHOP_PRICES,
 )
 from ...data.items import ITEMS_DATA
 from ...data.locations import LOCATIONS_DATA
@@ -41,7 +42,7 @@ from ...options import (
 )
 from ...world import OracleOfSeasonsWorld
 from ..asm import asm_files
-from ..Constants import (
+from ..constants import (
     CALL_SCRIPT,
     DELAY_6,
     DIRECTION_STRINGS,
@@ -61,7 +62,7 @@ from ..util import get_item_id_and_subid
 
 
 def define_foreign_item_data(
-    assembler: Z80Assembler, texts: dict[str, str], patch_data: dict[str, Any]
+        assembler: Z80Assembler, texts: dict[str, str], patch_data: dict[str, Any]
 ) -> dict[str, dict[str, Any]]:
     # Register all foreign items and save their text as TX_0cxx, id 0x41, subid xx
     item_data = ITEMS_DATA.copy()
@@ -144,7 +145,7 @@ def write_chest_contents(rom: RomData, patch_data: dict[str, Any], item_data: di
     locations_data = patch_data["locations"]
     for location_name, location_data in LOCATIONS_DATA.items():
         if (
-            location_data.get("collect", COLLECT_TOUCH) != COLLECT_CHEST and not location_data.get("is_chest", False)
+                location_data.get("collect", COLLECT_TOUCH) != COLLECT_CHEST and not location_data.get("is_chest", False)
         ) or location_name not in locations_data:
             continue
         chest_addr = rom.get_chest_addr(location_data["room"], 0x15, 0x4F6C)
@@ -207,7 +208,7 @@ def define_samasa_combination(assembler: Z80Assembler, patch_data: dict[str, Any
 
 
 def define_compass_rooms_table(
-    assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
+        assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
 ) -> None:
     table = []
     for location_name, item in patch_data["locations"].items():
@@ -232,7 +233,7 @@ def define_compass_rooms_table(
 
 
 def define_collect_properties_table(
-    assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
+        assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
 ) -> None:
     """
     Defines a table of (group, room, collect mode) entries for randomized items
@@ -303,7 +304,7 @@ def define_additional_tile_replacements(assembler: Z80Assembler, patch_data: dic
 
 
 def define_location_constants(
-    assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
+        assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
 ):
     # If golden ore spots are not shuffled, they are still reachable nonetheless, so we need to enforce their
     # vanilla item for systems to work
@@ -312,7 +313,10 @@ def define_location_constants(
             patch_data["locations"][location_name] = {"item": "Ore Chunks (50)"}
 
     # Define shop prices as constants
-    for symbolic_name, price in patch_data["shop_prices"].items():
+    shop_prices: dict[str, int] = patch_data["shop_prices"]
+    for symbolic_name, price in VANILLA_SHOP_PRICES.items():
+        if symbolic_name in shop_prices:
+            price = shop_prices[symbolic_name]
         assembler.define_byte(f"shopPrices.{symbolic_name}", RUPEE_VALUES[price])
 
     for location_name, location_data in LOCATIONS_DATA.items():
@@ -320,11 +324,15 @@ def define_location_constants(
             continue
 
         symbolic_name = location_data["symbolic_name"]
+        vanilla_item = location_data["vanilla_item"]
         if location_name in patch_data["locations"]:
             item: dict[str, str | bool] = patch_data["locations"][location_name]
-        else:
-            # Put a fake item for disabled locations, since they are unreachable anyway
+        elif vanilla_item == "Filler Item" or vanilla_item == "Random Ring":
+            # These locations should be unreachable
             item = {"item": "Friendship Ring"}
+        else:
+            # If not randomized, try getting the vanilla item, it might be a freestanding item
+            item = {"item": vanilla_item}
 
         item_id, item_subid = get_item_id_and_subid(item_data, item)
         assembler.define_byte(f"locations.{symbolic_name}.id", item_id)
@@ -428,8 +436,6 @@ def define_option_constants(assembler: Z80Assembler, patch_data: dict[str, Any])
     assembler.define_byte("option.smallKeySprite", 0x43 if master_keys_as_boss_keys else 0x42)
 
     scrubs_all_refill = not patch_data["options"]["shuffle_business_scrubs"]
-    if scrubs_all_refill:
-        assembler.define_byte("scrubRefillOnly", 0x01)
     assembler.define_byte("var.spoolSwampScrubSubid", 0x04 if scrubs_all_refill else 0x00)
     assembler.define_byte("var.samasaCaveScrubSubid", 0x04 if scrubs_all_refill else 0x01)
     assembler.define_byte("var.d2ScrubSubid", 0x04 if scrubs_all_refill else 0x02)
@@ -513,7 +519,7 @@ def process_lost_woods_sequence(sequence: list[list[int]]) -> tuple[list[int], s
 
 
 def define_tree_sprites(
-    assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
+        assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
 ) -> None:
     tree_data = {  # Name: (map, position)
         "Horon Village: Seed Tree": (0xF8, 0x48),
@@ -554,12 +560,12 @@ def get_treasure_addr(rom: RomData, item_name: str, item_data: dict[str, dict[st
 
 
 def set_treasure_data(
-    rom: RomData,
-    item_data: dict[str, dict[str, Any]],
-    item_name: str,
-    text_id: int | None,
-    sprite_id: int | None = None,
-    param_value: int | None = None,
+        rom: RomData,
+        item_data: dict[str, dict[str, Any]],
+        item_name: str,
+        text_id: int | None,
+        sprite_id: int | None = None,
+        param_value: int | None = None,
 ) -> None:
     addr = get_treasure_addr(rom, item_name, item_data)
     if text_id is not None:
@@ -760,7 +766,7 @@ def inject_slot_name(rom: RomData, slot_name: str) -> None:
 
 
 def set_dungeon_warps(
-    rom: RomData, patch_data: dict[str, Any], dungeon_entrances: dict[str, Any], dungeon_exits: dict[str, Any]
+        rom: RomData, patch_data: dict[str, Any], dungeon_entrances: dict[str, Any], dungeon_exits: dict[str, Any]
 ) -> None:
     warp_matchings = patch_data["dungeon_entrances"]
     enter_values = {name: rom.read_word(dungeon["addr"]) for name, dungeon in dungeon_entrances.items()}
@@ -836,7 +842,7 @@ def set_portal_warps(rom: RomData, patch_data: dict[str, Any]) -> None:
 
 
 def define_essence_sparkle_constants(
-    assembler: Z80Assembler, patch_data: dict[str, Any], dungeon_entrances: dict[str, Any]
+        assembler: Z80Assembler, patch_data: dict[str, Any], dungeon_entrances: dict[str, Any]
 ) -> None:
     byte_array = []
     show_dungeons_with_essence = patch_data["options"]["show_dungeons_with_essence"]

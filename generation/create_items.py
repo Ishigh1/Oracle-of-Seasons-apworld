@@ -2,7 +2,7 @@ import logging
 
 from BaseClasses import Item, ItemClassification
 
-from ..data.Constants import (
+from ..data.constants import (
     DUNGEON_NAMES,
     ESSENCES,
     ITEM_GROUPS,

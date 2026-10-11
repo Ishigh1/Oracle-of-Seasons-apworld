@@ -55,7 +55,7 @@ DUNGEON_NAMES = [
 ]
 
 VALID_RUPEE_PRICE_VALUES = [1, 2, 5, 10, 20, 25, 30, 40, 50, 60, 70, 80, 100, 150, 200, 300, 400, 500, 900, 999]
-VALID_RUPEE_ITEM_VALUES = [5, 10, 20, 30, 50, 100, 200] # Exclude 1 from the valid values to be generated
+VALID_RUPEE_ITEM_VALUES = [5, 10, 20, 30, 50, 100, 200]  # Exclude 1 from the valid values to be generated
 VALID_ORE_ITEM_VALUES = [10, 25, 50, 100]
 MARKET_LOCATIONS = ["subrosianMarket2", "subrosianMarket3", "subrosianMarket4", "subrosianMarket5"]
 
@@ -119,6 +119,42 @@ OLD_MAN_RUPEE_VALUES = {
     "old man near d6": -200,
     "old man near holly's house": -50,
     "old man near mrs. ruul": -100,
+}
+
+FREESTANDING_LOCATIONS = {
+    "Horon Village: Item Behind Small Tree",
+    "Woods of Winter: Item Below Lake",
+    "Mt. Cucco: Item on Ledge",
+    "Eastern Suburbs: Item in Windmill Cave",
+    "Western Coast: Item in Graveyard",
+    "Spool Swamp: Item Amidst Currents in Spring",
+    "Temple Remains: Item in Cave Behind Rockslide",
+    "Horon Village: Item Behind Cracked Wall in Mayor's House",
+    "Subrosia: Item in House Above Strange Brothers Portal",
+    "Subrosia: Item in Basement to Tower of Spring",
+    "Holodrum Plain: Underwater Item Below Natzu Bridge",
+    "Horon Village: Item Inside Maku Tree (3+ Essences)",
+    "Horon Village: Item Inside Maku Tree (5+ Essences)",
+    "Horon Village: Item Inside Maku Tree (7+ Essences)",
+}
+
+TRADE_LOCATIONS = {
+    "Horon Village: Dr. Left Reward",
+    "North Horon: Malon Trade",
+    "Maple Trade",
+    "Holodrum Plain: Mrs. Ruul Trade",
+    "Subrosia: Subrosian Chef Trade",
+    "Goron Mountain: Biggoron Trade",
+    "Sunken City: Ingo Trade",
+    "North Horon: Yelling Old Man Trade",
+    "Mt. Cucco: Talon Trade",
+    "Mt. Cucco: Chest Behind Talon",
+    "Sunken City: Syrup Trade",
+    "Sunken City: Syrup Shop #1",
+    "Sunken City: Syrup Shop #2",
+    "Sunken City: Syrup Shop #3",
+    "Horon Village: Tick Tock Trade",
+    "Eastern Suburbs: Guru-Guru Trade",
 }
 
 RUPEE_OLD_MAN_LOCATIONS = [

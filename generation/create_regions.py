@@ -3,13 +3,15 @@ from typing import Any, cast
 
 from BaseClasses import Item, ItemClassification, Location, LocationProgressType, Region
 
-from ..data.Constants import (
+from ..data.constants import (
     ESSENCES,
+    FREESTANDING_LOCATIONS,
     LOCATION_GROUPS,
     RUPEE_OLD_MAN_LOCATIONS,
     SCRUB_LOCATIONS,
     SECRETS,
     SUBROSIA_HIDDEN_DIGGING_SPOTS_LOCATIONS,
+    TRADE_LOCATIONS,
 )
 from ..data.locations import LOCATIONS_DATA
 from ..data.regions import (
@@ -46,12 +48,16 @@ def location_is_active(world: OracleOfSeasonsWorld, location_name: str, location
         return world.options.shuffle_business_scrubs
     if location_name.startswith("Gasha Nut #"):
         return int(location_name[11:]) <= world.options.deterministic_gasha_locations
+    if location_name in FREESTANDING_LOCATIONS and not world.options.freestanding:
+        return False
     if location_name == "Horon Village: Item Inside Maku Tree (3+ Essences)":
         return len(world.essences_in_game) >= 3
     if location_name == "Horon Village: Item Inside Maku Tree (5+ Essences)":
         return len(world.essences_in_game) >= 5
     if location_name == "Horon Village: Item Inside Maku Tree (7+ Essences)":
         return len(world.essences_in_game) >= 7
+    if location_name in TRADE_LOCATIONS:
+        return world.options.trade_sequence
     if location_name in SECRETS:
         return world.options.secret_locations
     if location_name in LOCATION_GROUPS["D11"]:
@@ -86,11 +92,15 @@ def create_regions(world: OracleOfSeasonsWorld) -> None:
         world.multiworld.regions.append(region)
 
     if world.options.advance_shop:
-        region = Region("advance shop", world.player, world.multiworld)
+        region = Region(RegionName.advance_shop, world.player, world.multiworld)
+        world.multiworld.regions.append(region)
+
+    if world.options.trade_sequence:
+        region = Region(RegionName.syrup_shop, world.player, world.multiworld)
         world.multiworld.regions.append(region)
 
     if world.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell:
-        region = Region("rooster adventure", world.player, world.multiworld)
+        region = Region(RegionName.rooster_adventure, world.player, world.multiworld)
         world.multiworld.regions.append(region)
 
     if world.options.deterministic_gasha_locations > 0:
@@ -210,14 +220,15 @@ def create_events(world: OracleOfSeasonsWorld) -> None:
 
 def exclude_locations_automatically(world: OracleOfSeasonsWorld) -> None:
     locations_to_exclude = set()
-    # If goal essence requirement is set to a specific value, prevent essence-bound checks which require more
-    # essences than this goal to hold anything of value
-    if world.options.required_essences < 7 <= len(world.essences_in_game):
-        locations_to_exclude.add("Horon Village: Item Inside Maku Tree (7+ Essences)")
-        if world.options.required_essences < 5 <= len(world.essences_in_game):
-            locations_to_exclude.add("Horon Village: Item Inside Maku Tree (5+ Essences)")
-            if world.options.required_essences < 3 <= len(world.essences_in_game):
-                locations_to_exclude.add("Horon Village: Item Inside Maku Tree (3+ Essences)")
+    if world.options.freestanding:
+        # If goal essence requirement is set to a specific value, prevent essence-bound checks which require more
+        # essences than this goal to hold anything of value
+        if world.options.required_essences < 7 <= len(world.essences_in_game):
+            locations_to_exclude.add("Horon Village: Item Inside Maku Tree (7+ Essences)")
+            if world.options.required_essences < 5 <= len(world.essences_in_game):
+                locations_to_exclude.add("Horon Village: Item Inside Maku Tree (5+ Essences)")
+                if world.options.required_essences < 3 <= len(world.essences_in_game):
+                    locations_to_exclude.add("Horon Village: Item Inside Maku Tree (3+ Essences)")
     if world.options.required_essences < world.options.treehouse_old_man_requirement:
         locations_to_exclude.add("Holodrum Plain: Old Man in Treehouse")
 

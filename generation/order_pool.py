@@ -2,7 +2,7 @@ from typing import cast
 
 from BaseClasses import Item, MultiWorld
 
-from ..data.Constants import SEASON_WINTER
+from ..data.constants import SEASON_WINTER
 from ..options import OracleOfSeasonsStartingPosition
 from ..world import OracleOfSeasonsWorld
 

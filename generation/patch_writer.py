@@ -6,7 +6,7 @@ from BaseClasses import Location
 from Options import Option
 from worlds.tloz_oos.data.locations import LOCATIONS_DATA
 
-from ..data.Constants import VALID_RUPEE_PRICE_VALUES
+from ..data.constants import VALID_RUPEE_PRICE_VALUES
 from ..options import OracleOfSeasonsOptions, OracleOfSeasonsShopPrices
 from ..patching.procedure_patch import OoSProcedurePatch
 from ..world import OracleOfSeasonsWorld

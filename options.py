@@ -639,6 +639,24 @@ class OracleOfSeasonsShopPrices(Choice):
     default = 0
 
 
+class OracleOfSeasonsShuffleFreestandingItems(DefaultOnToggle):
+    """
+    Enable the shuffle of items that aren't in a chest
+    (except the vanilla D1 satchel location, which is always shuffled)
+    """
+
+    display_name = "Shuffle Freestanding Items"
+
+
+class OracleOfSeasonsIncludeTradeSequence(DefaultOnToggle):
+    """
+    Include the trade sequence in the randomization, including the pedestal
+    (if enabled, each prerequisite and reward of the sequence will be shuffled)
+    """
+
+    display_name = "Shuffle Freestanding Items"
+
+
 class OracleOfSeasonsAdvanceShop(Toggle):
     """
     In the vanilla game, there is a house northwest of Horon Village hosting the secret "Advance Shop" that can only
@@ -887,6 +905,8 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     death_link: OracleOfSeasonsDeathLink
 
     # Optional locations
+    freestanding: OracleOfSeasonsShuffleFreestandingItems
+    trade_sequence: OracleOfSeasonsIncludeTradeSequence
     advance_shop: OracleOfSeasonsAdvanceShop
     shuffle_old_men: OracleOfSeasonsOldMenShuffle
     shuffle_business_scrubs: OracleOfSeasonsBusinessScrubsShuffle
@@ -979,6 +999,8 @@ oos_option_groups = [
     OptionGroup(
         "Optional Locations",
         [
+            OracleOfSeasonsShuffleFreestandingItems,
+            OracleOfSeasonsIncludeTradeSequence,
             OracleOfSeasonsAdvanceShop,
             OracleOfSeasonsOldMenShuffle,
             OracleOfSeasonsBusinessScrubsShuffle,
