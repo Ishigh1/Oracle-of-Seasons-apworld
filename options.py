@@ -650,7 +650,7 @@ class OracleOfSeasonsShuffleFreestandingItems(DefaultOnToggle):
 
 class OracleOfSeasonsIncludeTradeSequence(DefaultOnToggle):
     """
-    Include the trade sequence in the randomization, including the pedestal
+    Include the trade sequence in the randomization, excluding the pedestal
     (if enabled, each prerequisite and reward of the sequence will be shuffled)
     """
 
