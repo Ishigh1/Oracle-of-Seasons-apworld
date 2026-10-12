@@ -1,7 +1,6 @@
 from rule_builder.rules import And, CanReachRegion, Has, Or, True_
 
 from ...options import (
-    OracleOfSeasonsIncludeTradeSequence,
     OracleOfSeasonsOptions,
 )
 from ..regions import RegionName
@@ -34,7 +33,6 @@ from .logic_predicates import (
     oos_option_medium_logic,
     oos_self_locking_item,
 )
-from .rulebuilder import from_option
 
 
 def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
@@ -222,16 +220,7 @@ def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             RegionName.subrosia_bridge_sector,
             RegionName.subrosian_chef_trade,
             False,
-            Or(
-                And(
-                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_false),
-                    CanReachRegion(RegionName.dr_left_reward),
-                ),
-                And(
-                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_true),
-                    Or(Has("Iron Pot"), oos_self_locking_item("Subrosia: Subrosian Chef Trade", "Iron Pot")),
-                ),
-            ),
+            Or(Has("Iron Pot"), oos_self_locking_item("Subrosia: Subrosian Chef Trade", "Iron Pot")),
         ),
         (
             RegionName.subrosia_east_junction,

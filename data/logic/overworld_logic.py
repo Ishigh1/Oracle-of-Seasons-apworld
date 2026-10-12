@@ -127,16 +127,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             RegionName.maple_encounter,
             RegionName.maple_trade,
             False,
-            Or(
-                And(
-                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_false),
-                    CanReachRegion(RegionName.malon_trade),
-                ),
-                And(
-                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_true),
-                    Or(Has("Lon Lon Egg"), oos_self_locking_item("Maple Trade", "Lon Lon Egg")),
-                ),
-            ),
+            Or(Has("Lon Lon Egg"), oos_self_locking_item("Maple Trade", "Lon Lon Egg")),
         ),
         (RegionName.maple_encounter, RegionName.maple_rare_item_1, False, oos_has_prog(15)),
         (RegionName.maple_rare_item_1, RegionName.maple_rare_item_2, False, oos_has_prog(30)),
@@ -162,31 +153,13 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             RegionName.horon_village,
             RegionName.old_man_trade,
             False,
-            Or(
-                And(
-                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_false),
-                    CanReachRegion(RegionName.ingo_trade),
-                ),
-                And(
-                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_true),
-                    Or(Has("Fish"), oos_self_locking_item("North Horon: Yelling Old Man Trade", "Fish")),
-                ),
-            ),
+            Or(Has("Fish"), oos_self_locking_item("North Horon: Yelling Old Man Trade", "Fish")),
         ),
         (
             RegionName.horon_village,
             RegionName.tick_tock_trade,
             False,
-            Or(
-                And(
-                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_false),
-                    CanReachRegion(RegionName.syrup_trade),
-                ),
-                And(
-                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_true),
-                    Or(Has("Wooden Bird"), oos_self_locking_item("Horon Village: Tick Tock Trade", "Wooden Bird")),
-                ),
-            ),
+            Or(Has("Wooden Bird"), oos_self_locking_item("Horon Village: Tick Tock Trade", "Wooden Bird")),
         ),
         (RegionName.horon_village, RegionName.maku_tree, False, oos_has_sword(False)),
         (
@@ -342,18 +315,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             RegionName.suburbs,
             RegionName.guru_guru_trade,
             False,
-            Or(
-                And(
-                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_false),
-                    CanReachRegion(RegionName.tick_tock_trade),
-                ),
-                And(
-                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_true),
-                    Or(
-                        Has("Engine Grease"), oos_self_locking_item("Eastern Suburbs: Guru-Guru Trade", "Engine Grease")
-                    ),
-                ),
-            ),
+            Or(Has("Engine Grease"), oos_self_locking_item("Eastern Suburbs: Guru-Guru Trade", "Engine Grease")),
         ),
         (
             RegionName.suburbs,
@@ -535,16 +497,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             RegionName.d1_stump,
             RegionName.malon_trade,
             False,
-            Or(
-                And(
-                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_false),
-                    CanReachRegion(RegionName.dr_left_reward),
-                ),
-                And(
-                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_true),
-                    Or(Has("Cuccodex"), oos_self_locking_item("North Horon: Malon Trade", "Cuccodex")),
-                ),
-            ),
+            Or(Has("Cuccodex"), oos_self_locking_item("North Horon: Malon Trade", "Cuccodex")),
         ),
         (RegionName.d1_stump, RegionName.d1_island, True, oos_can_break_bush(True, True)),
         (RegionName.d1_stump, RegionName.old_man_near_d1, False, oos_can_use_ember_seeds(False)),
@@ -792,16 +745,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             RegionName.ghastly_stump,
             RegionName.mrs_ruul_trade,
             False,
-            Or(
-                And(
-                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_false),
-                    CanReachRegion(RegionName.maple_trade),
-                ),
-                And(
-                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_true),
-                    Or(Has("Ghastly Doll"), oos_self_locking_item("Holodrum Plain: Mrs. Ruul Trade", "Ghastly Doll")),
-                ),
-            ),
+            Or(Has("Ghastly Doll"), oos_self_locking_item("Holodrum Plain: Mrs. Ruul Trade", "Ghastly Doll")),
         ),
         (RegionName.ghastly_stump, RegionName.old_man_near_mrs_ruul, False, oos_can_use_ember_seeds(False)),
         (
@@ -1142,16 +1086,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             RegionName.sunken_city,
             RegionName.ingo_trade,
             False,
-            Or(
-                And(
-                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_false),
-                    CanReachRegion(RegionName.biggoron_trade),
-                ),
-                And(
-                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_true),
-                    Or(Has("Goron Vase"), oos_self_locking_item("Sunken City: Ingo Trade", "Goron Vase")),
-                ),
-            ),
+            Or(Has("Goron Vase"), oos_self_locking_item("Sunken City: Ingo Trade", "Goron Vase")),
         ),
         (
             RegionName.sunken_city,
@@ -1163,23 +1098,14 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             RegionName.syrup,
             RegionName.syrup_trade,
             False,
-            Or(
-                And(
-                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_false),
-                    CanReachRegion(RegionName.dr_left_reward),
-                ),
-                And(
-                    from_option(OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_true),
-                    Has("Mushroom"),
-                ),
-            ),
+            Has("Mushroom"),
         ),
         (
             RegionName.syrup_trade,
             RegionName.syrup_shop,
             False,
             oos_has_rupees_for_shop("syrupShop"),
-            bool(options.trade_sequence)
+            bool(options.trade_sequence),
         ),
         # Use Dimitri to get the tree seeds, using dimitri to get seeds being medium difficulty
         (
@@ -1278,20 +1204,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             False,
             And(
                 Or(oos_is_default_season("SUNKEN_CITY", SEASON_WINTER, False), oos_can_remove_season(SEASON_WINTER)),
-                Or(
-                    And(
-                        from_option(
-                            OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_false
-                        ),
-                        CanReachRegion(RegionName.old_man_trade),
-                    ),
-                    And(
-                        from_option(
-                            OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_true
-                        ),
-                        Has("Megaphone"),
-                    ),
-                ),
+                Has("Megaphone"),
             ),
         ),
         (RegionName.mt_cucco_talons_cave_entrance, RegionName.mt_cucco_heart_piece, False, True_()),
@@ -1347,25 +1260,12 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             And(
                 oos_can_jump_1_wide_liquid(False),
                 Or(
+                    Has("Lava Soup"),
                     And(
+                        oos_self_locking_item("Goron Mountain: Biggoron Trade", "Lava Soup"),
                         from_option(
-                            OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_false
-                        ),
-                        CanReachRegion(RegionName.subrosian_chef_trade),
-                    ),
-                    And(
-                        from_option(
-                            OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_true
-                        ),
-                        Or(
-                            Has("Lava Soup"),
-                            And(
-                                oos_self_locking_item("Goron Mountain: Biggoron Trade", "Lava Soup"),
-                                from_option(
-                                    OracleOfSeasonsIncludeSecretLocations,
-                                    OracleOfSeasonsIncludeSecretLocations.option_false,
-                                ),
-                            ),
+                            OracleOfSeasonsIncludeSecretLocations,
+                            OracleOfSeasonsIncludeSecretLocations.option_false,
                         ),
                     ),
                 ),
@@ -1507,20 +1407,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                     oos_can_remove_season(SEASON_WINTER),
                 ),
                 oos_can_use_ember_seeds(False),
-                Or(
-                    And(
-                        from_option(
-                            OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_false
-                        ),
-                        CanReachRegion(RegionName.guru_guru_trade),
-                    ),
-                    And(
-                        from_option(
-                            OracleOfSeasonsIncludeTradeSequence, OracleOfSeasonsIncludeTradeSequence.option_true
-                        ),
-                        Has("Phonograph"),
-                    ),
-                ),
+                Has("Phonograph"),
             ),
         ),
         (RegionName.lost_woods_stump, RegionName.lost_woods, False, oos_can_reach_lost_woods_pedestal(False)),

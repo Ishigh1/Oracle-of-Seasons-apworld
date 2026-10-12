@@ -217,6 +217,24 @@ def create_events(world: OracleOfSeasonsWorld) -> None:
         for region_name in world.old_man_rupee_values:
             create_event(world, region_name, "rupees from " + region_name)
 
+    # Events for the trade sequence, only in casual and shuffled code
+    if not world.options.trade_sequence and (
+        world.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_casual
+        or world.options.randomize_lost_woods_item_sequence
+    ):
+        create_event(world, RegionName.dr_left_reward, "Cuccodex")
+        create_event(world, RegionName.malon_trade, "Lon Lon Egg")
+        create_event(world, RegionName.maple_trade, "Ghastly Doll")
+        create_event(world, RegionName.mrs_ruul_trade, "Iron Pot")
+        create_event(world, RegionName.subrosian_chef_trade, "Lava Soup")
+        create_event(world, RegionName.biggoron_trade, "Goron Vase")
+        create_event(world, RegionName.ingo_trade, "Fish")
+        create_event(world, RegionName.old_man_trade, "Megaphone")
+        create_event(world, RegionName.talon_trade, "Mushroom")
+        create_event(world, RegionName.syrup_trade, "Wooden Bird")
+        create_event(world, RegionName.tick_tock_trade, "Engine Grease")
+        create_event(world, RegionName.guru_guru_trade, "Phonograph")
+
 
 def exclude_locations_automatically(world: OracleOfSeasonsWorld) -> None:
     locations_to_exclude = set()
