@@ -1,5 +1,7 @@
 from enum import IntEnum
 
+from .items import ItemName
+
 ROM_HASH = "f2dc6c4e093e4f8c6cbea80e8dbd62cb"
 AGES_ROM_HASH = "c4639cc61c049e5a085526bb6cac03bb"
 
@@ -38,6 +40,65 @@ SEED_ITEMS = [
     "Gale Seeds",
     "Mystery Seeds",
 ]
+
+UNLOCK_ITEMS = {
+    "Hero's Cave": ["Hero's Cave: Keydoor Unlock"],
+    "Gnarled Root Dungeon": [
+        "Gnarled Root Dungeon: Keydoor Left of Entrance Unlock",
+        "Gnarled Root Dungeon: Miniboss Keydoor Unlock",
+    ],
+    "Snake's Remains": [
+        "Snake's Remains: Keydoor to Hardhats Unlock",
+        "Snake's Remains: Miniboss Keydoor Unlock",
+        "Snake's Remains: Spinner Keyblock Unlock",
+    ],
+    "Poison Moth's Lair": [
+        "Poison Moth Lair: Keydoor to Mimics Unlock",
+        "Poison Moth Lair: Miniboss Keydoor Unlock",
+    ],
+    "Dancing Dragon Dungeon": [
+        ItemName.dancing_dragon_dungeon_entrance_keydoor_unlock,
+        "Dancing Dragon Dungeon: Minecart Keyblock Unlock",
+        "Dancing Dragon Dungeon: Crumbling Floor Keydoor Unlock",
+        "Dancing Dragon Dungeon: Pool Keyblock Unlock",
+        "Dancing Dragon Dungeon: Boss Keyblock Unlock",
+    ],
+    "Unicorn's Cave": [
+        "Unicorn's Cave: Magnet Gloves Keydoor Unlock",
+        "Unicorn's Cave: Miniboss Keydoor Unlock",
+        "Unicorn's Cave: Wall of Flames Keydoor Unlock",
+        "Unicorn's Cave: Basement Keydoor Unlock",
+        "Unicorn's Cave: Boss Keyblock Unlock",
+    ],
+    "Ancient Ruins": [
+        "Ancient Ruins: Entrance Keyblock Unlock",
+        "Ancient Ruins: Right Path Keydoor Unlock",
+        "Ancient Ruins: Miniboss Keydoor Unlock",
+    ],
+    "Explorer's Crypt": [
+        "Explorer's Crypt: Entrance Keydoor Unlock",
+        "Explorer's Crypt: Keydoor to Enclosed Trampoline Unlock",
+        "Explorer's Crypt: Margret's Keydoor Unlock",
+        "Explorer's Crypt: Flying Tile Keyblock Unlock",
+        "Explorer's Crypt: Shining Blue Puzzle Keydoor Unlock",
+    ],
+    "Sword & Shield Dungeon": [
+        "Sword & Shield Dungeon: Entrance Keyblock Unlock",
+        "Sword & Shield Dungeon: Spinner Keydoor Unlock",
+        "Sword & Shield Dungeon: Miniboss Keydoor Unlock",
+        "Sword & Shield Dungeon: Ice Crystals Keydoor Unlock",
+        "Sword & Shield Dungeon: Lava Hole Keyblock Unlock",
+        "Sword & Shield Dungeon: Beamos Keydoor Unlock",
+        "Sword & Shield Dungeon: Boss Keyblock Unlock",
+    ],
+    "Linked Hero's Cave": [
+        "Linked Hero's Cave: Floor 2 Keydoor Unlock",
+        "Linked Hero's Cave: Floor 3 Keyblock Unlock",
+        "Linked Hero's Cave: Floor 3 Keydoor Unlock",
+        "Linked Hero's Cave: Boomerang Maze Keydoor Unlock",
+        "Linked Hero's Cave: Final Challenge Keydoor Unlock",
+    ],
+}
 
 DUNGEON_NAMES = [
     "Hero's Cave",

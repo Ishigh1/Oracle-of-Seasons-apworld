@@ -32,10 +32,10 @@ from ...data.items import ITEMS_DATA
 from ...data.locations import LOCATIONS_DATA
 from ...options import (
     OracleOfSeasonsAnimalCompanion,
+    OracleOfSeasonsDungeonKeyType,
     OracleOfSeasonsFoolsOre,
     OracleOfSeasonsGoal,
     OracleOfSeasonsLinkedHerosCave,
-    OracleOfSeasonsMasterKeys,
     OracleOfSeasonsOldMenShuffle,
     OracleOfSeasonsShowDungeonsWithEssence,
     OracleOfSeasonsStartingPosition,
@@ -62,7 +62,7 @@ from ..util import get_item_id_and_subid
 
 
 def define_foreign_item_data(
-        assembler: Z80Assembler, texts: dict[str, str], patch_data: dict[str, Any]
+    assembler: Z80Assembler, texts: dict[str, str], patch_data: dict[str, Any]
 ) -> dict[str, dict[str, Any]]:
     # Register all foreign items and save their text as TX_0cxx, id 0x41, subid xx
     item_data = ITEMS_DATA.copy()
@@ -145,7 +145,7 @@ def write_chest_contents(rom: RomData, patch_data: dict[str, Any], item_data: di
     locations_data = patch_data["locations"]
     for location_name, location_data in LOCATIONS_DATA.items():
         if (
-                location_data.get("collect", COLLECT_TOUCH) != COLLECT_CHEST and not location_data.get("is_chest", False)
+            location_data.get("collect", COLLECT_TOUCH) != COLLECT_CHEST and not location_data.get("is_chest", False)
         ) or location_name not in locations_data:
             continue
         chest_addr = rom.get_chest_addr(location_data["room"], 0x15, 0x4F6C)
@@ -208,7 +208,7 @@ def define_samasa_combination(assembler: Z80Assembler, patch_data: dict[str, Any
 
 
 def define_compass_rooms_table(
-        assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
+    assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
 ) -> None:
     table = []
     for location_name, item in patch_data["locations"].items():
@@ -233,7 +233,7 @@ def define_compass_rooms_table(
 
 
 def define_collect_properties_table(
-        assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
+    assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
 ) -> None:
     """
     Defines a table of (group, room, collect mode) entries for randomized items
@@ -304,7 +304,7 @@ def define_additional_tile_replacements(assembler: Z80Assembler, patch_data: dic
 
 
 def define_location_constants(
-        assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
+    assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
 ):
     # If golden ore spots are not shuffled, they are still reachable nonetheless, so we need to enforce their
     # vanilla item for systems to work
@@ -432,7 +432,9 @@ def define_option_constants(assembler: Z80Assembler, patch_data: dict[str, Any])
     keysanity = patch_data["options"]["keysanity_small_keys"] or patch_data["options"]["keysanity_boss_keys"]
     assembler.define_byte("option.customCompassChimes", 1 if keysanity else 0)
 
-    master_keys_as_boss_keys = patch_data["options"]["master_keys"] == OracleOfSeasonsMasterKeys.option_all_dungeon_keys
+    master_keys_as_boss_keys = (
+        patch_data["options"]["dungeon_key_type"] == OracleOfSeasonsDungeonKeyType.option_master_key_all_dungeon_keys
+    )
     assembler.define_byte("option.smallKeySprite", 0x43 if master_keys_as_boss_keys else 0x42)
 
     scrubs_all_refill = not patch_data["options"]["shuffle_business_scrubs"]
@@ -519,7 +521,7 @@ def process_lost_woods_sequence(sequence: list[list[int]]) -> tuple[list[int], s
 
 
 def define_tree_sprites(
-        assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
+    assembler: Z80Assembler, patch_data: dict[str, Any], item_data: dict[str, dict[str, Any]]
 ) -> None:
     tree_data = {  # Name: (map, position)
         "Horon Village: Seed Tree": (0xF8, 0x48),
@@ -560,12 +562,12 @@ def get_treasure_addr(rom: RomData, item_name: str, item_data: dict[str, dict[st
 
 
 def set_treasure_data(
-        rom: RomData,
-        item_data: dict[str, dict[str, Any]],
-        item_name: str,
-        text_id: int | None,
-        sprite_id: int | None = None,
-        param_value: int | None = None,
+    rom: RomData,
+    item_data: dict[str, dict[str, Any]],
+    item_name: str,
+    text_id: int | None,
+    sprite_id: int | None = None,
+    param_value: int | None = None,
 ) -> None:
     addr = get_treasure_addr(rom, item_name, item_data)
     if text_id is not None:
@@ -620,10 +622,10 @@ def apply_miscellaneous_options(rom: RomData, patch_data: dict[str, Any]) -> Non
     if patch_data["options"]["enforce_potion_in_shop"]:
         rom.write_byte(GameboyAddress(0x08, 0x4CFB).address_in_rom(), 0x00)
 
-    if patch_data["options"]["master_keys"] != OracleOfSeasonsMasterKeys.option_disabled:
+    if patch_data["options"]["dungeon_key_type"] >= OracleOfSeasonsDungeonKeyType.option_master_key_all_small_keys:
         # Remove small key consumption on keydoor opened
         rom.write_byte(GameboyAddress(0x06, 0x4357).address_in_rom(), 0x00)
-    if patch_data["options"]["master_keys"] == OracleOfSeasonsMasterKeys.option_all_dungeon_keys:
+    if patch_data["options"]["dungeon_key_type"] == OracleOfSeasonsDungeonKeyType.option_master_key_all_dungeon_keys:
         # Remove boss key consumption on boss keydoor opened
         rom.write_word(GameboyAddress(0x06, 0x434F).address_in_rom(), 0x0000)
     rom.write_byte(GameboyAddress(0x0A, 0x46ED).address_in_rom(), patch_data["options"]["gasha_nut_kill_requirement"])
@@ -766,7 +768,7 @@ def inject_slot_name(rom: RomData, slot_name: str) -> None:
 
 
 def set_dungeon_warps(
-        rom: RomData, patch_data: dict[str, Any], dungeon_entrances: dict[str, Any], dungeon_exits: dict[str, Any]
+    rom: RomData, patch_data: dict[str, Any], dungeon_entrances: dict[str, Any], dungeon_exits: dict[str, Any]
 ) -> None:
     warp_matchings = patch_data["dungeon_entrances"]
     enter_values = {name: rom.read_word(dungeon["addr"]) for name, dungeon in dungeon_entrances.items()}
@@ -842,7 +844,7 @@ def set_portal_warps(rom: RomData, patch_data: dict[str, Any]) -> None:
 
 
 def define_essence_sparkle_constants(
-        assembler: Z80Assembler, patch_data: dict[str, Any], dungeon_entrances: dict[str, Any]
+    assembler: Z80Assembler, patch_data: dict[str, Any], dungeon_entrances: dict[str, Any]
 ) -> None:
     byte_array = []
     show_dungeons_with_essence = patch_data["options"]["show_dungeons_with_essence"]

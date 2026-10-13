@@ -344,8 +344,6 @@ class RegionName(StrEnum):
     d8_SW_lava_chest = "d8 SW lava chest"
     d8_SE_lava_chest = "d8 SE lava chest"
     d8_spark_chest = "d8 spark chest"
-    d8_NW_crystal = "d8 NW crystal"
-    d8_SW_crystal = "d8 SW crystal"
     d8_boss = "d8 boss"
     old_man_in_horon = "old man in horon"
     old_man_near_d1 = "old man near d1"

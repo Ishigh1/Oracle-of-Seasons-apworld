@@ -368,6 +368,7 @@ DEFINES = {
     "TREASURE_PHONOGRAPH": "$3f",  # Rando specific ID
     "TREASURE_BOMB_UPGRADE": "$61",
     "TREASURE_BOMBCHU_UPGRADE": "$5f", # Rando specific ID
+    "TREASURE_UNLOCK": "$5e", # Rando specific ID
     # Scripting
     "scriptend": "$00",
     "loadscript": "$83",

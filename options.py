@@ -350,21 +350,23 @@ class OracleOfSeasonsShowDungeonsWithEssence(Choice):
     include_in_slot_data = True
 
 
-class OracleOfSeasonsMasterKeys(Choice):
+class OracleOfSeasonsDungeonKeyType(Choice):
     """
-    - Disabled: All dungeon keys must be obtained individually, just like in vanilla
-    - All Small Keys: Small Keys are replaced by a single Master Key for each dungeon which is capable of opening
-      every small keydoor for that dungeon
-    - All Dungeon Keys: the Master Key for each dungeon is also capable of opening the boss keydoor,
+    - Vanilla: All dungeon keys must be obtained individually
+    - Master Key All Small Keys: Small Keys are replaced by a single Master Key for each dungeon
+      which is capable of opening every small keydoor for that dungeon
+    - Master Key All Dungeon Keys: the Master Key for each dungeon is also capable of opening the boss keydoor,
       removing Boss Keys from the item pool
-    Master Keys placement is determined following the "Keysanity (Small Keys)" option.
+    - Unlocks: Small keys are all replaced by unlocks items that immediately open specific doors when obtained
+    Master Keys/Unlocks placement is determined following the "Keysanity (Small Keys)" option.
     """
 
-    display_name = "Master Keys"
+    display_name = "Dungeon Key Type"
 
-    option_disabled = 0
-    option_all_small_keys = 1
-    option_all_dungeon_keys = 2
+    option_vanilla = 0
+    option_unlocks = 1
+    option_master_key_all_small_keys = 2
+    option_master_key_all_dungeon_keys = 3
 
     default = 0
     include_in_patch = True
@@ -602,7 +604,7 @@ class OracleOfSeasonsRequiredRings(ItemSet):
     """
 
     display_name = "Required Rings"
-    valid_keys = frozenset(name for name, idata in ITEMS_DATA.items() if "ring" in idata)
+    valid_keys = frozenset(str(name) for name, idata in ITEMS_DATA.items() if "ring" in idata)
 
 
 class OracleOfSeasonsExcludedRings(ItemSet):
@@ -612,8 +614,8 @@ class OracleOfSeasonsExcludedRings(ItemSet):
     """
 
     display_name = "Excluded Rings"
-    default = frozenset(name for name, idata in ITEMS_DATA.items() if "ring" in idata and idata["ring"] == "useless")
-    valid_keys = frozenset(name for name, idata in ITEMS_DATA.items() if "ring" in idata)
+    default = frozenset(str(name) for name, idata in ITEMS_DATA.items() if "ring" in idata and idata["ring"] == "useless")
+    valid_keys = frozenset(str(name) for name, idata in ITEMS_DATA.items() if "ring" in idata)
 
 
 class OracleOfSeasonsShopPrices(Choice):
@@ -938,7 +940,7 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     duplicate_seed_tree: OracleOfSeasonsDuplicateSeedTree
 
     # Dungeon items
-    master_keys: OracleOfSeasonsMasterKeys
+    dungeon_key_type: OracleOfSeasonsDungeonKeyType
     keysanity_small_keys: OracleOfSeasonsSmallKeyShuffle
     keysanity_boss_keys: OracleOfSeasonsBossKeyShuffle
     keysanity_maps_compasses: OracleOfSeasonsMapCompassShuffle
@@ -1044,7 +1046,7 @@ oos_option_groups = [
     OptionGroup(
         "Dungeon Items",
         [
-            OracleOfSeasonsMasterKeys,
+            OracleOfSeasonsDungeonKeyType,
             OracleOfSeasonsSmallKeyShuffle,
             OracleOfSeasonsBossKeyShuffle,
             OracleOfSeasonsMapCompassShuffle,

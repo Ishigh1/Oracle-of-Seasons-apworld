@@ -6,6 +6,7 @@ from ...common.patching.z80asm.Assembler import Z80Assembler
 from ...data.constants import SEED_ITEMS
 from ...data.locations import LOCATIONS_DATA
 from ...generation.hints import make_hint_texts
+from ...options import OracleOfSeasonsDungeonKeyType
 
 
 def process_item_name_for_shop_text(item: dict[str, str | bool]) -> str:
@@ -182,7 +183,7 @@ def define_dungeon_items_text_constants(texts: dict[str, str], patch_data: dict[
 
         # ###### Small keys ##############################################
         small_key_text = "You found a\n🟥"
-        if patch_data["options"]["master_keys"]:
+        if patch_data["options"]["dungeon_key_type"] >= OracleOfSeasonsDungeonKeyType.option_master_key_all_small_keys:
             small_key_text += "Master Key"
         else:
             small_key_text += "Small Key"
@@ -219,5 +220,5 @@ def define_dungeon_items_text_constants(texts: dict[str, str], patch_data: dict[
         compasses_text += "⬜!"
         texts[f"TX_00{simple_hex(base_id + i + 25)}"] = compasses_text
 
-    if patch_data["options"]["master_keys"]:
+    if patch_data["options"]["dungeon_key_type"] >= OracleOfSeasonsDungeonKeyType.option_master_key_all_small_keys:
         texts["TX_001a"] = texts["TX_001a"].replace("Small", "Master")

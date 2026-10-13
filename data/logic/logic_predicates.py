@@ -1,10 +1,11 @@
 from rule_builder.field_resolvers import FromOption, FromWorldAttr
 from rule_builder.options import OptionFilter
-from rule_builder.rules import And, AtLeast, CanReachRegion, Has, HasFromList, HasGroup, Or, True_, False_
+from rule_builder.rules import And, AtLeast, CanReachRegion, False_, Has, HasFromList, HasGroup, Or, True_
 
 from ...options import (
     OracleOfSeasonsAnimalCompanion,
     OracleOfSeasonsDefaultSeedType,
+    OracleOfSeasonsDungeonKeyType,
     OracleOfSeasonsDungeonShuffle,
     OracleOfSeasonsFoolsOre,
     OracleOfSeasonsGoldenBeastsRequirement,
@@ -14,7 +15,6 @@ from ...options import (
     OracleOfSeasonsLogicDifficulty,
     OracleOfSeasonsLostWoodsItemSequence,
     OracleOfSeasonsLostWoodsMainSequence,
-    OracleOfSeasonsMasterKeys,
     OracleOfSeasonsRemoveD0AltEntrance,
     OracleOfSeasonsRemoveD2AltEntrance,
     OracleOfSeasonsRequiredEssences,
@@ -24,7 +24,6 @@ from ...options import (
 from ..constants import DUNGEON_NAMES, SEASON_AUTUMN, SEASON_ITEMS, SEASON_SPRING, SEASON_SUMMER, SEASON_WINTER
 from ..regions import GASHA_SPOT_REGIONS, RegionName
 from .rulebuilder import ItemInLocation, LostWoods, Rule, from_bool, from_option, from_world_field
-
 
 # Items predicates ############################################################
 
@@ -180,18 +179,33 @@ def oos_has_gale_seeds() -> Rule:
         Has("Gale Seeds"), from_option(OracleOfSeasonsDefaultSeedType, OracleOfSeasonsDefaultSeedType.option_gale)
     )
 
+def oos_has_unlock(keylock_name: str) -> Rule:
+    return Has(
+        keylock_name,
+        options=[OptionFilter(OracleOfSeasonsDungeonKeyType, OracleOfSeasonsDungeonKeyType.option_unlocks)],
+    )
 
-def oos_has_small_keys(dungeon_id: int, amount: int = 1) -> Rule:
+def oos_has_small_keys(dungeon_id: int, amount: int = 1, keylock_name: str | None = None) -> Rule:
+    if keylock_name is None:
+        unlock_rule = False_()
+    else:
+        unlock_rule = oos_has_unlock(keylock_name)
+
     return Or(
         Has(
             f"Small Key ({DUNGEON_NAMES[dungeon_id]})",
             amount,
-            options=[OptionFilter(OracleOfSeasonsMasterKeys, OracleOfSeasonsMasterKeys.option_disabled)],
+            options=[OptionFilter(OracleOfSeasonsDungeonKeyType, OracleOfSeasonsDungeonKeyType.option_vanilla)],
         ),
         Has(
             f"Master Key ({DUNGEON_NAMES[dungeon_id]})",
-            options=[OptionFilter(OracleOfSeasonsMasterKeys, OracleOfSeasonsMasterKeys.option_disabled, "ne")],
+            options=[
+                OptionFilter(
+                    OracleOfSeasonsDungeonKeyType, OracleOfSeasonsDungeonKeyType.option_master_key_all_small_keys, "ge"
+                )
+            ],
         ),
+        unlock_rule
     )
 
 
@@ -199,11 +213,21 @@ def oos_has_boss_key(dungeon_id: int) -> Rule:
     return Or(
         Has(
             f"Boss Key ({DUNGEON_NAMES[dungeon_id]})",
-            options=[OptionFilter(OracleOfSeasonsMasterKeys, OracleOfSeasonsMasterKeys.option_all_dungeon_keys, "ne")],
+            options=[
+                OptionFilter(
+                    OracleOfSeasonsDungeonKeyType,
+                    OracleOfSeasonsDungeonKeyType.option_master_key_all_dungeon_keys,
+                    "ne",
+                )
+            ],
         ),
         Has(
             f"Master Key ({DUNGEON_NAMES[dungeon_id]})",
-            options=[OptionFilter(OracleOfSeasonsMasterKeys, OracleOfSeasonsMasterKeys.option_all_dungeon_keys)],
+            options=[
+                OptionFilter(
+                    OracleOfSeasonsDungeonKeyType, OracleOfSeasonsDungeonKeyType.option_master_key_all_dungeon_keys
+                )
+            ],
         ),
     )
 

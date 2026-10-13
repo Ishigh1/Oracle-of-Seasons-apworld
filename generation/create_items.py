@@ -8,6 +8,7 @@ from ..data.constants import (
     ITEM_GROUPS,
     MARKET_LOCATIONS,
     SEED_ITEMS,
+    UNLOCK_ITEMS,
     VALID_ORE_ITEM_VALUES,
     VALID_RUPEE_ITEM_VALUES,
 )
@@ -15,10 +16,10 @@ from ..data.items import ITEMS_DATA
 from ..data.locations import LOCATIONS_DATA
 from ..generation.create_regions import location_is_active
 from ..options import (
+    OracleOfSeasonsDungeonKeyType,
     OracleOfSeasonsDuplicateSeedTree,
     OracleOfSeasonsFoolsOre,
     OracleOfSeasonsLogicDifficulty,
-    OracleOfSeasonsMasterKeys,
     OracleOfSeasonsShopPrices,
     OracleOfSeasonsStartingPosition,
 )
@@ -154,11 +155,14 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
             else:
                 ore_item_count += 1
             continue
-        if world.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled and "Small Key" in item_name:
+        if world.options.dungeon_key_type != OracleOfSeasonsDungeonKeyType.option_vanilla and "Small Key" in item_name:
             # Small Keys don't exist if Master Keys are set to replace them
             filler_item_count += 1
             continue
-        if world.options.master_keys == OracleOfSeasonsMasterKeys.option_all_dungeon_keys and "Boss Key" in item_name:
+        if (
+            world.options.dungeon_key_type == OracleOfSeasonsDungeonKeyType.option_master_key_all_dungeon_keys
+            and "Boss Key" in item_name
+        ):
             # Boss keys don't exist if Master Keys are set to replace them
             filler_item_count += 1
             continue
@@ -214,8 +218,13 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
         item_pool_dict["Seed Shooter"] = 1
         extra_items += 4
 
-    # If Master Keys are enabled, put one for every dungeon
-    if world.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled:
+    if world.options.dungeon_key_type == OracleOfSeasonsDungeonKeyType.option_unlocks:
+        for unlocks in UNLOCK_ITEMS.values():
+            for unlock in unlocks:
+                item_pool_dict[unlock] = 1
+                extra_items += 1
+    elif world.options.dungeon_key_type >= OracleOfSeasonsDungeonKeyType.option_master_key_all_small_keys:
+        # If Master Keys are enabled, put one for every dungeon
         for small_key_name in sorted(ITEM_GROUPS["Master Keys"]):
             if world.options.linked_heros_cave or small_key_name != "Master Key (Linked Hero's Cave)":
                 item_pool_dict[small_key_name] = 1
@@ -366,7 +375,7 @@ def filter_confined_dungeon_items_from_pool(world: OracleOfSeasonsWorld, items: 
                 excluded_dungeons.append(i + 1)
 
     # Put Small Keys / Master Keys unless keysanity is enabled for those
-    if world.options.master_keys != OracleOfSeasonsMasterKeys.option_disabled:
+    if world.options.dungeon_key_type >= OracleOfSeasonsDungeonKeyType.option_master_key_all_small_keys:
         small_keys_name = "Master Key"
     else:
         small_keys_name = "Small Key"
