@@ -222,3 +222,4 @@ def define_dungeon_items_text_constants(texts: dict[str, str], patch_data: dict[
 
     if patch_data["options"]["dungeon_key_type"] >= OracleOfSeasonsDungeonKeyType.option_master_key_all_small_keys:
         texts["TX_001a"] = texts["TX_001a"].replace("Small", "Master")
+    # This occupies the texts from TX_0073 to TX_0094 included

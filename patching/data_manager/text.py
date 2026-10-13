@@ -66,7 +66,7 @@ def apply_text_edits(texts: dict[str, str]) -> None:
                         "Ore Chunks⬜!")
 
     # Brand-new texts
-    texts["TX_0094"] = ("You got 🟥100\n"
+    texts["TX_0095"] = ("You got 🟥100\n"
                         "Ore Chunks⬜!")
 
     add_unlock_texts(texts)
