@@ -179,11 +179,13 @@ def oos_has_gale_seeds() -> Rule:
         Has("Gale Seeds"), from_option(OracleOfSeasonsDefaultSeedType, OracleOfSeasonsDefaultSeedType.option_gale)
     )
 
+
 def oos_has_unlock(keylock_name: str) -> Rule:
     return Has(
         keylock_name,
         options=[OptionFilter(OracleOfSeasonsDungeonKeyType, OracleOfSeasonsDungeonKeyType.option_unlocks)],
     )
+
 
 def oos_has_small_keys(dungeon_id: int, amount: int = 1, keylock_name: str | None = None) -> Rule:
     if keylock_name is None:
@@ -205,7 +207,7 @@ def oos_has_small_keys(dungeon_id: int, amount: int = 1, keylock_name: str | Non
                 )
             ],
         ),
-        unlock_rule
+        unlock_rule,
     )
 
 
@@ -730,7 +732,7 @@ def oos_can_use_mystery_seeds() -> Rule:
 # Break / kill predicates ###########################################
 
 
-def oos_can_break_bush(can_summon_companion: bool = False, allow_bombchus: bool = False) -> Rule:
+def oos_can_break_bush(can_summon_companion: bool, allow_bombchus: bool) -> Rule:
     return Or(oos_can_break_flowers(can_summon_companion, allow_bombchus), oos_has_bracelet())
 
 
@@ -757,7 +759,7 @@ def oos_can_break_pot() -> Rule:
     return Or(oos_has_bracelet(), oos_has_noble_sword(), oos_has_biggoron_sword(), oos_has_switch_hook())
 
 
-def oos_can_break_flowers(can_summon_companion: bool = False, allow_bombchus: bool = False) -> Rule:
+def oos_can_break_flowers(can_summon_companion: bool, allow_bombchus: bool) -> Rule:
     return Or(
         oos_has_sword(),
         oos_has_magic_boomerang(),
@@ -1221,7 +1223,9 @@ def oos_roosters(
         if bottom_amount > 2:
             raise NotImplementedError
         if bottom_amount > 0:
-            rule &= And(oos_season_in_mt_cucco(SEASON_SPRING), oos_can_break_flowers() | Has("Spring Banana"))
+            rule &= And(
+                oos_season_in_mt_cucco(SEASON_SPRING), oos_can_break_flowers(False, False) | Has("Spring Banana")
+            )
         if top_amount > 3:
             raise NotImplementedError
         if top_amount == 3:
@@ -1254,8 +1258,10 @@ def oos_roosters(
             And(
                 oos_is_companion_ricky(),
                 oos_can_swim(False),
-                oos_can_break_flowers()
-                | oos_roosters("cucco mountain", any_amount + 1, top_amount, bottom_amount, set(visited_regions)),
+                Or(
+                    oos_can_break_flowers(False, False),
+                    oos_roosters("cucco mountain", any_amount + 1, top_amount, bottom_amount, set(visited_regions)),
+                ),
                 oos_roosters("cucco mountain", any_amount, top_amount, bottom_amount, set(visited_regions)),
             ),
         )

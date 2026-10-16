@@ -1602,7 +1602,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                         # Otherwise you would have turned it Autumn first
                         oos_season_in_temple_remains(SEASON_WINTER),
                         oos_can_remove_snow(False),
-                        oos_can_break_bush(False),
+                        oos_can_break_bush(False, True),
                         oos_can_jump_6_wide_pit(),
                     ),
                 ),
