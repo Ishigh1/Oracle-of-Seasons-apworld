@@ -324,16 +324,10 @@ def define_location_constants(
             continue
 
         symbolic_name = location_data["symbolic_name"]
-        vanilla_item = location_data["vanilla_item"]
-        if location_name in patch_data["locations"]:
-            item: dict[str, str | bool] = patch_data["locations"][location_name]
-        elif vanilla_item == "Filler Item" or vanilla_item == "Random Ring":
-            # These locations should be unreachable
-            item = {"item": "Friendship Ring"}
-        else:
-            # If not randomized, try getting the vanilla item, it might be a freestanding item
-            item = {"item": vanilla_item}
+        if location_name not in patch_data["locations"]:
+            continue
 
+        item: dict[str, str | bool] = patch_data["locations"][location_name]
         item_id, item_subid = get_item_id_and_subid(item_data, item)
         assembler.define_byte(f"locations.{symbolic_name}.id", item_id)
         assembler.define_byte(f"locations.{symbolic_name}.subid", item_subid)

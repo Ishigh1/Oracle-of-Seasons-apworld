@@ -64,7 +64,10 @@ def location_is_active(world: OracleOfSeasonsWorld, location_name: str, location
         return world.options.linked_heros_cave
     if "owl_id" in location_data:
         return world.options.bird_hint.owl()
-    return False
+    if location_name.startswith("Maple Rare Drop"):
+        # Currently disabled
+        return False
+    return True
 
 
 def create_location(

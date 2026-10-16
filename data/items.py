@@ -787,3 +787,5 @@ ITEMS_DATA: dict[ItemName, dict[str, Any]] = {
         "subid": 0x25,
     },
 }
+
+RING_LIST = [str(name) for name, idata in ITEMS_DATA.items() if "ring" in idata]

@@ -11,7 +11,7 @@ from ..data.constants import (
     SEASONS,
     VALID_RUPEE_PRICE_VALUES,
 )
-from ..data.items import ITEMS_DATA
+from ..data.items import ITEMS_DATA, RING_LIST
 from ..data.locations import LOCATIONS_DATA
 from ..options import OracleOfSeasonsLinkedHerosCave, OracleOfSeasonsLogicDifficulty, OracleOfSeasonsOldMenShuffle
 from ..util import get_old_man_values_pool
@@ -250,7 +250,7 @@ def compute_shop_requirements(world: OracleOfSeasonsWorld) -> None:
 
 def create_random_rings_pool(world: OracleOfSeasonsWorld) -> None:
     # Get a subset of as many rings as needed, with a potential filter depending on chosen options
-    ring_names = [name for name, idata in ITEMS_DATA.items() if "ring" in idata]
+    ring_names = RING_LIST
 
     # Remove required rings because they'll be added later anyway
     ring_names = [

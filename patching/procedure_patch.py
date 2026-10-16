@@ -48,6 +48,7 @@ from .functions.boss_rando import place_bosses
 from .functions.room_edits import apply_room_edits
 from .functions.start_inventory import set_player_start_inventory
 from .functions.text_edits import define_dungeon_items_text_constants, make_text_data
+from .functions.vanilla_items import add_vanilla_items
 from .puzzle_rando import randomize_puzzles
 
 
@@ -107,6 +108,7 @@ class OoSPatchExtensions(APPatchExtension):
 
         # Define assembly constants & floating chunks
         item_data = define_foreign_item_data(assembler, texts, patch_data)
+        add_vanilla_items(patch_data)
         define_location_constants(assembler, patch_data, item_data)
         define_option_constants(assembler, patch_data)
         define_season_constants(assembler, patch_data)

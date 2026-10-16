@@ -17,7 +17,7 @@ from Options import (
     Visibility,
 )
 
-from .data.items import ITEMS_DATA
+from .data.items import ITEMS_DATA, RING_LIST
 
 
 class OracleOfSeasonsGoal(Choice):
@@ -604,7 +604,7 @@ class OracleOfSeasonsRequiredRings(ItemSet):
     """
 
     display_name = "Required Rings"
-    valid_keys = frozenset(str(name) for name, idata in ITEMS_DATA.items() if "ring" in idata)
+    valid_keys = frozenset(RING_LIST)
 
 
 class OracleOfSeasonsExcludedRings(ItemSet):
@@ -615,7 +615,7 @@ class OracleOfSeasonsExcludedRings(ItemSet):
 
     display_name = "Excluded Rings"
     default = frozenset(str(name) for name, idata in ITEMS_DATA.items() if "ring" in idata and idata["ring"] == "useless")
-    valid_keys = frozenset(str(name) for name, idata in ITEMS_DATA.items() if "ring" in idata)
+    valid_keys = frozenset(RING_LIST)
 
 
 class OracleOfSeasonsShopPrices(Choice):
