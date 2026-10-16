@@ -13,6 +13,7 @@ from ..data.constants import (
     SUBROSIA_HIDDEN_DIGGING_SPOTS_LOCATIONS,
     TRADE_LOCATIONS,
 )
+from ..data.items import ItemName
 from ..data.locations import LOCATIONS_DATA
 from ..data.regions import (
     CONDITIONAL_REGIONS,
@@ -225,18 +226,18 @@ def create_events(world: OracleOfSeasonsWorld) -> None:
         world.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_casual
         or world.options.randomize_lost_woods_item_sequence
     ):
-        create_event(world, RegionName.dr_left_reward, "Cuccodex")
-        create_event(world, RegionName.malon_trade, "Lon Lon Egg")
-        create_event(world, RegionName.maple_trade, "Ghastly Doll")
-        create_event(world, RegionName.mrs_ruul_trade, "Iron Pot")
-        create_event(world, RegionName.subrosian_chef_trade, "Lava Soup")
-        create_event(world, RegionName.biggoron_trade, "Goron Vase")
-        create_event(world, RegionName.ingo_trade, "Fish")
-        create_event(world, RegionName.old_man_trade, "Megaphone")
-        create_event(world, RegionName.talon_trade, "Mushroom")
-        create_event(world, RegionName.syrup_trade, "Wooden Bird")
-        create_event(world, RegionName.tick_tock_trade, "Engine Grease")
-        create_event(world, RegionName.guru_guru_trade, "Phonograph")
+        create_event(world, RegionName.dr_left_reward, ItemName.cuccodex)
+        create_event(world, RegionName.malon_trade, ItemName.lon_lon_egg)
+        create_event(world, RegionName.maple_trade, ItemName.ghastly_doll)
+        create_event(world, RegionName.mrs_ruul_trade, ItemName.iron_pot)
+        create_event(world, RegionName.subrosian_chef_trade, ItemName.lava_soup)
+        create_event(world, RegionName.biggoron_trade, ItemName.goron_vase)
+        create_event(world, RegionName.ingo_trade, ItemName.fish)
+        create_event(world, RegionName.old_man_trade, ItemName.megaphone)
+        create_event(world, RegionName.talon_trade, ItemName.mushroom)
+        create_event(world, RegionName.syrup_trade, ItemName.wooden_bird)
+        create_event(world, RegionName.tick_tock_trade, ItemName.engine_grease)
+        create_event(world, RegionName.guru_guru_trade, ItemName.phonograph)
 
 
 def exclude_locations_automatically(world: OracleOfSeasonsWorld) -> None:

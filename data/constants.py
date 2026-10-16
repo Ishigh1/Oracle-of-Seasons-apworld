@@ -206,6 +206,7 @@ TRADE_LOCATIONS = {
     "Holodrum Plain: Mrs. Ruul Trade",
     "Subrosia: Subrosian Chef Trade",
     "Goron Mountain: Biggoron Trade",
+    "Goron Mountain: Biggoron Secret",
     "Sunken City: Ingo Trade",
     "North Horon: Yelling Old Man Trade",
     "Mt. Cucco: Talon Trade",
