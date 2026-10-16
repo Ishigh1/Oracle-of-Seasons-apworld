@@ -1548,7 +1548,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                     ),
                     And(  # Spring rule
                         oos_season_in_temple_remains(SEASON_SPRING),
-                        oos_can_break_flowers(False, False),
+                        oos_can_break_flowers(False, True),
                         oos_can_jump_6_wide_pit(),
                     ),
                     oos_season_in_temple_remains(SEASON_AUTUMN),  # Autumn rule
@@ -1572,7 +1572,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                     And(  # Spring rule
                         oos_season_in_temple_remains(SEASON_SPRING),
                         oos_can_break_flowers(False, True),
-                        oos_can_break_bush(False, False),
+                        oos_can_break_bush(False, True),
                         oos_can_jump_6_wide_pit(),
                     ),
                     And(  # Autumn rule
