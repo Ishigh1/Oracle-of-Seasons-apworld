@@ -72,7 +72,7 @@ class RegionName(StrEnum):
     spool_swamp_cave = "spool swamp cave"
     spool_swamp_heart_piece = "spool swamp heart piece"
     spool_swamp_digging_spot = "spool swamp digging spot"
-    ghastly_stump = "ghastly stump"
+    ruul_stump = "ghastly stump"
     north_horon = "north horon"
     d1_stump = "d1 stump"
     goron_mountain_entrance = "goron mountain entrance"
@@ -456,7 +456,7 @@ NATZU_REGIONS = {
     "moosh": [RegionName.natzu_west_moosh, RegionName.natzu_east_moosh],
 }
 
-GASHA_REGIONS = [
+GASHA_REGIONS: list[RegionName] = [
     RegionName.gasha_1,
     RegionName.gasha_2,
     RegionName.gasha_3,

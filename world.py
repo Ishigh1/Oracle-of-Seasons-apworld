@@ -25,6 +25,7 @@ from .data.constants import (
 )
 from .data.items import ITEMS_DATA
 from .data.locations import LOCATIONS_DATA
+from .data.regions import RegionName
 from .options import OracleOfSeasonsOptions
 from .settings import OracleOfSeasonsSettings
 from .web_world import OracleOfSeasonsWeb
@@ -50,7 +51,7 @@ class OracleOfSeasonsWorld(World):
     item_name_to_id = build_item_name_to_id_dict(ITEMS_DATA)
     item_name_groups = ITEM_GROUPS
     location_name_groups = LOCATION_GROUPS
-    origin_region_name = "impa's house"
+    origin_region_name = RegionName.impas_house
     item_mapping: ClassVar[dict[str, str]] = {
         "Rupees (1)": "Rupees",
         "Rupees (5)": "Rupees",

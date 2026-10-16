@@ -70,7 +70,7 @@ def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
                 And(
                     # It's very tight, but a good jump clears the hole
                     oos_option_hard_logic(),  # Maybe upgrade to hell if too many complain
-                    oos_can_jump_2_wide_pit(),
+                    oos_can_jump_3_wide_pit(),
                 ),
             ),
         ),

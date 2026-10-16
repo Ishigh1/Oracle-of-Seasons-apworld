@@ -1117,7 +1117,7 @@ def oos_season_in_temple_remains(season: int) -> Rule:
 def oos_season_in_holodrum_plain(season: int) -> Rule:
     return Or(
         oos_is_default_season("HOLODRUM_PLAIN", season),
-        And(oos_has_season(season), CanReachRegion(RegionName.ghastly_stump)),
+        And(oos_has_season(season), CanReachRegion(RegionName.ruul_stump)),
     )
 
 
