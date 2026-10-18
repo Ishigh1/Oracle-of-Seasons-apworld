@@ -1,4 +1,4 @@
-from rule_builder.rules import Rule as BaseRule
+from ...core.rule_builder.rule_import import Rule as BaseRule
 from worlds.tloz_oos import OracleOfSeasonsWorld
 from worlds.tloz_oos.data.regions import RegionName
 

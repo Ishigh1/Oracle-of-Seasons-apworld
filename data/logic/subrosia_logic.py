@@ -1,5 +1,4 @@
-from rule_builder.rules import And, CanReachRegion, Has, Or, True_
-
+from ...core.rule_builder.rule_import import And, CanReachRegion, Has, Or, True_
 from ...options import (
     OracleOfSeasonsOptions,
 )

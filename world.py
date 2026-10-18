@@ -4,7 +4,6 @@ from typing import Any, ClassVar, TextIO, cast
 
 from BaseClasses import CollectionState, Item, Location, MultiWorld
 from Options import Option
-from rule_builder.rules import Has
 from worlds.AutoWorld import World
 
 from .common.Util import build_item_name_to_id_dict, build_location_name_to_id_dict
@@ -127,7 +126,6 @@ class OracleOfSeasonsWorld(World):
         create_connections(self, self.options)
         apply_self_locking_rules(self)
         apply_rule_forbiddance(self)
-        self.set_completion_rule(Has("_beaten_game"))
 
     def create_item(self, name: str) -> Item:
         from .generation.create_items import create_item

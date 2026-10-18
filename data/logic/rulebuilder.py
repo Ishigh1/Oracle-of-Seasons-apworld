@@ -7,8 +7,8 @@ from BaseClasses import CollectionState
 from Options import Accessibility, Option
 from rule_builder.field_resolvers import FieldResolver, FromWorldAttr, resolve_field
 from rule_builder.options import OPERATORS, Operator, OptionFilter
-from rule_builder.rules import False_, HasAll, True_
 
+from ...core.rule_builder.rule_import import False_, HasAll, True_
 from ...generation.create_regions import location_is_active
 from ...world import OracleOfSeasonsWorld
 from ..constants import SEASON_CHAOTIC, SEASON_ITEMS

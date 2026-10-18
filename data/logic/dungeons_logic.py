@@ -1,7 +1,7 @@
-from rule_builder.rules import And, CanReachRegion, Has, Or, True_
 from worlds.tloz_oos.data.logic import LogicLine
 
 from ... import OracleOfSeasonsWorld
+from ...core.rule_builder.rule_import import And, CanReachRegion, Has, Or, True_
 from ...options import (
     OracleOfSeasonsOptions,
 )

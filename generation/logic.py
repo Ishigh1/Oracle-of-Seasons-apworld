@@ -2,8 +2,8 @@ from typing import cast
 
 from BaseClasses import CollectionState, EntranceType, Item, Region
 from Options import Accessibility
-from rule_builder.rules import And, CanReachRegion, Or, True_
 
+from ..core.rule_builder.rule_import import And, CanReachRegion, Has, Or, True_
 from ..data.constants import DUNGEON_NAMES, PORTAL_CONNECTIONS, OracleOfSeasonsConnectionType
 from ..data.logic import LogicLine
 from ..data.logic.dungeons_logic import (
@@ -31,7 +31,7 @@ from ..data.logic.logic_predicates import (
     oos_option_hard_logic,
     oos_option_medium_logic,
 )
-from ..data.logic.overworld_logic import make_holodrum_logic, make_gasha_logic
+from ..data.logic.overworld_logic import make_gasha_logic, make_holodrum_logic
 from ..data.logic.rulebuilder import Rule
 from ..data.logic.subrosia_logic import make_subrosia_logic
 from ..world import OracleOfSeasonsWorld
@@ -64,6 +64,8 @@ def create_randomizable_connections(
 
 
 def create_connections(world: OracleOfSeasonsWorld, options):
+    world.set_completion_rule(Has("_beaten_game"))
+
     all_logic: list[list[LogicLine]] = [
         make_holodrum_logic(world, options),
         make_subrosia_logic(options),
