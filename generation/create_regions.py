@@ -50,8 +50,8 @@ def location_is_active(world: OracleOfSeasonsWorld, location_name: str, location
         return len(world.essences_in_game) >= 5
     if location_name == "Horon Village: Item Inside Maku Tree (7+ Essences)":
         return len(world.essences_in_game) >= 7
-    if location_name in TRADE_LOCATIONS:
-        return world.options.trade_sequence
+    if location_name in TRADE_LOCATIONS and not world.options.trade_sequence:
+        return False
     if location_name in SECRETS:
         return world.options.secret_locations
     if location_name in LOCATION_GROUPS["D11"]:
