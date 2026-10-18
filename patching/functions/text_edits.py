@@ -77,24 +77,23 @@ def make_text_data(assembler: Z80Assembler, text: dict[str, str], patch_data: di
             item_text += "I'll trade for\n🟥\\num1 Ore Chunks⬜.\n\\jump(0b)"
         text[tx_indices[symbolic_name]] = item_text
 
-    business_scrubs = [
-        "Spool Swamp: Business Scrub",
-        "Samasa Desert: Business Scrub",
-        "Snake's Remains: Business Scrub",
-        "Dancing Dragon Dungeon (1F): Business Scrub",
-    ]
-    for location_name in business_scrubs:
-        symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]
-        if location_name not in patch_data["locations"]:
-            continue
-        # Scrub string asking the player if they want to buy the item
-        item_text = (
-            "\\sfx(c6)Greetings!\n"
-            + process_item_name_for_shop_text(patch_data["locations"][location_name])
-            + f"for 🟩{patch_data['shop_prices'][symbolic_name]} Rupees⬜\n"
-            "  \\optOK \\optNo thanks"
-        )
-        text[tx_indices[symbolic_name]] = item_text
+    if patch_data["options"]["shuffle_business_scrubs"]:
+        business_scrubs = [
+            "Spool Swamp: Business Scrub",
+            "Samasa Desert: Business Scrub",
+            "Snake's Remains: Business Scrub",
+            "Dancing Dragon Dungeon (1F): Business Scrub",
+        ]
+        for location_name in business_scrubs:
+            symbolic_name = LOCATIONS_DATA[location_name]["symbolic_name"]
+            # Scrub string asking the player if they want to buy the item
+            item_text = (
+                "\\sfx(c6)Greetings!\n"
+                + process_item_name_for_shop_text(patch_data["locations"][location_name])
+                + f"for 🟩{patch_data['shop_prices'][symbolic_name]} Rupees⬜\n"
+                "  \\optOK \\optNo thanks"
+            )
+            text[tx_indices[symbolic_name]] = item_text
 
     # Cross items
     assembler.define_byte("text.hook1.treasure", 0x3B)
