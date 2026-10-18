@@ -1,7 +1,6 @@
-from collections.abc import Iterable
-from typing import Any, cast
+from typing import Any
 
-from BaseClasses import Item, ItemClassification, Location, LocationProgressType, Region
+from BaseClasses import Item, ItemClassification, Location, LocationProgressType
 
 from ..data.constants import (
     ESSENCES,
@@ -16,13 +15,7 @@ from ..data.constants import (
 from ..data.items import ItemName
 from ..data.locations import LOCATIONS_DATA
 from ..data.regions import (
-    CONDITIONAL_REGIONS,
-    D11_REGIONS,
-    GASHA_REGIONS,
     GASHA_SPOT_REGIONS,
-    NATZU_REGIONS,
-    SCRUB_REGIONS,
-    SECRET_REGIONS,
     RegionName,
 )
 from ..options import (
@@ -74,7 +67,7 @@ def location_is_active(world: OracleOfSeasonsWorld, location_name: str, location
 def create_location(
     world: OracleOfSeasonsWorld, region_name: str, location_name: str, local: bool, event: bool
 ) -> Location:
-    region = world.multiworld.get_region(region_name, world.player)
+    region = world.get_region(region_name)
     location_id = None if event else world.location_name_to_id[location_name]
     location = Location(world.player, location_name, location_id, region)
     region.locations.append(location)
@@ -83,52 +76,7 @@ def create_location(
     return location
 
 
-def create_regions(world: OracleOfSeasonsWorld) -> None:
-    # Create regions
-    for region_name in cast(Iterable[RegionName], RegionName):
-        if region_name in CONDITIONAL_REGIONS:
-            continue
-        region = Region(region_name, world.player, world.multiworld)
-        world.multiworld.regions.append(region)
-
-    for region_name in NATZU_REGIONS[world.options.animal_companion.current_key]:
-        region = Region(region_name, world.player, world.multiworld)
-        world.multiworld.regions.append(region)
-
-    if world.options.advance_shop:
-        region = Region(RegionName.advance_shop, world.player, world.multiworld)
-        world.multiworld.regions.append(region)
-
-    if world.options.trade_sequence:
-        region = Region(RegionName.syrup_shop, world.player, world.multiworld)
-        world.multiworld.regions.append(region)
-
-    if world.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_hell:
-        region = Region(RegionName.rooster_adventure, world.player, world.multiworld)
-        world.multiworld.regions.append(region)
-
-    if world.options.deterministic_gasha_locations > 0:
-        for i in range(world.options.deterministic_gasha_locations):
-            region = Region(GASHA_REGIONS[i], world.player, world.multiworld)
-            world.multiworld.regions.append(region)
-        for region_name in GASHA_SPOT_REGIONS:
-            region = Region(region_name, world.player, world.multiworld)
-            world.multiworld.regions.append(region)
-
-    if world.options.shuffle_business_scrubs:
-        for region_name in SCRUB_REGIONS:
-            region = Region(region_name, world.player, world.multiworld)
-            world.multiworld.regions.append(region)
-
-    if world.options.secret_locations:
-        for region_name in SECRET_REGIONS:
-            region = Region(region_name, world.player, world.multiworld)
-            world.multiworld.regions.append(region)
-
-    if world.options.linked_heros_cave:
-        for region_name in D11_REGIONS:
-            world.multiworld.regions.append(Region(region_name, world.player, world.multiworld))
-
+def create_locations(world: OracleOfSeasonsWorld) -> None:
     # Create locations
     for location_name, location_data in LOCATIONS_DATA.items():
         if not location_is_active(world, location_name, location_data):
@@ -176,21 +124,18 @@ def create_regions(world: OracleOfSeasonsWorld) -> None:
         world.inventory_locations = [inventory_location, inventory_location_2]
     else:
         raise NotImplementedError
+    if world.origin_region_name in world.region_replacement:
+        world.origin_region_name = world.region_replacement[world.origin_region_name]
 
 
 def create_event(world: OracleOfSeasonsWorld, region_name: str, event_item_name: str) -> None:
-    region = world.multiworld.get_region(region_name, world.player)
+    region = world.get_region(region_name)
     location = Location(world.player, region_name + f".{event_item_name}", None, region)
     region.locations.append(location)
     location.place_locked_item(Item(event_item_name, ItemClassification.progression, None, world.player))
 
 
 def create_events(world: OracleOfSeasonsWorld) -> None:
-    # Events for beating golden beasts
-    create_event(world, "golden darknut", "_beat_golden_darknut")
-    create_event(world, "golden lynel", "_beat_golden_lynel")
-    create_event(world, "golden octorok", "_beat_golden_octorok")
-    create_event(world, "golden moblin", "_beat_golden_moblin")
     # Events for "wild" seeds that can be found inside respawnable bushes in dungeons
     create_event(world, "d2 wild bombs", "_wild_bombs")
     create_event(world, "d4 miniboss room wild embers", "_wild_ember_seeds")
@@ -200,7 +145,6 @@ def create_events(world: OracleOfSeasonsWorld) -> None:
     create_event(world, "frypolar room wild mystery", "_wild_mystery_seeds")
     # Various events to help with logic
     create_event(world, "bomb temple remains", "_triggered_volcano")
-    create_event(world, "subrosia pirates sector", "_met_pirates")
     if world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium:
         create_event(world, "d2 rupee room", "_reached_d2_rupee_room")
         create_event(world, "d6 rupee room", "_reached_d6_rupee_room")

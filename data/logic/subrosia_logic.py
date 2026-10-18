@@ -1,6 +1,6 @@
 from ...core.rule_builder.rule_import import And, CanReachRegion, Has, Or, True_
 from ...options import (
-    OracleOfSeasonsOptions,
+    OracleOfSeasonsIncludeSecretLocations,
 )
 from ..regions import RegionName
 from . import LogicLine
@@ -32,9 +32,10 @@ from .logic_predicates import (
     oos_option_medium_logic,
     oos_self_locking_item,
 )
+from .rulebuilder import from_option
 
 
-def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
+def make_subrosia_logic() -> list[LogicLine]:
     return [
         # Portals ###############################################################
         (RegionName.volcanoes_east_portal, RegionName.subrosia_temple_sector, True, True_()),
@@ -152,8 +153,10 @@ def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             RegionName.subrosia_temple_sector,
             RegionName.smith_secret,
             False,
-            oos_has_shield(),
-            bool(options.secret_locations),
+            And(
+                from_option(OracleOfSeasonsIncludeSecretLocations, OracleOfSeasonsIncludeSecretLocations.option_true),
+                oos_has_shield(),
+            ),
         ),
         (RegionName.subrosia_temple_sector, RegionName.temple_of_seasons, False, True_()),
         (
@@ -181,8 +184,11 @@ def make_subrosia_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             RegionName.subrosia_temple_sector,
             RegionName.subrosian_secret,
             False,
-            And(oos_can_jump_1_wide_pit(False), oos_has_magic_boomerang()),
-            bool(options.secret_locations),
+            And(
+                from_option(OracleOfSeasonsIncludeSecretLocations, OracleOfSeasonsIncludeSecretLocations.option_true),
+                oos_can_jump_1_wide_pit(False),
+                oos_has_magic_boomerang(),
+            ),
         ),
         (RegionName.subrosia_market_sector, RegionName.subrosia_seaside, False, oos_has_shovel()),
         (

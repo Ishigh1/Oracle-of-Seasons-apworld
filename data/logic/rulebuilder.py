@@ -8,7 +8,7 @@ from Options import Accessibility, Option
 from rule_builder.field_resolvers import FieldResolver, FromWorldAttr, resolve_field
 from rule_builder.options import OPERATORS, Operator, OptionFilter
 
-from ...core.rule_builder.rule_import import False_, HasAll, True_
+from ...core.rule_builder.rule_import import CanReachRegion, False_, HasAll, True_
 from ...generation.create_regions import location_is_active
 from ...world import OracleOfSeasonsWorld
 from ..constants import SEASON_CHAOTIC, SEASON_ITEMS
@@ -91,6 +91,19 @@ class ItemInLocation(Rule, game=OracleOfSeasonsWorld.game):
         def __str__(self) -> str:
             return f"{self.item_name} in {self.location_name}"
 
+@dataclasses.dataclass
+class OoSCanReachRegion(CanReachRegion[OracleOfSeasonsWorld], game=OracleOfSeasonsWorld.game):
+    @override
+    def _instantiate(self, world: OracleOfSeasonsWorld) -> Rule.Resolved:
+        if self.region_name in world.region_replacement:
+            region_name = world.region_replacement[self.region_name]
+        else:
+            region_name = self.region_name
+        return self.Resolved(
+            region_name,
+            player=world.player,
+            caching_enabled=getattr(world, "rule_caching_enabled", False),
+        )
 
 def from_bool(condition: bool) -> Rule:
     return True_() if condition else False_()

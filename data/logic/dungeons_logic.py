@@ -1,8 +1,9 @@
 from worlds.tloz_oos.data.logic import LogicLine
 
 from ... import OracleOfSeasonsWorld
-from ...core.rule_builder.rule_import import And, CanReachRegion, Has, Or, True_
+from ...core.rule_builder.rule_import import And, Has, Or, True_
 from ...options import (
+    OracleOfSeasonsBusinessScrubsShuffle,
     OracleOfSeasonsOptions,
 )
 from ..items import ItemName
@@ -94,6 +95,7 @@ from .logic_predicates import (
     oos_self_locking_small_key,
     oos_shoot_beams,
 )
+from .rulebuilder import OoSCanReachRegion, from_option, from_world_field
 
 
 def make_d0_logic() -> list[LogicLine]:
@@ -252,8 +254,10 @@ def make_d2_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOptions) 
             RegionName.d2_alt_entrances,
             RegionName.d2_scrub,
             False,
-            oos_has_rupees_for_shop("d2Scrub"),
-            bool(options.shuffle_business_scrubs),
+            And(
+                from_option(OracleOfSeasonsBusinessScrubsShuffle, OracleOfSeasonsBusinessScrubsShuffle.option_true),
+                oos_has_rupees_for_shop("d2Scrub"),
+            ),
         ),
         # 2 keys
         (
@@ -524,8 +528,10 @@ def make_d4_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             RegionName.d4_terrace,
             RegionName.d4_scrub,
             False,
-            oos_has_rupees_for_shop("d4Scrub"),
-            bool(options.shuffle_business_scrubs),
+            And(
+                from_option(OracleOfSeasonsBusinessScrubsShuffle, OracleOfSeasonsBusinessScrubsShuffle.option_true),
+                oos_has_rupees_for_shop("d4Scrub"),
+            ),
         ),
         (
             RegionName.d4_stalfos_stairs,
@@ -741,7 +747,7 @@ def make_d5_logic() -> list[LogicLine]:
             False,
             And(
                 oos_self_locking_small_key("Unicorn's Cave: Treadmills Basement Item", 5),
-                CanReachRegion(RegionName.d5_drop_ball),
+                OoSCanReachRegion(RegionName.d5_drop_ball),
                 oos_has_small_keys(5, 3),
                 oos_has_magnet_gloves(),
                 Or(oos_can_kill_magunesu(), And(oos_option_medium_logic(), oos_has_feather())),
@@ -783,7 +789,7 @@ def make_d5_logic() -> list[LogicLine]:
                 # Magnet ball button
                 Or(
                     And(
-                        CanReachRegion(RegionName.d5_drop_ball),
+                        OoSCanReachRegion(RegionName.d5_drop_ball),
                         oos_has_magnet_gloves(),
                     ),
                     oos_has_cane(),
@@ -1745,21 +1751,18 @@ def make_d11_logic(options: OracleOfSeasonsOptions) -> list[LogicLine]:
             RegionName.enter_d11,
             RegionName.d11_alt_entrance,
             False,
-            True_(),
-            options.linked_heros_cave.is_no_alt_entrance,
+            from_world_field("options.linked_heros_cave.is_no_alt_entrance", True),
         ),
         (
             RegionName.d11_alt_entrance,
             RegionName.enter_d11,
             False,
-            True_(),
-            options.linked_heros_cave.is_alt_entrance,
+            from_world_field("options.linked_heros_cave.is_alt_entrance", True),
         ),
         (
             RegionName.enter_d0,
             RegionName.enter_d11,
             False,
-            True_(),
-            options.linked_heros_cave.is_heros_cave,
+            from_world_field("options.linked_heros_cave.is_heros_cave", True),
         ),
     ]

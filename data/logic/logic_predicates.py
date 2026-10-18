@@ -1,17 +1,19 @@
 from rule_builder.field_resolvers import FromOption, FromWorldAttr
 from rule_builder.options import OptionFilter
 
-from ...core.rule_builder.rule_import import And, AtLeast, CanReachRegion, False_, Has, HasFromList, HasGroup, Or, True_
+from ...core.rule_builder.rule_import import And, AtLeast, False_, Has, HasFromList, HasGroup, Or, True_
 from ...options import (
     OracleOfSeasonsAnimalCompanion,
     OracleOfSeasonsDefaultSeedType,
     OracleOfSeasonsDungeonKeyType,
     OracleOfSeasonsDungeonShuffle,
     OracleOfSeasonsFoolsOre,
+    OracleOfSeasonsGashaLocations,
     OracleOfSeasonsGoldenBeastsRequirement,
     OracleOfSeasonsGoldenOreSpotsShuffle,
     OracleOfSeasonsHoronSeason,
     OracleOfSeasonsIncludeCrossItems,
+    OracleOfSeasonsIncludeSecretLocations,
     OracleOfSeasonsLogicDifficulty,
     OracleOfSeasonsLostWoodsItemSequence,
     OracleOfSeasonsLostWoodsMainSequence,
@@ -23,7 +25,7 @@ from ...options import (
 )
 from ..constants import DUNGEON_NAMES, SEASON_AUTUMN, SEASON_ITEMS, SEASON_SPRING, SEASON_SUMMER, SEASON_WINTER
 from ..regions import GASHA_SPOT_REGIONS, RegionName
-from .rulebuilder import ItemInLocation, LostWoods, Rule, from_bool, from_option, from_world_field
+from .rulebuilder import ItemInLocation, LostWoods, OoSCanReachRegion, Rule, from_bool, from_option, from_world_field
 
 # Items predicates ############################################################
 
@@ -307,6 +309,14 @@ def oos_is_default_season(area_name: str, season: int, is_season: bool = True) -
     return from_world_field(f"default_seasons.{area_name}", season, "eq" if is_season else "ne")
 
 
+def oos_gasha_locations_enlabled() -> Rule:
+    return from_option(OracleOfSeasonsGashaLocations, 1, "ge")
+
+
+def oos_secrets_enabled() -> Rule:
+    return from_option(OracleOfSeasonsIncludeSecretLocations, OracleOfSeasonsIncludeSecretLocations.option_true)
+
+
 def oos_can_remove_season(season: int) -> Rule:
     # Test if player has any other season than the one we want to remove
     return Or(*[Has(item_name) for season_name, item_name in SEASON_ITEMS.items() if season_name != season])
@@ -332,7 +342,7 @@ def oos_can_reach_lost_woods_pedestal(allow_default: bool = False) -> Rule:
     return And(
         LostWoods(False, allow_default),
         Or(
-            CanReachRegion(RegionName.lost_woods_phonograph),
+            OoSCanReachRegion(RegionName.lost_woods_phonograph),
             And(
                 # if sequence is vanilla, medium+ players are expected to know it
                 oos_option_medium_logic(),
@@ -346,7 +356,7 @@ def oos_can_complete_lost_woods_main_sequence(allow_default: bool = False) -> Ru
     return And(
         LostWoods(True, allow_default),
         Or(
-            CanReachRegion(RegionName.lost_woods_deku),
+            OoSCanReachRegion(RegionName.lost_woods_deku),
             And(
                 # if sequence is vanilla, medium+ players are expected to know it
                 oos_option_medium_logic(),
@@ -357,19 +367,19 @@ def oos_can_complete_lost_woods_main_sequence(allow_default: bool = False) -> Ru
 
 
 def oos_can_beat_required_golden_beasts() -> Rule:
-    return HasFromList(
-        "_beat_golden_darknut",
-        "_beat_golden_lynel",
-        "_beat_golden_moblin",
-        "_beat_golden_octorok",
-        count=FromOption(OracleOfSeasonsGoldenBeastsRequirement),
+    return AtLeast(
+        FromOption(OracleOfSeasonsGoldenBeastsRequirement),
+        OoSCanReachRegion("golden darknut"),
+        OoSCanReachRegion("golden lynel"),
+        OoSCanReachRegion("golden moblin"),
+        OoSCanReachRegion("golden octorok"),
     )
 
 
 def oos_can_complete_d11_puzzle() -> Rule:
     return Or(
         from_option(OracleOfSeasonsDungeonShuffle, OracleOfSeasonsDungeonShuffle.option_false),
-        AtLeast(7, *[CanReachRegion(f"enter d{i}") for i in range(1, 9)]),  # And then deduce the last
+        AtLeast(7, *[OoSCanReachRegion(f"enter d{i}") for i in range(1, 9)]),  # And then deduce the last
     )
 
 
@@ -408,13 +418,13 @@ def oos_can_farm_ore_chunks() -> Rule:
         And(oos_option_medium_logic(), Or(oos_has_magic_boomerang(), oos_has_sword())),
         And(
             oos_option_hard_logic(),
-            Or(CanReachRegion(RegionName.subrosian_dance_hall), oos_has_bracelet(), oos_has_switch_hook()),
+            Or(OoSCanReachRegion(RegionName.subrosian_dance_hall), oos_has_bracelet(), oos_has_switch_hook()),
         ),
     )
 
 
 def oos_can_date_rosa() -> Rule:
-    return And(CanReachRegion(RegionName.subrosia_market_sector), Has("Ribbon"))
+    return And(OoSCanReachRegion(RegionName.subrosia_market_sector), Has("Ribbon"))
 
 
 def oos_can_trigger_far_switch() -> Rule:
@@ -817,14 +827,17 @@ def oos_can_harvest_tree(can_use_companion: bool) -> Rule:
 
 def oos_can_harvest_gasha(count: int) -> Rule:
     return And(
-        HasFromList(
-            *[f"_reached_{region_name}" for region_name in GASHA_SPOT_REGIONS], count=count
-        ),  # Enough soils are reachable
+        from_option(OracleOfSeasonsGashaLocations, count, "ge"),
         Has("Gasha Seed", count),  # Enough seeds to plant
         Or(
             # Can actually harvest the nut, and get kills
             oos_has_sword(),
             oos_has_fools_ore(),
+        ),
+        HasFromList(
+            # Enough soils are reachable
+            *[f"_reached_{region_name}" for region_name in GASHA_SPOT_REGIONS],
+            count=count,
         ),
     )
 
@@ -1086,7 +1099,7 @@ def oos_can_dimitri_clip() -> Rule:
 def oos_season_in_spool_swamp(season: int) -> Rule:
     return Or(
         oos_is_default_season("SPOOL_SWAMP", season),
-        And(oos_has_season(season), CanReachRegion(RegionName.spool_stump)),
+        And(oos_has_season(season), OoSCanReachRegion(RegionName.spool_stump)),
     )
 
 
@@ -1096,8 +1109,8 @@ def oos_season_in_eyeglass_lake(season: int) -> Rule:
         And(
             oos_has_season(season),
             Or(
-                CanReachRegion(RegionName.d1_stump),
-                CanReachRegion(RegionName.d5_stump),
+                OoSCanReachRegion(RegionName.d1_stump),
+                OoSCanReachRegion(RegionName.d5_stump),
             ),
         ),
     )
@@ -1109,8 +1122,8 @@ def oos_season_in_temple_remains(season: int) -> Rule:
         And(
             oos_has_season(season),
             Or(
-                CanReachRegion(RegionName.temple_remains_lower_stump),
-                CanReachRegion(RegionName.temple_remains_upper_stump),
+                OoSCanReachRegion(RegionName.temple_remains_lower_stump),
+                OoSCanReachRegion(RegionName.temple_remains_upper_stump),
             ),
         ),
     )
@@ -1119,7 +1132,7 @@ def oos_season_in_temple_remains(season: int) -> Rule:
 def oos_season_in_holodrum_plain(season: int) -> Rule:
     return Or(
         oos_is_default_season("HOLODRUM_PLAIN", season),
-        And(oos_has_season(season), CanReachRegion(RegionName.ruul_stump)),
+        And(oos_has_season(season), OoSCanReachRegion(RegionName.ruul_stump)),
     )
 
 
@@ -1128,7 +1141,7 @@ def oos_season_in_western_coast(season: int) -> Rule:
         oos_is_default_season("WESTERN_COAST", season),
         And(
             oos_has_season(season),
-            CanReachRegion(RegionName.coast_stump),
+            OoSCanReachRegion(RegionName.coast_stump),
         ),
     )
 
@@ -1149,7 +1162,7 @@ def oos_season_in_sunken_city(season: int) -> Rule:
             Or(
                 oos_is_default_season("SUNKEN_CITY", SEASON_WINTER),
                 oos_can_swim(True),
-                CanReachRegion("sunken city dimitri"),
+                OoSCanReachRegion("sunken city dimitri"),
             ),
         ),
     )
@@ -1162,7 +1175,7 @@ def oos_season_in_woods_of_winter(season: int) -> Rule:
 def oos_season_in_central_woods_of_winter(season: int) -> Rule:
     return Or(
         oos_is_default_season("WOODS_OF_WINTER", season),
-        And(oos_has_season(season), CanReachRegion(RegionName.d2_stump)),
+        And(oos_has_season(season), OoSCanReachRegion(RegionName.d2_stump)),
     )
 
 
@@ -1335,4 +1348,4 @@ def oos_roosters(
 
 
 def oos_can_reach_rooster_adventure() -> Rule:
-    return oos_option_hell_logic() & CanReachRegion(RegionName.rooster_adventure)
+    return oos_option_hell_logic() & OoSCanReachRegion(RegionName.rooster_adventure)
