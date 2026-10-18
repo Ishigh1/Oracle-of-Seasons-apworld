@@ -2,8 +2,9 @@ import os
 from threading import Event
 from typing import Any, ClassVar, TextIO, cast
 
-from BaseClasses import CollectionState, Item, Location, MultiWorld, Region
+from BaseClasses import CollectionRule, CollectionState, Entrance, Item, Location, MultiWorld, Region
 from Options import Option
+from rule_builder.rules import Rule
 from worlds.AutoWorld import World
 
 from .common.Util import build_item_name_to_id_dict, build_location_name_to_id_dict
@@ -116,6 +117,21 @@ class OracleOfSeasonsWorld(World):
         from .generation.generate_early import generate_early
 
         generate_early(self)
+
+    def create_entrance(
+        self,
+        from_region: Region,
+        to_region: Region,
+        rule: CollectionRule | Rule[Any] | None = None,
+        name: str | None = None,
+        force_creation: bool = False,
+    ) -> Entrance | None:
+        # We want to run it with pre-resolved rules, which is not handled by core
+        if isinstance(rule, Rule.Resolved):
+            if rule.always_false and not force_creation:
+                return None
+            self.register_rule_dependencies(rule)
+        return super().create_entrance(from_region, to_region, rule, name, force_creation)
 
     def create_regions(self) -> None:
         from .generation.create_regions import create_locations

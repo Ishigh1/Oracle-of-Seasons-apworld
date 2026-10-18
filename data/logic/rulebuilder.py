@@ -105,6 +105,12 @@ class OoSCanReachRegion(CanReachRegion[OracleOfSeasonsWorld], game=OracleOfSeaso
             caching_enabled=getattr(world, "rule_caching_enabled", False),
         )
 
+    class Resolved(CanReachRegion.Resolved):
+        @override
+        def _evaluate(self, state: CollectionState) -> bool:
+            # This explicitly calls for the world's function as OoS's get_region checks region_replacement
+            return state.multiworld.worlds[self.player].get_region(self.region_name).can_reach(state)
+
 def from_bool(condition: bool) -> Rule:
     return True_() if condition else False_()
 

@@ -40,7 +40,7 @@ from ..world import OracleOfSeasonsWorld
 
 
 def create_randomizable_connections(
-        world: OracleOfSeasonsWorld, prefix: str, vanilla_connections: dict[str, str], outer_group: int, inner_group: int
+    world: OracleOfSeasonsWorld, prefix: str, vanilla_connections: dict[str, str], outer_group: int, inner_group: int
 ):
     for reg1, reg2 in vanilla_connections.items():
         region_1 = world.get_region(reg1)
@@ -97,12 +97,11 @@ def create_connections(world: OracleOfSeasonsWorld, options):
 
     region_replacement: dict[RegionName, RegionName] = world.region_replacement
     reverse_replacement: dict[RegionName, list[RegionName]] = defaultdict(lambda: [])
-    connection_data: dict[tuple[RegionName, RegionName], Rule] = {}
+    connection_data: dict[tuple[RegionName, RegionName], Rule.Resolved] = {}
     known_connections: dict[RegionName, list[tuple[RegionName, RegionName]]] = defaultdict(lambda: [])
     needed_regions: set[RegionName] = set()
     for logic_array in all_logic:
         for entrance_desc in logic_array:
-
             region_1 = entrance_desc[0]
             region_2 = entrance_desc[1]
             assert len(entrance_desc) == 4
@@ -143,7 +142,9 @@ def create_connections(world: OracleOfSeasonsWorld, options):
                             else:
                                 new_pair = (region_a, region_1)
                             if new_pair in connection_data:
-                                connection_data[new_pair] |= rule
+                                connection_data[new_pair] = Or.from_resolved(
+                                    world, iter((connection_data[new_pair], rule))
+                                )
                             else:
                                 connection_data[new_pair] = rule
                                 known_connections[new_pair[0]].append(new_pair)
@@ -154,17 +155,17 @@ def create_connections(world: OracleOfSeasonsWorld, options):
                 needed_regions.add(region_2)
                 connection_pair = (region_1, region_2)
                 if connection_pair in connection_data:
-                    connection_data[connection_pair] |= rule
+                    Or.from_resolved(world, iter((connection_data[connection_pair], rule.resolve(world))))
                 else:
-                    connection_data[connection_pair] = rule
+                    connection_data[connection_pair] = rule.resolve(world)
                     known_connections[region_1].append(connection_pair)
                     known_connections[region_2].append(connection_pair)
                 if is_two_way:
                     connection_pair = (region_2, region_1)
                     if connection_pair in connection_data:
-                        connection_data[connection_pair] |= rule
+                        connection_data[connection_pair].combine_or(rule.resolve(world), world)
                     else:
-                        connection_data[connection_pair] = rule
+                        connection_data[connection_pair] = rule.resolve(world)
                         known_connections[region_1].append(connection_pair)
                         known_connections[region_2].append(connection_pair)
 
@@ -221,7 +222,9 @@ def apply_self_locking_rules(world: OracleOfSeasonsWorld):
             world, OoSCanReachRegion("d1 railway chest"), f"Small Key ({DUNGEON_NAMES[1]})"
         ),
         "Poison Moth's Lair (1F): Chest in Mimics Room": AlwaysAllowRule(
-            world, And(OoSCanReachRegion("d3 water room"), oos_can_kill_normal_enemy()), f"Small Key ({DUNGEON_NAMES[3]})"
+            world,
+            And(OoSCanReachRegion("d3 water room"), oos_can_kill_normal_enemy()),
+            f"Small Key ({DUNGEON_NAMES[3]})",
         ),
         "Dancing Dragon Dungeon (1F): Crumbling Room Chest": AlwaysAllowRule(
             world, OoSCanReachRegion("d4 final minecart"), f"Small Key ({DUNGEON_NAMES[4]})"
@@ -274,18 +277,20 @@ def apply_self_locking_rules(world: OracleOfSeasonsWorld):
         "Subrosia: Market #1": "Star Ore",
     }
     if world.options.trade_sequence:
-        OTHER_SELF_LOCKING_ITEMS.update({
-            "North Horon: Malon Trade": "Cuccodex",
-            "Maple Trade": "Lon Lon Egg",
-            "Holodrum Plain: Mrs. Ruul Trade": "Ghastly Doll",
-            "Subrosia: Subrosian Chef Trade": "Iron Pot",
-            "Sunken City: Ingo Trade": "Goron Vase",
-            "North Horon: Yelling Old Man Trade": "Fish",
-            "Horon Village: Tick Tock Trade": "Wooden Bird",
-            "Eastern Suburbs: Guru-Guru Trade": "Engine Grease",
-            "Subrosia: Smithy Hard Ore Reforge": "Hard Ore",
-            "Subrosia: Smithy Rusty Bell Reforge": "Rusty Bell",
-        })
+        OTHER_SELF_LOCKING_ITEMS.update(
+            {
+                "North Horon: Malon Trade": "Cuccodex",
+                "Maple Trade": "Lon Lon Egg",
+                "Holodrum Plain: Mrs. Ruul Trade": "Ghastly Doll",
+                "Subrosia: Subrosian Chef Trade": "Iron Pot",
+                "Sunken City: Ingo Trade": "Goron Vase",
+                "North Horon: Yelling Old Man Trade": "Fish",
+                "Horon Village: Tick Tock Trade": "Wooden Bird",
+                "Eastern Suburbs: Guru-Guru Trade": "Engine Grease",
+                "Subrosia: Smithy Hard Ore Reforge": "Hard Ore",
+                "Subrosia: Smithy Rusty Bell Reforge": "Rusty Bell",
+            }
+        )
         if not world.options.secret_locations:
             OTHER_SELF_LOCKING_ITEMS["Goron Mountain: Biggoron Trade"] = "Lava Soup"
 
