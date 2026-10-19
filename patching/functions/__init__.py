@@ -15,6 +15,7 @@ from ...data.constants import (
     COLLECT_DIVE,
     COLLECT_DROP,
     COLLECT_TOUCH,
+    DUNGEON_NAMES,
     ITEM_GROUPS,
     OLD_MAN_RUPEE_VALUES,
     PORTAL_CONNECTIONS,
@@ -218,6 +219,11 @@ def define_compass_rooms_table(
             dungeon = item_subid
         elif item_id == 0x31:  # Boss Key
             dungeon = item_subid + 1
+        elif item_id == 0x5E:  # Unlocks
+            dungeon_name = item["item"].split(":")[0]
+            dungeon = DUNGEON_NAMES.index(dungeon_name)
+            if dungeon == 11:
+                dungeon = 9
 
         if dungeon != 0xFF:
             location_data = LOCATIONS_DATA[location_name]
