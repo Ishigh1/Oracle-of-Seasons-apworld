@@ -12,7 +12,7 @@ from ..data.constants import (
     VALID_ORE_ITEM_VALUES,
     VALID_RUPEE_ITEM_VALUES,
 )
-from ..data.items import ITEMS_DATA
+from ..data.items import ITEMS_DATA, ItemName
 from ..data.locations import LOCATIONS_DATA
 from ..generation.create_regions import location_is_active
 from ..options import (
@@ -210,13 +210,21 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
         item_pool_dict[item_name] = item_pool_dict.get(item_name, 0) + 1
 
     item_pool_dict["Bomb Upgrade"] = 3
-    item_pool_dict["Bombchu Upgrade"] = 3
-    extra_items = 6
+    extra_items = 3
     if world.options.cross_items:
         item_pool_dict["Cane of Somaria"] = 1
         item_pool_dict["Switch Hook"] = 2
         item_pool_dict["Seed Shooter"] = 1
         extra_items += 4
+    if world.options.linked_items:
+        item_pool_dict["Bombchu Upgrade"] = 3
+        # Add the 3rd sword to the pool
+        item_pool_dict["Progressive Sword"] += 1
+        extra_items += 4
+    else:
+        item_pool_dict[ItemName.progressive_shield] -= 1
+        item_pool_dict[ItemName.biggorons_sword] -= 1
+        filler_item_count += 2
 
     if world.options.dungeon_key_type == OracleOfSeasonsDungeonKeyType.option_unlocks:
         for unlocks in UNLOCK_ITEMS.values():
@@ -246,10 +254,6 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
             jewel_name = jewel
         item_pool_dict[jewel_name] = 1
     extra_items += 4
-
-    # Add the 3rd sword to the pool
-    item_pool_dict["Progressive Sword"] += 1
-    extra_items += 1
 
     if rupee_item_count > 0:
         rupee_item_pool, filler_item_count = build_rupee_item_dict(world, rupee_item_count, filler_item_count)

@@ -23,7 +23,7 @@ from .data.constants import (
     SEASON_NAMES,
     VANILLA_SHOP_PRICES,
 )
-from .data.items import ITEMS_DATA
+from .data.items import ITEMS_DATA, ItemName
 from .data.locations import LOCATIONS_DATA
 from .data.regions import RegionName
 from .options import OracleOfSeasonsOptions
@@ -188,8 +188,12 @@ class OracleOfSeasonsWorld(World):
             "Gasha Seed",
             "Potion",
             "Bombs (10)",
-            "Bombchus (10)",
         ]
+        
+        if self.options.linked_items:
+            filler_item_names.append(ItemName.bombchus_10)
+        else:
+            filler_item_names.append(ItemName.bombs_10)
 
         item_name = self.random.choice(filler_item_names)
         if item_name == "Random Ring":

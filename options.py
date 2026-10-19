@@ -792,6 +792,14 @@ class OracleOfSeasonsRemoveItemsFromPool(ItemDict):
     verify_item_name = False
 
 
+class OracleOfSeasonsIncludeLinkedItems(DefaultOnToggle):
+    """
+    When enabled, adds bombchus, Biggoron's Sword, a sword and a shield to the item pool
+    """
+
+    display_name = "Linked Items"
+
+
 class OracleOfSeasonsIncludeCrossItems(Toggle):
     """
     When enabled, adds the Cane of Somaria, the Switch Hook and the Seed Shooter to the item pool
@@ -906,6 +914,11 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     logic_difficulty: OracleOfSeasonsLogicDifficulty
     death_link: OracleOfSeasonsDeathLink
 
+    # Items
+    linked_items: OracleOfSeasonsIncludeLinkedItems
+    cross_items: OracleOfSeasonsIncludeCrossItems
+    fools_ore: OracleOfSeasonsFoolsOre
+
     # Optional locations
     freestanding: OracleOfSeasonsShuffleFreestandingItems
     trade_sequence: OracleOfSeasonsIncludeTradeSequence
@@ -969,8 +982,6 @@ class OracleOfSeasonsOptions(PerGameCommonOptions):
     enforce_potion_in_shop: OracleOfSeasonsEnforcePotionInShop
     required_rings: OracleOfSeasonsRequiredRings
     excluded_rings: OracleOfSeasonsExcludedRings
-    fools_ore: OracleOfSeasonsFoolsOre
-    cross_items: OracleOfSeasonsIncludeCrossItems
     combat_difficulty: OracleOfSeasonsCombatDifficulty
     bird_hint: OracleOfSeasonsBirdHint
     shuffle_bosses: OracleOfSeasonsShuffleBosses
@@ -994,6 +1005,7 @@ oos_option_groups = [
     OptionGroup(
         "Items",
         [
+            OracleOfSeasonsIncludeLinkedItems,
             OracleOfSeasonsIncludeCrossItems,
             OracleOfSeasonsFoolsOre,
         ],
