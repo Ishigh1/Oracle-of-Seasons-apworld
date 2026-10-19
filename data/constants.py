@@ -53,8 +53,8 @@ UNLOCK_ITEMS = {
         "Snake's Remains: Spinner Keyblock Unlock",
     ],
     "Poison Moth's Lair": [
-        "Poison Moth Lair: Keydoor to Mimics Unlock",
-        "Poison Moth Lair: Miniboss Keydoor Unlock",
+        ItemName.poison_moth_lair_keydoor_to_mimics_unlock,
+        ItemName.poison_moth_lair_miniboss_keydoor_unlock,
     ],
     "Dancing Dragon Dungeon": [
         ItemName.dancing_dragon_dungeon_entrance_keydoor_unlock,

@@ -178,15 +178,15 @@
   ld a,(hl)
   cp $20
   ld (hl),$20
-  ret c
+  jr c,@end
   cp $50
   ld (hl),$50
-  ret c
+  jr c,@end
   ld (hl),$99
   ld a,(hl)
+  @end:
   dec l ; current item count
   ld (hl),a
-  
   ret
 
 3f//bombUpgradeTable: |
