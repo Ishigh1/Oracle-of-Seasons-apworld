@@ -6,7 +6,6 @@ from BaseClasses import CollectionRule, CollectionState, Entrance, Item, Locatio
 from Options import Option
 from rule_builder.rules import Rule
 from worlds.AutoWorld import World
-
 from .common.Util import build_item_name_to_id_dict, build_location_name_to_id_dict
 from .data.constants import (
     DEFAULT_SEASONS,
@@ -146,7 +145,7 @@ class OracleOfSeasonsWorld(World):
         return super().get_region(region_name)
 
     def set_rules(self) -> None:
-        from .generation.logic import apply_rule_forbiddance, apply_self_locking_rules, create_connections
+        from .generation.logic import apply_rule_forbiddance, apply_self_locking_rules
 
         apply_self_locking_rules(self)
         apply_rule_forbiddance(self)

@@ -203,7 +203,7 @@ class Rule(CoreRule[TWorld], game=OracleOfSeasonsWorld.game):
     #         raise TypeError("You cannot define custom rules for the base Archipelago world")
     #     cls.game_name = game
 
-    class Resolved(metaclass=CustomRuleRegister):
+    class Resolved(CoreRule.Resolved):
         """A resolved rule for a given world that can be used as an access rule"""
 
         _: dataclasses.KW_ONLY
