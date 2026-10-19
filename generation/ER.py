@@ -10,11 +10,21 @@ from ..world import OracleOfSeasonsWorld
 def list_entrances_for_patch(world: OracleOfSeasonsWorld, prefix: str, vanilla_entrances: dict[str, str]):
     seen_entrances = set()
     connections = {}
-    for entrance1 in itertools.chain(vanilla_entrances, vanilla_entrances.values()):  # Do them in order overworld then subrosia
+    region_mapping = {}
+    for region_1, region_2 in vanilla_entrances.items():
+        if region_1 in world.region_replacement:
+            region_mapping[world.region_replacement[region_1]] = region_1
+        if region_2 in world.region_replacement:
+            region_mapping[world.region_replacement[region_2]] = region_2
+    for entrance1 in itertools.chain(
+        vanilla_entrances, vanilla_entrances.values()
+    ):  # Do them in order overworld then subrosia
         if entrance1 in seen_entrances:
             continue
         seen_entrances.add(entrance1)
         entrance2 = world.get_entrance(f"{prefix}{entrance1}").connected_region.name
+        if entrance2 in region_mapping:
+            entrance2 = region_mapping[entrance2]
         seen_entrances.add(entrance2)
         connections[entrance1] = entrance2
     return connections
@@ -25,13 +35,15 @@ def oos_randomize_entrances(world: OracleOfSeasonsWorld) -> None:
         OracleOfSeasonsConnectionType.CONNECT_PORTAL_OVERWORLD: [OracleOfSeasonsConnectionType.CONNECT_PORTAL_SUBROSIA],
         OracleOfSeasonsConnectionType.CONNECT_PORTAL_SUBROSIA: [OracleOfSeasonsConnectionType.CONNECT_PORTAL_OVERWORLD],
         OracleOfSeasonsConnectionType.CONNECT_DUNGEON_OVERWORLD: [OracleOfSeasonsConnectionType.CONNECT_DUNGEON_INSIDE],
-        OracleOfSeasonsConnectionType.CONNECT_DUNGEON_INSIDE: [OracleOfSeasonsConnectionType.CONNECT_DUNGEON_OVERWORLD]
+        OracleOfSeasonsConnectionType.CONNECT_DUNGEON_INSIDE: [OracleOfSeasonsConnectionType.CONNECT_DUNGEON_OVERWORLD],
     }
     if world.options.shuffle_portals == OracleOfSeasonsPortalShuffle.option_shuffle:
-        target_group_lookup[OracleOfSeasonsConnectionType.CONNECT_PORTAL_OVERWORLD] \
-            .append(OracleOfSeasonsConnectionType.CONNECT_PORTAL_OVERWORLD)
-        target_group_lookup[OracleOfSeasonsConnectionType.CONNECT_PORTAL_SUBROSIA] \
-            .append(OracleOfSeasonsConnectionType.CONNECT_PORTAL_SUBROSIA)
+        target_group_lookup[OracleOfSeasonsConnectionType.CONNECT_PORTAL_OVERWORLD].append(
+            OracleOfSeasonsConnectionType.CONNECT_PORTAL_OVERWORLD
+        )
+        target_group_lookup[OracleOfSeasonsConnectionType.CONNECT_PORTAL_SUBROSIA].append(
+            OracleOfSeasonsConnectionType.CONNECT_PORTAL_SUBROSIA
+        )
 
     placement_state = randomize_entrances(world, True, target_group_lookup)
     if world.options.shuffle_portals:

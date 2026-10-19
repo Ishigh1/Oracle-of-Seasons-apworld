@@ -11,7 +11,7 @@ from ..data.constants import (
     SEASONS,
     VALID_RUPEE_PRICE_VALUES,
 )
-from ..data.items import ITEMS_DATA, RING_LIST
+from ..data.items import RING_LIST
 from ..data.locations import LOCATIONS_DATA
 from ..options import OracleOfSeasonsLinkedHerosCave, OracleOfSeasonsLogicDifficulty, OracleOfSeasonsOldMenShuffle
 from ..util import get_old_man_values_pool
