@@ -60,7 +60,7 @@ CAVE_DATA: list[int | list[int | list[int]]] = [
         # 15
         [0x0000, 0x0586],  # All the gbc link functions, farore spawning stuff
         [0x1435, 0x1464],  # Trade item (0x41) data
-        [0x1E5D, 0x1EDD],  # Strange bros stealing feathers, companions in swamp
+        [0x1E5D, 0x1EB3],  # Strange bros stealing feathers, companions in swamp
         0x392D,
     ],
     0x3A07,  # 16
