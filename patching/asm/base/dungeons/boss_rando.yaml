@@ -60,6 +60,12 @@
   jp $67dc ; @in_spikes
   /endif
 
+# Move the d4 reward
+11/7458/: |
+  /ifdef d2_boss_in_d4
+  db $88
+  /endif
+
 # Move the d6 reward
 11/7834/: |
   /ifdef d2_boss_in_d6
