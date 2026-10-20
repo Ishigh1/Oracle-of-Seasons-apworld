@@ -77,9 +77,9 @@ def oos_create_ap_procedure_patch(world: OracleOfSeasonsWorld) -> OoSProcedurePa
             continue
         assert loc.item
         if loc.item.player == loc.player:
-            patch_data["locations"][loc.name] = {"item": loc.item.name}
+            patch_data["locations"][str(loc.address)] = {"item_code": loc.item.code}
         else:
-            patch_data["locations"][loc.name] = {
+            patch_data["locations"][str(loc.address)] = {
                 "item": loc.item.name,
                 "player": world.multiworld.get_player_name(loc.item.player),
                 "progression": loc.item.advancement,
