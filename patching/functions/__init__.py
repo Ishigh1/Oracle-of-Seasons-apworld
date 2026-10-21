@@ -28,6 +28,7 @@ from ...data.constants import (
     TREASURE_SPAWN_INSTANT,
     TREASURE_SPAWN_POOF,
     VANILLA_SHOP_PRICES,
+    SEASON_CHAOTIC,
 )
 from ...data.items import ITEMS_DATA
 from ...data.locations import LOCATIONS_DATA
@@ -376,7 +377,7 @@ def define_option_constants(assembler: Z80Assembler, patch_data: dict[str, Any])
         pos_y = 0x68
         pos_x = 0x68
     elif options["start_position"] == OracleOfSeasonsStartingPosition.option_temple_of_seasons:
-        assembler.define_byte("option.warpingSeason", patch_data["default_seasons"]["HORON_VILLAGE"])
+        assembler.define_byte("option.warpingSeason", SEASON_CHAOTIC)
         assembler.define_byte("temple_start", 0x01)
         group = 0x01
         room = 0x05
