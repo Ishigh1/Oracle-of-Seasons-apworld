@@ -1,7 +1,7 @@
 # Change shopItemReplacementTable so that each item can only be bought once
 08/4cf6/shopItemReplacementTable: |
   db $3f,$01,locations.memberShop1.shopByte,$00   ; Member shop 1
-  db $40,$80,locations.horonShop1.shopByte,$00   ; Horon shop 3
+  db $40,$80,locations.horonShop3.shopByte,$00   ; Horon shop 3
   db $3f,$02,locations.memberShop2.shopByte,$00   ; Member shop 2
   db $40,$40,locations.horonShop2.shopByte,$00   ; Horon shop 2
   db $40,$20,locations.horonShop1.shopByte,$00   ; Horon shop 1
