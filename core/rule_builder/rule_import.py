@@ -8,6 +8,7 @@ try:
         HasAll,
         HasFromList,
         HasGroup,
+        NestedRule,
         Or,
         True_,
     )
@@ -17,11 +18,8 @@ try:
     Rule = CoreRule[OracleOfSeasonsWorld]
 
     # RB needs to implement the from_resolved we are expecting and implementing the optimization tied to it
-    if not hasattr(Or, "from_resolved"):
-        raise ImportError("#6085 is missing")
-    from collections.abc import Iterator
-    if Or.from_resolved.__annotations__["children_to_process"].__origin__ is not Iterator:
-        raise ImportError("#6478 is missing")
+    if CoreRule.Resolved not in NestedRule.__annotations__["children"].__args__[0].__args__:
+        raise ImportError("#6542 is missing")
 except ImportError:
     from .rules import And, AtLeast, CanReachRegion, False_, Has, HasAll, HasFromList, HasGroup, Or, Rule, True_
 
