@@ -386,9 +386,9 @@ def oos_can_complete_d11_puzzle() -> Rule:
 # Various item predicates ###########################################
 def oos_has_rupees_for_shop(shop_name: str) -> Rule:
     return Or(
-        And(oos_option_hard_logic(), oos_has_shovel()),
+        And(oos_option_hard_logic(), oos_has_prog(10), oos_has_shovel()),
         from_world_field(f"shop_requirements.{shop_name}", 0, "eq"),
-        And(oos_can_farm_rupees(), Has("Rupees", FromWorldAttr(f"shop_requirements.{shop_name}"))),
+        And(oos_has_prog(10), oos_can_farm_rupees(), Has("Rupees", FromWorldAttr(f"shop_requirements.{shop_name}"))),
     )
 
 
@@ -413,12 +413,15 @@ def oos_can_buy_market() -> Rule:
 
 
 def oos_can_farm_ore_chunks() -> Rule:
-    return Or(
-        oos_has_shovel(),
-        And(oos_option_medium_logic(), Or(oos_has_magic_boomerang(), oos_has_sword())),
-        And(
-            oos_option_hard_logic(),
-            Or(OoSCanReachRegion(RegionName.subrosian_dance_hall), oos_has_bracelet(), oos_has_switch_hook()),
+    return And(
+        oos_has_prog(10),
+        Or(
+            oos_has_shovel(),
+            And(oos_option_medium_logic(), Or(oos_has_magic_boomerang(), oos_has_sword())),
+            And(
+                oos_option_hard_logic(),
+                Or(OoSCanReachRegion(RegionName.subrosian_dance_hall), oos_has_bracelet(), oos_has_switch_hook()),
+            ),
         ),
     )
 
@@ -829,6 +832,7 @@ def oos_can_harvest_gasha(count: int) -> Rule:
     return And(
         from_option(OracleOfSeasonsGashaLocations, count, "ge"),
         Has("Gasha Seed", count),  # Enough seeds to plant
+        oos_has_prog(5 * count),
         Or(
             # Can actually harvest the nut, and get kills
             oos_has_sword(),

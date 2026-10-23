@@ -12,6 +12,7 @@ from ...options import (
     OracleOfSeasonsTarmGateRequirement,
 )
 from ..constants import SEASON_AUTUMN, SEASON_SPRING, SEASON_SUMMER, SEASON_WINTER
+from ..items import ItemName
 from ..regions import GASHA_REGIONS, RegionName
 from . import LogicLine
 from .logic_predicates import (
@@ -130,7 +131,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             RegionName.maple_encounter,
             RegionName.maple_trade,
             False,
-            Or(Has("Lon Lon Egg"), oos_self_locking_item("Maple Trade", "Lon Lon Egg")),
+            And(oos_has_prog(5), Or(Has("Lon Lon Egg"), oos_self_locking_item("Maple Trade", "Lon Lon Egg"))),
         ),
         (RegionName.maple_encounter, RegionName.maple_rare_item_1, False, oos_has_prog(15)),
         (RegionName.maple_rare_item_1, RegionName.maple_rare_item_2, False, oos_has_prog(30)),
@@ -1277,7 +1278,12 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             Or(oos_can_remove_snow(False), Has("Spring Banana")),
         ),
         (RegionName.goron_blocked_cave_entrance, RegionName.mount_cucco, False, oos_can_remove_snow(False)),
-        (RegionName.goron_blocked_cave_entrance, RegionName.maple_encounter, False, oos_can_meet_maple()),
+        (
+            RegionName.goron_blocked_cave_entrance,
+            RegionName.maple_encounter,
+            False,
+            Or(oos_can_meet_maple(), Has(ItemName.spring_banana)),
+        ),
         (RegionName.goron_blocked_cave_entrance, RegionName.goron_mountain, True, oos_has_bracelet()),
         (RegionName.goron_mountain, RegionName.maple_encounter, False, oos_can_meet_maple()),
         (RegionName.goron_blocked_cave_entrance, RegionName.gorons_gift, False, oos_can_remove_rockslide(False)),
