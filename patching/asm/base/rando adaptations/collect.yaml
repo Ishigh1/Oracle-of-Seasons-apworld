@@ -183,8 +183,8 @@
   ld (hl),$50
   jr c,@end
   ld (hl),$99
-  ld a,(hl)
   @end:
+  ld a,(hl)
   dec l ; current item count
   ld (hl),a
   ret
