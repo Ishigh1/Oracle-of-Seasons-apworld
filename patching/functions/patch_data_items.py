@@ -15,8 +15,10 @@ def interpret_location_data(patch_data: dict[str, Any]) -> None:
         location_id = str(OracleOfSeasonsWorld.location_name_to_id[location_name])
         if location_id in patch_locations_data:
             patch_location_data = patch_locations_data[location_id]
-            item_name = OracleOfSeasonsWorld.item_id_to_name[patch_location_data["item_code"]]
-            patch_location_data["item"] = item_name
+            if "player" not in patch_location_data:
+                # If it is local, do not rely on a name in the patch data, but its ID
+                item_name = OracleOfSeasonsWorld.item_id_to_name[patch_location_data["item_code"]]
+                patch_location_data["item"] = item_name
             new_patch_locations_data[location_name] = patch_location_data
             continue
         # Set item to vanilla
