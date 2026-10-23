@@ -142,7 +142,7 @@ def create_connections(world: OracleOfSeasonsWorld, options):
                             else:
                                 new_pair = (region_a, region_1)
                             if new_pair in connection_data:
-                                connection_data[new_pair] = Or(rule, connection_data[new_pair]).resolve(world)
+                                connection_data[new_pair] = (connection_data[new_pair] | rule).resolve(world)
                             else:
                                 connection_data[new_pair] = rule
                                 known_connections[new_pair[0]].append(new_pair)
@@ -153,7 +153,7 @@ def create_connections(world: OracleOfSeasonsWorld, options):
                 needed_regions.add(region_2)
                 connection_pair = (region_1, region_2)
                 if connection_pair in connection_data:
-                    connection_data[connection_pair] = Or(rule, connection_data[connection_pair]).resolve(world)
+                    connection_data[connection_pair] = (connection_data[connection_pair] | rule).resolve(world)
                 else:
                     connection_data[connection_pair] = rule.resolve(world)
                     known_connections[region_1].append(connection_pair)
@@ -161,7 +161,7 @@ def create_connections(world: OracleOfSeasonsWorld, options):
                 if is_two_way:
                     connection_pair = (region_2, region_1)
                     if connection_pair in connection_data:
-                        connection_data[connection_pair].combine_or(rule.resolve(world), world)
+                        connection_data[connection_pair] = (connection_data[connection_pair] | rule).resolve(world)
                     else:
                         connection_data[connection_pair] = rule.resolve(world)
                         known_connections[region_1].append(connection_pair)

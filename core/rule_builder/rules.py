@@ -236,6 +236,35 @@ class Rule(CoreRule[TWorld], game=OracleOfSeasonsWorld.game):
                 self.caching_enabled and not self.force_recalculate and not self.skip_cache,
             )
 
+        def __and__(self, other: "Rule[Any] | Rule.Resolved | Iterable[OptionFilter] | OptionFilter") -> "Rule[TWorld]":
+            """Combines two rules or a rule and an option filter into an And rule"""
+            if isinstance(other, Rule):
+                return other.__and__(self)
+            if isinstance(other, OptionFilter):
+                other = (other,)
+            if isinstance(other, Iterable):
+                return Filtered(self, options=other)
+            return And(self, other)
+
+        def __rand__(
+            self,
+            other: "Rule[Any] | Rule.Resolved | Iterable[OptionFilter] | OptionFilter",
+        ) -> "Rule[TWorld]":
+            return self.__and__(other)
+
+        def __or__(self, other: "Rule[Any] | Rule.Resolved | Iterable[OptionFilter] | OptionFilter") -> "Rule[TWorld]":
+            """Combines two rules or a rule and an option filter into an Or rule"""
+            if isinstance(other, Rule):
+                return other.__or__(self)
+            if isinstance(other, OptionFilter):
+                other = (other,)
+            if isinstance(other, Iterable):
+                return Or(self, True_(options=other))
+            return Or(self, other)
+
+        def __ror__(self, other: "Rule[Any] | Rule.Resolved | Iterable[OptionFilter] | OptionFilter") -> "Rule[TWorld]":
+            return self.__or__(other)
+
         def __call__(self, state: CollectionState) -> bool:
             """Evaluate this rule's result with the given state, using the cached value if possible"""
             if not self.caching_enabled:
@@ -760,13 +789,15 @@ class Or(NestedRule[TWorld], game=OracleOfSeasonsWorld.game):
 class WrapperRule(Rule[TWorld], game=OracleOfSeasonsWorld.game):
     """A base rule class that wraps another rule to provide extra logic or data"""
 
-    child: Rule[TWorld]
+    child: Rule[TWorld] | Rule.Resolved
     """The child rule being wrapped"""
 
     @override
     def _instantiate(self, world: TWorld) -> Rule.Resolved:
+        child = self.child.resolve(world) if isinstance(self.child, Rule) else self.child
+        assert child.player == world.player, f"Expected player {world.player} but got player {child.player}"
         return self.Resolved(
-            self.child.resolve(world),
+            child,
             player=world.player,
             caching_enabled=getattr(world, "rule_caching_enabled", False),
         )
@@ -775,6 +806,7 @@ class WrapperRule(Rule[TWorld], game=OracleOfSeasonsWorld.game):
     def to_dict(self) -> dict[str, Any]:
         data = super().to_dict()
         del data["args"]
+        assert isinstance(self.child, Rule), f"Cannot serialize rule as it wraps resolved rule: {self}"
         data["child"] = self.child.to_dict()
         return data
 
@@ -856,11 +888,13 @@ class Filtered(WrapperRule[TWorld], game=OracleOfSeasonsWorld.game):
 
     @override
     def _instantiate(self, world: TWorld) -> Rule.Resolved:
-        return self.child.resolve(world)
+        child = self.child.resolve(world) if isinstance(self.child, Rule) else self.child
+        assert child.player == world.player, f"Expected player {world.player} but got player {child.player}"
+        return child
 
 
 @dataclasses.dataclass()
-class Has(Rule[TWorld], game=OracleOfSeasonsWorld.game):
+class Has(Rule[TWorld], game="Archipelago"):
     """A rule that checks if the player has at least `count` of a given item"""
 
     item_name: str | FieldResolver

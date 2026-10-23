@@ -15,9 +15,11 @@ try:
     from rule_builder.rules import Rule as CoreRule
 
     from ... import OracleOfSeasonsWorld
+
     Rule = CoreRule[OracleOfSeasonsWorld]
 
-    # RB needs to implement the from_resolved we are expecting and implementing the optimization tied to it
+    # RB needs to implement the NestedRule accepting resolved we are expecting
+    # and implementing the optimization tied to it
     if CoreRule.Resolved not in NestedRule.__annotations__["children"].__args__[0].__args__:
         raise ImportError("#6542 is missing")
 except ImportError:
