@@ -223,8 +223,6 @@ def define_compass_rooms_table(
         elif item_id == 0x5E:  # Unlocks
             dungeon_name = item["item"].split(":")[0]
             dungeon = DUNGEON_NAMES.index(dungeon_name)
-            if dungeon == 11:
-                dungeon = 9
 
         if dungeon != 0xFF:
             location_data = LOCATIONS_DATA[location_name]
