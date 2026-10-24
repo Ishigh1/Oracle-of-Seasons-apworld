@@ -6,6 +6,7 @@ from BaseClasses import CollectionRule, CollectionState, Entrance, Item, Locatio
 from Options import Option
 from rule_builder.rules import Rule
 from worlds.AutoWorld import World
+
 from .common.Util import build_item_name_to_id_dict, build_location_name_to_id_dict
 from .data.constants import (
     DEFAULT_SEASONS,
