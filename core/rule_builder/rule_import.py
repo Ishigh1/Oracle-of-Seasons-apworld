@@ -14,7 +14,7 @@ try:
     )
     from rule_builder.rules import Rule as CoreRule
 
-    from ... import OracleOfSeasonsWorld
+    from ...world import OracleOfSeasonsWorld
 
     Rule = CoreRule[OracleOfSeasonsWorld]
 
