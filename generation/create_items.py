@@ -227,7 +227,9 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
         filler_item_count += 2
 
     if world.options.dungeon_key_type == OracleOfSeasonsDungeonKeyType.option_unlocks:
-        for unlocks in UNLOCK_ITEMS.values():
+        for dungeon_name, unlocks in UNLOCK_ITEMS.items():
+            if dungeon_name == DUNGEON_NAMES[11] and not world.options.linked_heros_cave.is_enabled:
+                continue
             for unlock in unlocks:
                 item_pool_dict[unlock] = 1
                 extra_items += 1
@@ -371,7 +373,7 @@ def build_currency_item_dict(
 
 
 def filter_confined_dungeon_items_from_pool(world: OracleOfSeasonsWorld, items: list[Item]) -> None:
-    confined_dungeon_items = []
+    confined_dungeon_items: list[Item] = []
     excluded_dungeons = []
     if world.options.exclude_dungeons_without_essence and not world.options.shuffle_essences:
         for i, essence_name in enumerate(ESSENCES):
@@ -379,17 +381,24 @@ def filter_confined_dungeon_items_from_pool(world: OracleOfSeasonsWorld, items: 
                 excluded_dungeons.append(i + 1)
 
     # Put Small Keys / Master Keys unless keysanity is enabled for those
-    if world.options.dungeon_key_type >= OracleOfSeasonsDungeonKeyType.option_master_key_all_small_keys:
-        small_keys_name = "Master Key"
+    if world.options.dungeon_key_type == OracleOfSeasonsDungeonKeyType.option_unlocks:
+        restricted_unlocks = set()
+        for dungeon_name, unlock_names in UNLOCK_ITEMS.items():
+            if DUNGEON_NAMES.index(dungeon_name) in excluded_dungeons or not world.options.keysanity_small_keys:
+                restricted_unlocks.update(unlock_names)
+        confined_dungeon_items.extend([item for item in items if item.name in restricted_unlocks])
     else:
-        small_keys_name = "Small Key"
-    if not world.options.keysanity_small_keys:
-        confined_dungeon_items.extend([item for item in items if item.name.startswith(small_keys_name)])
-    else:
-        for i in excluded_dungeons:
-            confined_dungeon_items.extend(
-                [item for item in items if item.name == f"{small_keys_name} ({DUNGEON_NAMES[i]})"]
-            )
+        if world.options.dungeon_key_type >= OracleOfSeasonsDungeonKeyType.option_master_key_all_small_keys:
+            small_keys_name = "Master Key"
+        else:
+            small_keys_name = "Small Key"
+        if not world.options.keysanity_small_keys:
+            confined_dungeon_items.extend([item for item in items if item.name.startswith(small_keys_name)])
+        else:
+            for i in excluded_dungeons:
+                confined_dungeon_items.extend(
+                    [item for item in items if item.name == f"{small_keys_name} ({DUNGEON_NAMES[i]})"]
+                )
 
     # Put Boss Keys unless keysanity is enabled for those
     if not world.options.keysanity_boss_keys:
