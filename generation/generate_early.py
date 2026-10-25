@@ -13,7 +13,7 @@ from ..data.constants import (
 )
 from ..data.items import RING_LIST
 from ..data.locations import LOCATIONS_DATA
-from ..options import OracleOfSeasonsLinkedHerosCave, OracleOfSeasonsLogicDifficulty, OracleOfSeasonsOldMenShuffle
+from ..options import OracleOfSeasonsLogicDifficulty, OracleOfSeasonsOldMenShuffle
 from ..util import get_old_man_values_pool
 from ..world import OracleOfSeasonsWorld
 
@@ -62,9 +62,6 @@ def generate_early(world: OracleOfSeasonsWorld) -> None:
     compute_shop_requirements(world)
 
     create_random_rings_pool(world)
-
-    if world.options.linked_heros_cave.value & OracleOfSeasonsLinkedHerosCave.samasa:
-        world.dungeon_entrances["d11 entrance"] = "enter d11"
 
     world.item_mapping_collect = {
         "Rupees (1)": ("Rupees", 1),

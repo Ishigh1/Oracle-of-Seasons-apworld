@@ -894,7 +894,7 @@ class Filtered(WrapperRule[TWorld], game=OracleOfSeasonsWorld.game):
 
 
 @dataclasses.dataclass()
-class Has(Rule[TWorld], game="Archipelago"):
+class Has(Rule[TWorld], game=OracleOfSeasonsWorld.game):
     """A rule that checks if the player has at least `count` of a given item"""
 
     item_name: str | FieldResolver

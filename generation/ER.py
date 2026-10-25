@@ -1,13 +1,17 @@
 import itertools
+from collections.abc import Mapping
 
 from entrance_rando import randomize_entrances
 
 from ..data.constants import PORTAL_CONNECTIONS, OracleOfSeasonsConnectionType
+from ..data.regions import RegionName
 from ..options import OracleOfSeasonsPortalShuffle
 from ..world import OracleOfSeasonsWorld
 
 
-def list_entrances_for_patch(world: OracleOfSeasonsWorld, prefix: str, vanilla_entrances: dict[str, str]):
+def list_entrances_for_patch(
+    world: OracleOfSeasonsWorld, prefix: str, vanilla_entrances: Mapping[RegionName, RegionName]
+):
     seen_entrances = set()
     connections = {}
     region_mapping = {}

@@ -5,7 +5,7 @@ from BaseClasses import CollectionState, EntranceType, Item, Region
 from Options import Accessibility
 
 from ..core.rule_builder.rule_import import And, Has, Or, True_
-from ..data.constants import DUNGEON_NAMES, PORTAL_CONNECTIONS, OracleOfSeasonsConnectionType
+from ..data.constants import DUNGEON_NAMES, OracleOfSeasonsConnectionType
 from ..data.logic import LogicLine
 from ..data.logic.dungeons_logic import (
     make_d0_logic,
@@ -39,34 +39,9 @@ from ..data.regions import RegionName
 from ..world import OracleOfSeasonsWorld
 
 
-def create_randomizable_connections(
-    world: OracleOfSeasonsWorld, prefix: str, vanilla_connections: dict[str, str], outer_group: int, inner_group: int
-):
-    for reg1, reg2 in vanilla_connections.items():
-        region_1 = world.get_region(reg1)
-        region_2 = world.get_region(reg2)
-
-        entrance = region_1.create_exit(f"{prefix}{reg1}")
-        entrance.randomization_group = outer_group
-        entrance.randomization_type = EntranceType.TWO_WAY
-        world.set_rule(entrance, True_())
-
-        entrance = region_1.create_er_target(f"{prefix}{reg1}")
-        entrance.randomization_group = outer_group
-        entrance.randomization_type = EntranceType.TWO_WAY
-
-        entrance = region_2.create_exit(f"{prefix}{reg2}")
-        entrance.randomization_group = inner_group
-        entrance.randomization_type = EntranceType.TWO_WAY
-        world.set_rule(entrance, True_())
-
-        entrance = region_2.create_er_target(f"{prefix}{reg2}")
-        entrance.randomization_group = inner_group
-        entrance.randomization_type = EntranceType.TWO_WAY
-
-
-def create_connections(world: OracleOfSeasonsWorld, options):
+def create_connections(world: OracleOfSeasonsWorld):
     world.set_completion_rule(Has("_beaten_game"))
+    options = world.options
 
     all_logic: list[list[LogicLine]] = [
         make_holodrum_logic(world, options),
@@ -83,18 +58,8 @@ def create_connections(world: OracleOfSeasonsWorld, options):
         make_d11_logic(options),
         make_gasha_logic(world),
     ]
-    if not world.options.shuffle_dungeons:
-        dungeon_entrances: list[LogicLine] = []
-        for reg1, reg2 in world.dungeon_entrances.items():
-            dungeon_entrances.append((reg1, reg2, True, True_()))
-        all_logic.append(dungeon_entrances)
 
-    if not world.options.shuffle_portals:
-        portal_connections: list[LogicLine] = []
-        for reg1, reg2 in PORTAL_CONNECTIONS.items():
-            portal_connections.append((reg1, reg2, True, True_()))
-        all_logic.append(portal_connections)
-
+    randomized_entrances: list[tuple[RegionName, str, int]] = []
     region_replacement: dict[RegionName, RegionName] = world.region_replacement
     reverse_replacement: dict[RegionName, list[RegionName]] = defaultdict(lambda: [])
     connection_data: dict[tuple[RegionName, RegionName], Rule.Resolved] = {}
@@ -104,9 +69,26 @@ def create_connections(world: OracleOfSeasonsWorld, options):
         for entrance_desc in logic_array:
             region_1 = entrance_desc[0]
             region_2 = entrance_desc[1]
-            assert len(entrance_desc) == 4
-            is_two_way = entrance_desc[2]
+            transition_type = entrance_desc[2]
             rule = entrance_desc[3]
+
+            if transition_type.is_dungeon_entrance():
+                if options.shuffle_dungeons:
+                    randomized_entrances.append(
+                        (region_1, region_1.value, OracleOfSeasonsConnectionType.CONNECT_DUNGEON_OVERWORLD)
+                    )
+                    randomized_entrances.append(
+                        (region_2, region_2.value, OracleOfSeasonsConnectionType.CONNECT_DUNGEON_INSIDE)
+                    )
+
+            elif transition_type.is_portal_entrance():
+                if options.shuffle_portals:
+                    randomized_entrances.append(
+                        (region_1, f"enter {region_1}", OracleOfSeasonsConnectionType.CONNECT_PORTAL_OVERWORLD)
+                    )
+                    randomized_entrances.append(
+                        (region_2, f"enter {region_2}", OracleOfSeasonsConnectionType.CONNECT_PORTAL_SUBROSIA)
+                    )
 
             if region_1 in region_replacement:
                 region_1 = region_replacement[region_1]
@@ -115,6 +97,8 @@ def create_connections(world: OracleOfSeasonsWorld, options):
 
             if region_1 == region_2:
                 continue
+
+            is_two_way = transition_type.is_two_way()
 
             resolved_rule = rule.resolve(world)
             if resolved_rule.always_false:
@@ -178,23 +162,18 @@ def create_connections(world: OracleOfSeasonsWorld, options):
         region_2 = world.get_region(region_2)
         world.create_entrance(region_1, region_2, rule=rule)
 
-    if world.options.shuffle_dungeons:
-        create_randomizable_connections(
-            world,
-            "",
-            world.dungeon_entrances,
-            OracleOfSeasonsConnectionType.CONNECT_DUNGEON_OVERWORLD,
-            OracleOfSeasonsConnectionType.CONNECT_DUNGEON_INSIDE,
-        )
+    for region_name, entrance_name, randomization_group in randomized_entrances:
+        region = world.get_region(region_name)
 
-    if world.options.shuffle_portals:
-        create_randomizable_connections(
-            world,
-            "enter ",
-            PORTAL_CONNECTIONS,
-            OracleOfSeasonsConnectionType.CONNECT_PORTAL_OVERWORLD,
-            OracleOfSeasonsConnectionType.CONNECT_PORTAL_SUBROSIA,
-        )
+        entrance = region.create_exit(entrance_name)
+        entrance.randomization_group = randomization_group
+        entrance.randomization_type = EntranceType.TWO_WAY
+        world.set_rule(entrance, True_())
+
+        entrance = region.create_er_target(entrance_name)
+        entrance.randomization_group = randomization_group
+        entrance.randomization_type = EntranceType.TWO_WAY
+        world.set_rule(entrance, True_())
 
 
 class AlwaysAllowRule:

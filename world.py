@@ -1,4 +1,5 @@
 import os
+from collections.abc import Mapping
 from threading import Event
 from typing import Any, ClassVar, TextIO, cast
 
@@ -86,8 +87,8 @@ class OracleOfSeasonsWorld(World):
         self.prog_pre_fill_items: list[Item] = []
         self.nonprog_pre_fill_items: list[Item] = []
         self.default_seasons: dict[str, int] = DEFAULT_SEASONS.copy()
-        self.dungeon_entrances: dict[str, str] = DUNGEON_CONNECTIONS.copy()
-        self.portal_connections: dict[str, str] = PORTAL_CONNECTIONS.copy()
+        self.dungeon_entrances: Mapping[RegionName, RegionName] = DUNGEON_CONNECTIONS
+        self.portal_connections: Mapping[RegionName, RegionName] = PORTAL_CONNECTIONS
         self.lost_woods_item_sequence: list[list] = LOST_WOODS_ITEM_SEQUENCE.copy()
         self.lost_woods_main_sequence: list[list] = LOST_WOODS_MAIN_SEQUENCE.copy()
         self.old_man_rupee_values: dict[str, int] = OLD_MAN_RUPEE_VALUES.copy()
@@ -137,7 +138,7 @@ class OracleOfSeasonsWorld(World):
         from .generation.create_regions import create_locations
         from .generation.logic import create_connections
 
-        create_connections(self, self.options)
+        create_connections(self)
         create_locations(self)
 
     def get_region(self, region_name: str) -> Region:
@@ -189,7 +190,7 @@ class OracleOfSeasonsWorld(World):
             "Potion",
             "Bombs (10)",
         ]
-        
+
         if self.options.linked_items:
             filler_item_names.append(ItemName.bombchus_10)
         else:
