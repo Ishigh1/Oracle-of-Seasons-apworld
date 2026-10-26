@@ -3,32 +3,24 @@ from collections.abc import Mapping
 
 from entrance_rando import randomize_entrances
 
-from ..data.constants import PORTAL_CONNECTIONS, OracleOfSeasonsConnectionType
+from ..data.constants import DUNGEON_CONNECTIONS, PORTAL_CONNECTIONS, OracleOfSeasonsConnectionType
 from ..data.regions import RegionName
 from ..options import OracleOfSeasonsPortalShuffle
 from ..world import OracleOfSeasonsWorld
 
 
 def list_entrances_for_patch(
-    world: OracleOfSeasonsWorld, prefix: str, vanilla_entrances: Mapping[RegionName, RegionName]
+    pairing_dict: dict[str, str], prefix: str, vanilla_entrances: Mapping[RegionName, RegionName]
 ):
     seen_entrances = set()
     connections = {}
-    region_mapping = {}
-    for region_1, region_2 in vanilla_entrances.items():
-        if region_1 in world.region_replacement:
-            region_mapping[world.region_replacement[region_1]] = region_1
-        if region_2 in world.region_replacement:
-            region_mapping[world.region_replacement[region_2]] = region_2
     for entrance1 in itertools.chain(
         vanilla_entrances, vanilla_entrances.values()
     ):  # Do them in order overworld then subrosia
         if entrance1 in seen_entrances:
             continue
         seen_entrances.add(entrance1)
-        entrance2 = world.get_entrance(f"{prefix}{entrance1}").connected_region.name
-        if entrance2 in region_mapping:
-            entrance2 = region_mapping[entrance2]
+        entrance2 = pairing_dict[f"{prefix}{entrance1}"].removeprefix(prefix)
         seen_entrances.add(entrance2)
         connections[entrance1] = entrance2
     return connections
@@ -50,7 +42,11 @@ def oos_randomize_entrances(world: OracleOfSeasonsWorld) -> None:
         )
 
     placement_state = randomize_entrances(world, True, target_group_lookup)
+    pairing_dict = dict(placement_state.pairings)
     if world.options.shuffle_portals:
-        world.portal_connections = list_entrances_for_patch(world, "enter ", PORTAL_CONNECTIONS)
+        world.portal_connections = list_entrances_for_patch(pairing_dict, "enter ", PORTAL_CONNECTIONS)
     if world.options.shuffle_dungeons:
-        world.dungeon_entrances = list_entrances_for_patch(world, "", world.dungeon_entrances)
+        dungeon_entrances = dict(DUNGEON_CONNECTIONS)
+        if world.options.linked_heros_cave.is_samasa:
+            dungeon_entrances[RegionName.d11_entrance] = RegionName.enter_d11
+        world.dungeon_entrances = list_entrances_for_patch(pairing_dict, "", dungeon_entrances)

@@ -72,6 +72,10 @@ def create_connections(world: OracleOfSeasonsWorld):
             transition_type = entrance_desc[2]
             rule = entrance_desc[3]
 
+            resolved_rule = rule.resolve(world)
+            if resolved_rule.always_false:
+                continue
+
             if transition_type.is_dungeon_entrance():
                 if options.shuffle_dungeons:
                     randomized_entrances.append(
@@ -80,6 +84,7 @@ def create_connections(world: OracleOfSeasonsWorld):
                     randomized_entrances.append(
                         (region_2, region_2.value, OracleOfSeasonsConnectionType.CONNECT_DUNGEON_INSIDE)
                     )
+                    continue
 
             elif transition_type.is_portal_entrance():
                 if options.shuffle_portals:
@@ -89,6 +94,7 @@ def create_connections(world: OracleOfSeasonsWorld):
                     randomized_entrances.append(
                         (region_2, f"enter {region_2}", OracleOfSeasonsConnectionType.CONNECT_PORTAL_SUBROSIA)
                     )
+                    continue
 
             if region_1 in region_replacement:
                 region_1 = region_replacement[region_1]
@@ -100,9 +106,6 @@ def create_connections(world: OracleOfSeasonsWorld):
 
             is_two_way = transition_type.is_two_way()
 
-            resolved_rule = rule.resolve(world)
-            if resolved_rule.always_false:
-                continue
             if is_two_way and resolved_rule.always_true:
                 # This connection is superfluous
                 needed_regions.add(region_1)
