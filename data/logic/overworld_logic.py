@@ -1425,6 +1425,12 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
         (RegionName.d4_entrance, RegionName.mt_cucco_talons_cave_entrance, TransitionType.BASIC_ONE_WAY, True_()),
         (
             RegionName.mount_cucco,
+            RegionName.maple_encounter,  # At the right of goron mountain
+            TransitionType.BASIC_ONE_WAY,
+            Or(oos_can_meet_maple(), Has(ItemName.spring_banana)),
+        ),
+        (
+            RegionName.mount_cucco,
             RegionName.goron_mountain_across_pits,
             TransitionType.BASIC_ONE_WAY,
             Or(
@@ -1452,7 +1458,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             RegionName.goron_blocked_cave_entrance,
             RegionName.maple_encounter,
             TransitionType.BASIC_ONE_WAY,
-            Or(oos_can_meet_maple(), Has(ItemName.spring_banana)),
+            oos_can_meet_maple(),
         ),
         (
             RegionName.goron_blocked_cave_entrance,
