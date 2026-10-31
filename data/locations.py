@@ -252,6 +252,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
         "map_tile": 0x5E,
         "symbolic_name": "syrupShop1",
         "shop": True,
+        "repeatable": True
     },
     "Sunken City: Syrup Shop #2": {
         "region_id": "syrup shop",
@@ -266,6 +267,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
         "map_tile": 0x5E,
         "symbolic_name": "syrupShop2",
         "shop": True,
+        "repeatable": True
     },
     "Sunken City: Syrup Shop #3": {
         "region_id": "syrup shop",
@@ -280,6 +282,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
         "map_tile": 0x5E,
         "symbolic_name": "syrupShop3",
         "shop": True,
+        "repeatable": True
     },
     "Eyeglass Lake: Chest in Dried Lake East Cave": {
         "region_id": "dry eyeglass lake, east cave",
@@ -350,6 +353,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
         "map_tile": 0xE6,
         "symbolic_name": "horonShop1",
         "shop": True,
+        "repeatable": True,
     },
     "Horon Village: Shop #2": {
         "region_id": "horon shop",
@@ -362,6 +366,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
         "map_tile": 0xE6,
         "symbolic_name": "horonShop2",
         "shop": True,
+        "repeatable": True
     },
     "Horon Village: Shop #3": {
         "region_id": "horon shop",
@@ -374,6 +379,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
         "map_tile": 0xE6,
         "symbolic_name": "horonShop3",
         "shop": True,
+        "repeatable": True
     },
     "Horon Village: Member's Shop #1": {
         "region_id": "member's shop",
@@ -386,6 +392,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
         "map_tile": 0xE6,
         "symbolic_name": "memberShop1",
         "shop": True,
+        "repeatable": True
     },
     "Horon Village: Member's Shop #2": {
         "region_id": "member's shop",
@@ -398,6 +405,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
         "map_tile": 0xE6,
         "symbolic_name": "memberShop2",
         "shop": True,
+        "repeatable": True
     },
     "Horon Village: Member's Shop #3": {
         "region_id": "member's shop",
@@ -412,6 +420,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
         "map_tile": 0xE6,
         "symbolic_name": "memberShop3",
         "shop": True,
+        "repeatable": True
     },
     "Horon Village: Advance Shop #1": {
         "region_id": "advance shop",
@@ -425,6 +434,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
         "map_tile": 0xC5,
         "symbolic_name": "advanceShop1",
         "shop": True,
+        "repeatable": True
     },
     "Horon Village: Advance Shop #2": {
         "region_id": "advance shop",
@@ -438,6 +448,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
         "map_tile": 0xC5,
         "symbolic_name": "advanceShop2",
         "shop": True,
+        "repeatable": True
     },
     "Horon Village: Advance Shop #3": {
         "region_id": "advance shop",
@@ -451,6 +462,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
         "map_tile": 0xC5,
         "symbolic_name": "advanceShop3",
         "shop": True,
+        "repeatable": True
     },
     "Subrosia: Tower of Winter": {
         "region_id": "tower of winter",
@@ -2469,7 +2481,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
         "flag_byte": 0xC641,
         "bit_mask": 0x20,
         "symbolic_name": "mapleItem1",
-        "renewable": True,
+        "repeatable": True,
     },
     "Maple Rare Drop #2": {
         "region_id": "maple rare item 2",
@@ -2478,7 +2490,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
         "flag_byte": 0xC641,
         "bit_mask": 0x10,
         "symbolic_name": "mapleItem2",
-        "renewable": True,
+        "repeatable": True,
     },
     "Maple Rare Drop #3": {
         "region_id": "maple rare item 3",
@@ -2487,7 +2499,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
         "flag_byte": 0xC641,
         "bit_mask": 0x40,
         "symbolic_name": "mapleItem3",
-        "renewable": True,
+        "repeatable": True,
     },
     "Maple Rare Drop #4": {
         "region_id": "maple rare item 4",
@@ -2496,7 +2508,7 @@ LOCATIONS_DATA: dict[str, dict[str, Any]] = {
         "flag_byte": 0xC641,
         "bit_mask": 0x80,
         "symbolic_name": "mapleItem4",
-        "renewable": True,
+        "repeatable": True,
     },
 }
 

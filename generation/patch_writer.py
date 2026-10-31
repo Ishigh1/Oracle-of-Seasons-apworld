@@ -40,8 +40,8 @@ def oos_create_ap_procedure_patch(world: OracleOfSeasonsWorld) -> OoSProcedurePa
             item = location.item
             assert item is not None
             if not item.excludable or (
-                # Potion is very good, as renewable, so it goes in the non-excludable pile
-                "renewable" in location_data and item.player == world.player and item.name == "Potion"
+                # Potion is very good, as repeatable, so it goes in the non-excludable pile
+                "repeatable" in location_data and item.player == world.player and item.name == "Potion"
             ):
                 shop_prices[symbolic_name] = world.shop_prices[symbolic_name]
                 continue

@@ -616,11 +616,6 @@ def apply_miscellaneous_options(rom: RomData, patch_data: dict[str, Any]) -> Non
         rom.write_byte(GameboyAddress(0x09, 0x4F39).address_in_rom(), 0xA7)
         rom.write_byte(GameboyAddress(0x09, 0x4F3B).address_in_rom(), 0xE7)
 
-    # If horon shop 3 is set to be a renewable Potion, manually edit the shop flag for
-    # that slot to zero to make it stay after buying
-    if patch_data["options"]["enforce_potion_in_shop"]:
-        rom.write_byte(GameboyAddress(0x08, 0x4CFB).address_in_rom(), 0x00)
-
     if patch_data["options"]["dungeon_key_type"] >= OracleOfSeasonsDungeonKeyType.option_master_key_all_small_keys:
         # Remove small key consumption on keydoor opened
         rom.write_byte(GameboyAddress(0x06, 0x4357).address_in_rom(), 0x00)

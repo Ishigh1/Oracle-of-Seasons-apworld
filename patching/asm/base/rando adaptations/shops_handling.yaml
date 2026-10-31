@@ -21,14 +21,14 @@
   db $00,$00,$00,$00
   db $00,$00,$00,$00
 
-# Make shop items only disappear if they're not renewable ($b0 isn't, $80 is)
+# Make shop items only disappear if they're not repeatable ($b0 isn't, $80 is)
 08/4b3c/: |
-  call isRenewable
+  call isRepeatable
   jr z,$0b ; @itemOK
   nop
   db $30 ; jr nc
 
-08//isRenewable: |
+08//isRepeatable: |
   ret z ; item not gotten once
 
   inc hl

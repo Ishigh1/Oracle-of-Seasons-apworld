@@ -695,12 +695,11 @@ class OracleOfSeasonsFoolsOre(Choice):
 
 class OracleOfSeasonsEnforcePotionInShop(Toggle):
     """
-    When enabled, you are guaranteed to have a renewable Potion for 300 rupees inside Horon shop
+    When enabled, you are guaranteed to have a repeatable Potion for 300 rupees inside Horon shop
     """
 
     display_name = "Enforce Potion in Shop"
 
-    include_in_patch = True
     include_in_slot_data = True
 
 
