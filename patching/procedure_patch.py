@@ -9,6 +9,7 @@ import yaml
 import Utils
 from settings import get_settings
 from worlds.Files import APPatchExtension, APProcedurePatch, APTokenMixin
+from .functions.unlocks import define_unlocks
 
 from ..common.patching.RomData import RomData
 from ..common.patching.rooms.encoding import write_room_data
@@ -121,6 +122,7 @@ class OoSPatchExtensions(APPatchExtension):
         define_essence_sparkle_constants(assembler, patch_data, dungeon_entrances)
         define_lost_woods_sequences(assembler, texts, patch_data)
         define_tree_sprites(assembler, patch_data, item_data)
+        define_unlocks(assembler)
         set_file_select_text(assembler, caller.player_name)
         set_player_start_inventory(assembler, patch_data)
         randomize_puzzles(rom_data, texts, assembler, room_data, patch_data)

@@ -1,9 +1,9 @@
-from ... import OracleOfSeasonsWorld
 from ...core.rule_builder.rule_import import And, Has, Or, True_
 from ...options import (
     OracleOfSeasonsBusinessScrubsShuffle,
     OracleOfSeasonsOptions,
 )
+from ...world import OracleOfSeasonsWorld
 from ..items import ItemName
 from ..regions import RegionName
 from ..transition_type import TransitionType

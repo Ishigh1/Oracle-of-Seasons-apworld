@@ -100,9 +100,9 @@ def oos_create_ap_procedure_patch(world: OracleOfSeasonsWorld) -> OoSProcedurePa
         patch_data_item_hints.append((item_hint.name, location.name, player_name))
     patch_data["item_hints"] = patch_data_item_hints
 
-    start_inventory = defaultdict(int)
+    start_inventory: dict[int, int] = defaultdict(int)
     for item in world.multiworld.precollected_items[world.player]:
-        start_inventory[item.name] += 1
+        start_inventory[cast(int, item.code)] += 1
     patch_data["start_inventory"] = dict(start_inventory)
 
     patch.write_file("patch.json", json.dumps(patch_data).encode("utf-8"))

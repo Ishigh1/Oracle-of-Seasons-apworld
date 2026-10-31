@@ -1,6 +1,6 @@
 import dataclasses
 from collections.abc import Callable, Iterable, Mapping
-from typing import TYPE_CHECKING, Any, ClassVar, Final, Generic, Never, Self, cast, Sequence, Iterator
+from typing import TYPE_CHECKING, Any, ClassVar, Final, Generic, Iterator, Never, Self, Sequence, cast
 
 from typing_extensions import TypeVar, dataclass_transform, deprecated, override
 
@@ -10,7 +10,7 @@ from rule_builder.field_resolvers import FieldResolver, FieldResolverRegister, r
 from rule_builder.options import OptionFilter
 from rule_builder.rules import Rule as CoreRule
 
-from ... import OracleOfSeasonsWorld
+from ...world import OracleOfSeasonsWorld
 
 if TYPE_CHECKING:
     from worlds.AutoWorld import World
