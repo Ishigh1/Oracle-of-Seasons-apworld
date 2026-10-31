@@ -91,9 +91,6 @@ def create_item(world: OracleOfSeasonsWorld, name: str) -> Item:
 def create_items(world: OracleOfSeasonsWorld) -> None:
     item_pool_dict = build_item_pool_dict(world)
     items = [create_item(world, item_name) for item_name, quantity in item_pool_dict.items() for _ in range(quantity)]
-    for item in items:
-        if item.advancement:
-            world.num_prog += 1
     filter_confined_dungeon_items_from_pool(world, items)
 
     if (
