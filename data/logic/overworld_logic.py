@@ -379,9 +379,25 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
         (
             RegionName.suburbs,
             RegionName.suburbs_fairy_fountain,
-            TransitionType.BASIC_TWO_WAY,
+            TransitionType.BASIC_ONE_WAY,
             And(
                 Or(oos_can_swim(True), oos_can_jump_1_wide_liquid(True), oos_has_switch_hook()),
+                oos_not_season_in_eastern_suburbs(SEASON_WINTER),
+            ),
+        ),
+        (
+            RegionName.suburbs_fairy_fountain,
+            RegionName.suburbs,
+            TransitionType.BASIC_ONE_WAY,
+            And(
+                Or(
+                    oos_can_swim(True),
+                    oos_can_jump_1_wide_liquid(True),
+                    And(
+                        oos_option_medium_logic(),  # There is no fixed spawn on the bottom side
+                        oos_has_switch_hook(),
+                    ),
+                ),
                 oos_not_season_in_eastern_suburbs(SEASON_WINTER),
             ),
         ),
