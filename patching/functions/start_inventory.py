@@ -77,9 +77,9 @@ def set_player_start_inventory(assembler: Z80Assembler, patch_data: dict[str, An
         start_inventory_changes[parse_hex_string_to_value(DEFINES["wFeatherLevel"])] = start_inventory_data[
             "Progressive Feather"
         ]
-    if "Switch Hook" in start_inventory_data:
+    if ItemName.switch_hook in start_inventory_data:
         start_inventory_changes[parse_hex_string_to_value(DEFINES["wSwitchHookLevel"])] = start_inventory_data[
-            "Switch Hook"
+            ItemName.switch_hook
         ]
     bombchus = 0
     if "Bombchus (10)" in start_inventory_data:

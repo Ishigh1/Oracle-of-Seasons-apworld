@@ -15,7 +15,7 @@ class ItemName(StrEnum):
     rod_of_seasons_autumn = "Rod of Seasons (Autumn)"
     rod_of_seasons_winter = "Rod of Seasons (Winter)"
     magnetic_gloves = "Magnetic Gloves"
-    switch_hook = "Switch Hook"
+    switch_hook = "Progressive Hook"
     biggorons_sword = "Biggoron's Sword"
     bombchus_10 = "Bombchus (10)"
     rickys_flute = "Ricky's Flute"

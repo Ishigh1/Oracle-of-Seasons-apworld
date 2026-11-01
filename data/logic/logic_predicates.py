@@ -1,5 +1,6 @@
 from rule_builder.field_resolvers import FromOption, FromWorldAttr
 from rule_builder.options import OptionFilter
+from ..items import ItemName
 
 from ...core.rule_builder.rule_import import And, AtLeast, False_, Has, HasFromList, HasGroup, Or, True_
 from ...options import (
@@ -102,7 +103,7 @@ def oos_has_cane() -> Rule:
 
 def oos_has_switch_hook(level: int = 1) -> Rule:
     return Has(
-        "Switch Hook",
+        ItemName.switch_hook,
         level,
         options=[OptionFilter(OracleOfSeasonsIncludeCrossItems, OracleOfSeasonsIncludeCrossItems.option_true)],
     )

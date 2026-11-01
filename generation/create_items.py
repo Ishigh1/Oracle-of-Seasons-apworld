@@ -213,7 +213,7 @@ def build_item_pool_dict(world: OracleOfSeasonsWorld) -> dict[str, int]:
     extra_items = 3
     if world.options.cross_items:
         item_pool_dict["Cane of Somaria"] = 1
-        item_pool_dict["Switch Hook"] = 2
+        item_pool_dict[ItemName.switch_hook] = 2
         item_pool_dict["Seed Shooter"] = 1
         extra_items += 4
     if world.options.linked_items:
