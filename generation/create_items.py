@@ -14,7 +14,7 @@ from ..data.constants import (
 )
 from ..data.items import ITEMS_DATA, ItemName
 from ..data.locations import LOCATIONS_DATA
-from ..generation.create_regions import location_is_active
+from ..generation.locations import location_is_active
 from ..options import (
     OracleOfSeasonsDungeonKeyType,
     OracleOfSeasonsDuplicateSeedTree,

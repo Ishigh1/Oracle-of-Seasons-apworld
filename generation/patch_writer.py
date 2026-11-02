@@ -10,7 +10,7 @@ from ..data.constants import VALID_RUPEE_PRICE_VALUES
 from ..options import OracleOfSeasonsOptions, OracleOfSeasonsShopPrices
 from ..patching.procedure_patch import OoSProcedurePatch
 from ..world import OracleOfSeasonsWorld
-from .create_regions import location_is_active
+from .locations import location_is_active
 
 
 def oos_create_ap_procedure_patch(world: OracleOfSeasonsWorld) -> OoSProcedurePatch:

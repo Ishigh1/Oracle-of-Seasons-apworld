@@ -1,24 +1,10 @@
-from collections import defaultdict
 from typing import cast
 
-from BaseClasses import CollectionState, EntranceType, Item, Region
+from BaseClasses import CollectionState, Item, Region
 from Options import Accessibility
 
-from ..core.rule_builder.rule_import import And, Has, Or, True_
-from ..data.constants import DUNGEON_NAMES, OracleOfSeasonsConnectionType
-from ..data.logic import LogicLine
-from ..data.logic.dungeons_logic import (
-    make_d0_logic,
-    make_d1_logic,
-    make_d2_logic,
-    make_d3_logic,
-    make_d4_logic,
-    make_d5_logic,
-    make_d6_logic,
-    make_d7_logic,
-    make_d8_logic,
-    make_d11_logic,
-)
+from ..core.rule_builder.rule_import import And, Or
+from ..data.constants import DUNGEON_NAMES
 from ..data.logic.logic_predicates import (
     oos_can_jump_1_wide_pit,
     oos_can_jump_5_wide_pit,
@@ -32,151 +18,8 @@ from ..data.logic.logic_predicates import (
     oos_option_hard_logic,
     oos_option_medium_logic,
 )
-from ..data.logic.overworld_logic import make_gasha_logic, make_holodrum_logic
 from ..data.logic.rulebuilder import OoSCanReachRegion, Rule
-from ..data.logic.subrosia_logic import make_subrosia_logic
-from ..data.regions import RegionName
 from ..world import OracleOfSeasonsWorld
-
-
-def create_connections(world: OracleOfSeasonsWorld):
-    world.set_completion_rule(Has("_beaten_game"))
-    options = world.options
-
-    all_logic: list[list[LogicLine]] = [
-        make_holodrum_logic(world, options),
-        make_subrosia_logic(),
-        make_d0_logic(),
-        make_d1_logic(),
-        make_d2_logic(world, options),
-        make_d3_logic(),
-        make_d4_logic(options),
-        make_d5_logic(),
-        make_d6_logic(),
-        make_d7_logic(),
-        make_d8_logic(),
-        make_d11_logic(options),
-        make_gasha_logic(world),
-    ]
-
-    randomized_entrances: list[tuple[RegionName, str, int]] = []
-    region_replacement: dict[RegionName, RegionName] = world.region_replacement
-    reverse_replacement: dict[RegionName, list[RegionName]] = defaultdict(lambda: [])
-    connection_data: dict[tuple[RegionName, RegionName], Rule.Resolved] = {}
-    known_connections: dict[RegionName, list[tuple[RegionName, RegionName]]] = defaultdict(lambda: [])
-    needed_regions: set[RegionName] = set()
-    for logic_array in all_logic:
-        for entrance_desc in logic_array:
-            region_1 = entrance_desc[0]
-            region_2 = entrance_desc[1]
-            transition_type = entrance_desc[2]
-            rule = entrance_desc[3]
-
-            resolved_rule = rule.resolve(world)
-            if resolved_rule.always_false:
-                continue
-
-            if transition_type.is_dungeon_entrance():
-                if options.shuffle_dungeons:
-                    randomized_entrances.append(
-                        (region_1, region_1.value, OracleOfSeasonsConnectionType.CONNECT_DUNGEON_OVERWORLD)
-                    )
-                    randomized_entrances.append(
-                        (region_2, region_2.value, OracleOfSeasonsConnectionType.CONNECT_DUNGEON_INSIDE)
-                    )
-                    continue
-
-            elif transition_type.is_portal_entrance():
-                if options.shuffle_portals:
-                    randomized_entrances.append(
-                        (region_1, f"enter {region_1}", OracleOfSeasonsConnectionType.CONNECT_PORTAL_OVERWORLD)
-                    )
-                    randomized_entrances.append(
-                        (region_2, f"enter {region_2}", OracleOfSeasonsConnectionType.CONNECT_PORTAL_SUBROSIA)
-                    )
-                    continue
-
-            if region_1 in region_replacement:
-                region_1 = region_replacement[region_1]
-            if region_2 in region_replacement:
-                region_2 = region_replacement[region_2]
-
-            if region_1 == region_2:
-                continue
-
-            is_two_way = transition_type.is_two_way()
-
-            if is_two_way and resolved_rule.always_true:
-                # This connection is superfluous
-                needed_regions.add(region_1)
-                needed_regions.discard(region_2)
-                region_replacement[region_2] = region_1
-                reverse_replacement[region_1].append(region_2)
-                if region_2 in reverse_replacement:
-                    to_link_back = reverse_replacement[region_2]
-                    for region in to_link_back:
-                        region_replacement[region] = region_1
-                    reverse_replacement[region_1].extend(to_link_back)
-
-                if region_2 in known_connections:
-                    for connection_pair in known_connections.pop(region_2):
-                        if connection_pair in connection_data:
-                            # That connection may have been severed already
-                            (region_a, region_b) = connection_pair
-                            rule = connection_data.pop(connection_pair)
-                            if region_a == region_2:
-                                new_pair = (region_1, region_b)
-                            else:
-                                new_pair = (region_a, region_1)
-                            if new_pair in connection_data:
-                                connection_data[new_pair] = (connection_data[new_pair] | rule).resolve(world)
-                            else:
-                                connection_data[new_pair] = rule
-                                known_connections[new_pair[0]].append(new_pair)
-                                known_connections[new_pair[1]].append(new_pair)
-                pass
-            else:
-                needed_regions.add(region_1)
-                needed_regions.add(region_2)
-                connection_pair = (region_1, region_2)
-                if connection_pair in connection_data:
-                    connection_data[connection_pair] = (connection_data[connection_pair] | rule).resolve(world)
-                else:
-                    connection_data[connection_pair] = rule.resolve(world)
-                    known_connections[region_1].append(connection_pair)
-                    known_connections[region_2].append(connection_pair)
-                if is_two_way:
-                    connection_pair = (region_2, region_1)
-                    if connection_pair in connection_data:
-                        connection_data[connection_pair] = (connection_data[connection_pair] | rule).resolve(world)
-                    else:
-                        connection_data[connection_pair] = rule.resolve(world)
-                        known_connections[region_1].append(connection_pair)
-                        known_connections[region_2].append(connection_pair)
-
-    for region in needed_regions:
-        world.multiworld.regions.append(Region(region, world.player, world.multiworld))
-
-    for regions, rule in connection_data.items():
-        region_1, region_2 = regions
-        if region_1 == region_2:
-            continue
-        region_1 = world.get_region(region_1)
-        region_2 = world.get_region(region_2)
-        world.create_entrance(region_1, region_2, rule=rule)
-
-    for region_name, entrance_name, randomization_group in randomized_entrances:
-        region = world.get_region(region_name)
-
-        entrance = region.create_exit(entrance_name)
-        entrance.randomization_group = randomization_group
-        entrance.randomization_type = EntranceType.TWO_WAY
-        world.set_rule(entrance, True_())
-
-        entrance = region.create_er_target(entrance_name)
-        entrance.randomization_group = randomization_group
-        entrance.randomization_type = EntranceType.TWO_WAY
-        world.set_rule(entrance, True_())
 
 
 class AlwaysAllowRule:

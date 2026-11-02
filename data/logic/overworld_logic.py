@@ -138,10 +138,10 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
         (RegionName.maple_rare_item_1, RegionName.maple_rare_item_2, TransitionType.BASIC_ONE_WAY, oos_has_prog(30)),
         (RegionName.maple_rare_item_2, RegionName.maple_rare_item_3, TransitionType.BASIC_ONE_WAY, oos_has_prog(45)),
         (RegionName.maple_rare_item_3, RegionName.maple_rare_item_4, TransitionType.BASIC_ONE_WAY, oos_has_prog(60)),
-        (RegionName.horon_village, RegionName.mayors_gift, TransitionType.BASIC_ONE_WAY, True_()),
-        (RegionName.horon_village, RegionName.vasus_gift, TransitionType.BASIC_ONE_WAY, True_()),
+        (RegionName.horon_village, RegionName.mayors_gift, TransitionType.BASIC_TWO_WAY, True_()),
+        (RegionName.horon_village, RegionName.vasus_gift, TransitionType.BASIC_TWO_WAY, True_()),
         (
-            RegionName.horon_village,
+            RegionName.mayors_gift,
             RegionName.mayors_house_secret_room,
             TransitionType.BASIC_ONE_WAY,
             oos_can_remove_rockslide(False),

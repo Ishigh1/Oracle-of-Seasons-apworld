@@ -9,7 +9,7 @@ from rule_builder.field_resolvers import FieldResolver, FromWorldAttr, resolve_f
 from rule_builder.options import OPERATORS, Operator, OptionFilter
 
 from ...core.rule_builder.rule_import import CanReachRegion, False_, HasAll, True_
-from ...generation.create_regions import location_is_active
+from ...generation.locations import location_is_active
 from ...world import OracleOfSeasonsWorld
 from ..constants import SEASON_CHAOTIC, SEASON_ITEMS
 from ..locations import LOCATIONS_DATA
@@ -91,6 +91,7 @@ class ItemInLocation(Rule, game=OracleOfSeasonsWorld.game):
         def __str__(self) -> str:
             return f"{self.item_name} in {self.location_name}"
 
+
 @dataclasses.dataclass
 class OoSCanReachRegion(CanReachRegion[OracleOfSeasonsWorld], game=OracleOfSeasonsWorld.game):
     @override
@@ -110,6 +111,7 @@ class OoSCanReachRegion(CanReachRegion[OracleOfSeasonsWorld], game=OracleOfSeaso
         def _evaluate(self, state: CollectionState) -> bool:
             # This explicitly calls for the world's function as OoS's get_region checks region_replacement
             return state.multiworld.worlds[self.player].get_region(self.region_name).can_reach(state)
+
 
 def from_bool(condition: bool) -> Rule:
     return True_() if condition else False_()

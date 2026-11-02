@@ -135,11 +135,11 @@ class OracleOfSeasonsWorld(World):
         return super().create_entrance(from_region, to_region, rule, name, force_creation)
 
     def create_regions(self) -> None:
-        from .generation.create_regions import create_locations
-        from .generation.logic import create_connections
+        from .generation.create_rules import create_connections
+        from .generation.locations import exclude_locations_automatically
 
         create_connections(self)
-        create_locations(self)
+        exclude_locations_automatically(self)
 
     def get_region(self, region_name: str) -> Region:
         if region_name in self.region_replacement:
@@ -307,7 +307,7 @@ class OracleOfSeasonsWorld(World):
         return slot_data
 
     def write_spoiler(self, spoiler_handle: TextIO):
-        from .generation.create_regions import location_is_active
+        from .generation.locations import location_is_active
 
         spoiler_handle.write(f"\n\nDefault Seasons ({self.multiworld.player_name[self.player]}):\n")
         for region_name, season in self.default_seasons.items():
