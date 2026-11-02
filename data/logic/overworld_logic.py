@@ -2030,7 +2030,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             ),
         ),
         (
-            RegionName.d2_entrance,
+            RegionName.central_woods_of_winter,
             RegionName.golden_moblin,
             TransitionType.BASIC_ONE_WAY,
             And(
