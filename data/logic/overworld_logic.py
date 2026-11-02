@@ -607,7 +607,8 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
         ),
         (RegionName.d1_stump, RegionName.d1_island, TransitionType.BASIC_TWO_WAY, oos_can_break_bush(True, True)),
         (RegionName.d1_stump, RegionName.old_man_near_d1, TransitionType.BASIC_ONE_WAY, oos_can_use_ember_seeds(False)),
-        (RegionName.d1_island, RegionName.d1_entrance, TransitionType.BASIC_TWO_WAY, Has("Gnarled Key")),
+        (RegionName.d1_island, RegionName.d1_entrance, TransitionType.BASIC_ONE_WAY, Has("Gnarled Key")),
+        (RegionName.d1_entrance, RegionName.d1_island, TransitionType.BASIC_ONE_WAY, True_()),
         (RegionName.d1_entrance, RegionName.enter_d1, TransitionType.DUNGEON, True_()),
         (
             RegionName.d1_island,
