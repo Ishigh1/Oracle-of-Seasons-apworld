@@ -2618,4 +2618,5 @@ def make_gasha_logic(world: OracleOfSeasonsWorld) -> list[LogicLine]:
     for i in range(world.options.deterministic_gasha_locations):
         new_region = GASHA_REGIONS[i]
         rules.append((previous_region, new_region, TransitionType.BASIC_ONE_WAY, oos_can_harvest_gasha(i + 1)))
+        previous_region = new_region
     return rules
