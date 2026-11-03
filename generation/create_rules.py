@@ -168,12 +168,7 @@ class ConnectionCreator:
             else:
                 connection = connections[1]
                 connection_rule = self.connection_data[connection]
-            if connection is not None and (
-                connection_rule.always_true
-                or (
-                    region_name not in self.locations_data and region_name not in self.important_regions and region_name
-                )
-            ):
+            if connection is not None and (connection_rule.always_true or region_name not in self.important_regions):
                 origin = connection[0]
                 self.prune_region(region_name, origin, "leaf dead end")
                 self.try_prune_node(origin)
