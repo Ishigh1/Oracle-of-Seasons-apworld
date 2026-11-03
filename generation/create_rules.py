@@ -209,10 +209,10 @@ class ConnectionCreator:
                     other_region = connection[0]
                     if origin_region is None or origin_region == other_region:
                         origin_region = other_region
-                        backward_rule &= self.connection_data[connection]
+                        forward_rule &= self.connection_data[connection]
                     elif target_region is None or target_region == other_region:
                         target_region = other_region
-                        forward_rule &= self.connection_data[connection]
+                        backward_rule &= self.connection_data[connection]
                         two_way_progress += 1
                     else:
                         return
