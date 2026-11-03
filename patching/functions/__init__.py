@@ -305,6 +305,17 @@ def define_additional_tile_replacements(assembler: Z80Assembler, patch_data: dic
         ])
         # fmt: on
 
+    # Add only the relevant tile replacement, otherwise the top-right spot also gets dug out
+    seaside_location = patch_data["subrosia_seaside_location"]
+    if seaside_location == 0:
+        table.extend([0x01, 0x65, 0x20, 0x57, 0xe1])
+    elif seaside_location == 1:
+        table.extend([0x01, 0x66, 0x20, 0x56, 0xe1])
+    elif seaside_location == 2:
+        table.extend([0x01, 0x75, 0x20, 0x27, 0xe1])
+    elif seaside_location == 3:
+        table.extend([0x01, 0x76, 0x20, 0x24, 0xe1])
+
     assembler.add_floating_chunk("additionalTileReplacements", table)
 
 
