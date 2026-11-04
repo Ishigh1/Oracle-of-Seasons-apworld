@@ -1,4 +1,4 @@
-from ...core.rule_builder.rule_import import And, CanReachRegion, Has, Or, True_
+from ...core.rule_builder.rule_import import And, Has, Or, True_
 from ...options import (
     OracleOfSeasonsAdvanceShop,
     OracleOfSeasonsBusinessScrubsShuffle,
@@ -304,7 +304,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                 Or(
                     oos_has_shovel(),
                     oos_is_default_season("WESTERN_COAST", SEASON_WINTER, False),
-                    And(CanReachRegion(RegionName.coast_stump), oos_can_remove_season(SEASON_WINTER)),
+                    And(OoSCanReachRegion(RegionName.coast_stump), oos_can_remove_season(SEASON_WINTER)),
                 ),
             ),
         ),
@@ -1672,7 +1672,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             TransitionType.BASIC_ONE_WAY,
             And(
                 oos_season_in_tarm_ruins(SEASON_AUTUMN),
-                CanReachRegion(RegionName.lost_woods_top_statue),
+                OoSCanReachRegion(RegionName.lost_woods_top_statue),
                 Or(
                     # A bit tight and diagonal, above water
                     oos_can_jump_3_wide_pit(),
@@ -1941,7 +1941,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             RegionName.north_horon,
             RegionName.d9_entrance,
             TransitionType.BASIC_ONE_WAY,
-            CanReachRegion(RegionName.maku_seed),
+            OoSCanReachRegion(RegionName.maku_seed),
         ),
         (
             RegionName.d9_entrance,
@@ -2555,7 +2555,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                 oos_option_hell_logic(),
                 oos_roosters("swamp", 1, 1, 0),
                 oos_has_required_jewels(),
-                Or(oos_season_in_lost_woods(SEASON_SUMMER), CanReachRegion(RegionName.lost_woods_top_statue)),
+                Or(oos_season_in_lost_woods(SEASON_SUMMER), OoSCanReachRegion(RegionName.lost_woods_top_statue)),
             ),
         ),
         (

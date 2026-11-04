@@ -1,4 +1,4 @@
-from ...core.rule_builder.rule_import import And, CanReachRegion, Has, Or, True_
+from ...core.rule_builder.rule_import import And, Has, Or, True_
 from ...options import (
     OracleOfSeasonsIncludeSecretLocations,
 )
@@ -33,7 +33,7 @@ from .logic_predicates import (
     oos_option_medium_logic,
     oos_self_locking_item,
 )
-from .rulebuilder import from_option
+from .rulebuilder import OoSCanReachRegion, from_option
 
 
 def make_subrosia_logic() -> list[LogicLine]:
@@ -312,7 +312,7 @@ def make_subrosia_logic() -> list[LogicLine]:
             RegionName.great_furnace,
             TransitionType.BASIC_ONE_WAY,
             And(
-                CanReachRegion(RegionName.tower_of_autumn),
+                OoSCanReachRegion(RegionName.tower_of_autumn),
                 Or(Has("Red Ore"), oos_self_locking_item("Subrosia: Item Smelted in Great Furnace", "Red Ore")),
                 Or(Has("Blue Ore"), oos_self_locking_item("Subrosia: Item Smelted in Great Furnace", "Blue Ore")),
             ),

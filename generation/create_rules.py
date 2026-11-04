@@ -42,6 +42,12 @@ class LocationData:
     location_name: str
     item_name: str | None
 
+    def __lt__(self, other: "LocationData"):
+        return self.location_name < other.location_name
+
+    def __gt__(self, other: "LocationData"):
+        return self.location_name > other.location_name
+
 
 class ConnectionCreator:
     def __init__(self, world: OracleOfSeasonsWorld):
@@ -152,12 +158,14 @@ class ConnectionCreator:
         connections = self.known_connections.get(region_name, None)
         if connections is None:
             return
-        connections = tuple(connections)
+        connections = sorted(connections)
 
         # Leaf handling
         if len(connections) <= 2:
             if len(connections) == 1:
                 connection = connections[0]
+                if connection[1] != region_name:
+                    return
                 connection_rule = self.connection_data[connection]
             elif connections[0][0] != connections[1][1] or connections[0][1] != connections[1][0]:
                 # Not a two-way leaf
@@ -172,6 +180,7 @@ class ConnectionCreator:
                 origin = connection[0]
                 self.prune_region(region_name, origin, "leaf dead end")
                 self.try_prune_node(origin)
+                return
         else:
             if region_name not in self.important_regions:
                 for connection in connections:
@@ -221,7 +230,7 @@ class ConnectionCreator:
             self.try_prune_node(target_region)
 
     def try_prune_nodes(self) -> None:
-        for region_name in tuple(self.known_connections.keys()):
+        for region_name in sorted(self.known_connections.keys()):
             self.try_prune_node(region_name)
 
     def create_connections(self) -> None:
@@ -235,12 +244,12 @@ class ConnectionCreator:
             if original_region in self.locations_data:
                 self.locations_data[new_region].extend(self.locations_data.pop(original_region))
 
-        for region_name in self.regions:
+        for region_name in sorted(self.regions):
             region = Region(region_name, self.world.player, self.world.multiworld)
             self.world.multiworld.regions.append(region)
-            for region_name in itertools.chain((region_name,), self.reverse_replacement[region_name]):
+            for region_name in itertools.chain((region_name,), sorted(self.reverse_replacement[region_name])):
                 if region_name in self.locations_data:
-                    for location_data in self.locations_data[region_name]:
+                    for location_data in sorted(self.locations_data[region_name]):
                         location_name = location_data.location_name
                         location_id = OracleOfSeasonsWorld.location_name_to_id.get(location_name, None)
                         if location_id:
@@ -374,12 +383,12 @@ class ConnectionCreator:
         if removed_region in self.reverse_replacement:
             to_link_back = self.reverse_replacement.pop(removed_region)
             if replacement_region is not None:
-                for region in to_link_back:
+                for region in sorted(to_link_back):
                     self.region_replacement[region] = replacement_region
                 self.reverse_replacement[replacement_region].update(to_link_back)
 
         if removed_region in self.known_connections:
-            for connection_pair in self.known_connections.pop(removed_region):
+            for connection_pair in sorted(self.known_connections.pop(removed_region)):
                 if connection_pair in self.connection_data:
                     # That connection may have been severed already
                     rule = self.connection_data.pop(connection_pair)
