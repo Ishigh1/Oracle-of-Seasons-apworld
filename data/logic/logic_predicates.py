@@ -1,6 +1,5 @@
 from rule_builder.field_resolvers import FromOption, FromWorldAttr
 from rule_builder.options import OptionFilter
-from ..items import ItemName
 
 from ...core.rule_builder.rule_import import And, AtLeast, False_, Has, HasFromList, HasGroup, Or, True_
 from ...options import (
@@ -25,6 +24,7 @@ from ...options import (
     OracleOfSeasonsTreehouseOldManRequirement,
 )
 from ..constants import DUNGEON_NAMES, SEASON_AUTUMN, SEASON_ITEMS, SEASON_SPRING, SEASON_SUMMER, SEASON_WINTER
+from ..items import ItemName
 from ..regions import GASHA_SPOT_REGIONS, RegionName
 from .rulebuilder import ItemInLocation, LostWoods, OoSCanReachRegion, Rule, from_bool, from_option, from_world_field
 
@@ -320,7 +320,7 @@ def oos_secrets_enabled() -> Rule:
 
 def oos_can_remove_season(season: int) -> Rule:
     # Test if player has any other season than the one we want to remove
-    return Or(*[Has(item_name) for season_name, item_name in SEASON_ITEMS.items() if season_name != season])
+    return Or(*[Has(item_name) for season_number, item_name in SEASON_ITEMS.items() if season_number != season])
 
 
 def oos_has_essences(target_count: int) -> Rule:
@@ -1175,6 +1175,10 @@ def oos_season_in_sunken_city(season: int) -> Rule:
 
 def oos_season_in_woods_of_winter(season: int) -> Rule:
     return Or(oos_is_default_season("WOODS_OF_WINTER", season), oos_has_season(season))
+
+
+def oos_not_season_in_woods_of_winter(season: int) -> Rule:
+    return Or(oos_is_default_season("WOODS_OF_WINTER", season, False), oos_can_remove_season(season))
 
 
 def oos_season_in_central_woods_of_winter(season: int) -> Rule:

@@ -103,6 +103,7 @@ from .logic_predicates import (
     oos_is_companion_ricky,
     oos_is_default_season,
     oos_not_season_in_eastern_suburbs,
+    oos_not_season_in_woods_of_winter,
     oos_option_hard_logic,
     oos_option_hell_logic,
     oos_option_medium_logic,
@@ -250,6 +251,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                 ),
             ),
         ),
+        (RegionName.horon_village, RegionName.reach_sign, TransitionType.BASIC_ONE_WAY, True_()),
         # WESTERN COAST ##############################################################################################
         (RegionName.horon_village, RegionName.western_coast, TransitionType.BASIC_TWO_WAY, True_()),
         (RegionName.western_coast, RegionName.maple_encounter, TransitionType.BASIC_ONE_WAY, oos_can_meet_maple()),
@@ -342,6 +344,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
         # EASTERN SUBURBS #############################################################################################
         (RegionName.horon_village, RegionName.suburbs, TransitionType.BASIC_TWO_WAY, oos_can_use_ember_seeds(False)),
         (RegionName.suburbs, RegionName.maple_encounter, TransitionType.BASIC_ONE_WAY, oos_can_meet_maple()),
+        (RegionName.suburbs, RegionName.reach_sign, TransitionType.BASIC_ONE_WAY, True_()),
         (
             RegionName.suburbs,
             RegionName.windmill_heart_piece,
@@ -485,6 +488,12 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             RegionName.woods_of_winter_2nd_cave,
             TransitionType.BASIC_ONE_WAY,
             Or(oos_can_swim(False), oos_can_jump_3_wide_liquid(allow_bombchus=True)),
+        ),
+        (
+            RegionName.moblin_road,
+            RegionName.reach_sign,
+            TransitionType.BASIC_ONE_WAY,
+            oos_not_season_in_woods_of_winter(SEASON_WINTER),
         ),
         (
             RegionName.moblin_road,
@@ -712,6 +721,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
         # [RegionName.eyeglass_lake_portal, RegionName.eyeglass_lake_dry, TransitionType.BASIC_ONE_WAY,  \
         #     oos_is_default_season( "EYEGLASS_LAKE", SEASON_SUMMER)),
         # Instead, jump straight from the portal to lost woods in summer
+        (RegionName.eyeglass_lake_portal, RegionName.reach_sign, TransitionType.BASIC_ONE_WAY, True_()),
         (
             RegionName.eyeglass_lake_portal,
             RegionName.lost_woods,
@@ -811,6 +821,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
         ),
         # NORTH HORON / HOLODRUM PLAIN ###############################################################################
         (RegionName.north_horon, RegionName.maple_encounter, TransitionType.BASIC_ONE_WAY, oos_can_meet_maple()),
+        (RegionName.north_horon, RegionName.reach_sign, TransitionType.BASIC_ONE_WAY, True_()),
         (RegionName.north_horon, RegionName.north_horon_tree, TransitionType.BASIC_ONE_WAY, oos_can_harvest_tree(True)),
         (RegionName.north_horon, RegionName.blaino_prize, TransitionType.BASIC_ONE_WAY, oos_can_farm_rupees()),
         (
@@ -865,6 +876,13 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             Or(oos_can_jump_3_wide_pit(), oos_has_switch_hook()),
         ),
         (RegionName.ruul_stump, RegionName.maple_encounter, TransitionType.BASIC_ONE_WAY, oos_can_meet_maple()),
+        (
+            # Technically the sign is behind bushes, but you can destroy a bush if you can destroy a sign, and from the other side, north horon has a sign already
+            RegionName.ruul_stump,
+            RegionName.reach_sign,
+            TransitionType.BASIC_ONE_WAY,
+            True_(),
+        ),
         (
             RegionName.ruul_stump,
             RegionName.mrs_ruul_trade,
@@ -954,6 +972,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
         (RegionName.d1_island, RegionName.cave_south_of_mrs_ruul, TransitionType.BASIC_ONE_WAY, oos_can_swim(False)),
         # SPOOL SWAMP #############################################################################################
         (RegionName.spool_swamp_north, RegionName.maple_encounter, TransitionType.BASIC_ONE_WAY, oos_can_meet_maple()),
+        (RegionName.spool_swamp_portal, RegionName.reach_sign, TransitionType.BASIC_ONE_WAY, True_()),
         (
             RegionName.spool_swamp_north,
             RegionName.spool_swamp_tree,
@@ -1215,6 +1234,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
         ),
         # NATZU REGION #############################################################################################
         (RegionName.north_horon, RegionName.natzu_west, TransitionType.BASIC_TWO_WAY, True_()),
+        (RegionName.moblin_keep_bridge, RegionName.reach_sign, TransitionType.BASIC_ONE_WAY, True_()),
         (
             RegionName.moblin_keep_bridge,
             RegionName.moblin_keep,
@@ -1359,6 +1379,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             And(oos_has_flippers(), oos_season_in_sunken_city(SEASON_SUMMER)),
         ),
         # MT. CUCCO / GORON MOUNTAINS ##############################################################################
+        (RegionName.mount_cucco, RegionName.reach_sign, TransitionType.BASIC_ONE_WAY, True_()),
         (RegionName.mount_cucco, RegionName.mt_cucco_portal, TransitionType.BASIC_TWO_WAY, True_()),
         (
             RegionName.mount_cucco,
@@ -1378,6 +1399,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                 oos_has_bracelet(),  # to grab the rooster
             ),
         ),
+        # TODO (ER): rooster sign is unaccounted for
         (RegionName.rightmost_rooster_ledge, RegionName.mt_cucco_platform_cave, TransitionType.BASIC_ONE_WAY, True_()),
         (
             RegionName.rightmost_rooster_ledge,
@@ -1432,6 +1454,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
                 oos_has_bracelet(),  # to grab the rooster
             ),
         ),
+        # TODO (ER): rooster sign is unaccounted for
         (
             RegionName.dragon_keyhole,
             RegionName.d4_entrance,
@@ -1797,6 +1820,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             TransitionType.BASIC_ONE_WAY,
             oos_can_meet_maple(),
         ),
+        (RegionName.temple_remains_lower_stump, RegionName.reach_sign, TransitionType.BASIC_ONE_WAY, True_()),
         (
             RegionName.temple_remains_lower_stump,
             RegionName.temple_remains_upper_stump,

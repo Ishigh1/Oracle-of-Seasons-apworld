@@ -360,6 +360,8 @@ class RegionName(StrEnum):
     golden_octorok = "golden octorok"
     d4_miniboss_room_wild_embers = "d4 miniboss room wild embers"
     d7_entrance_wild_embers = "d7 entrance wild embers"
+    reach_sign = "reach sign"
+    break_sign = "break sign"
     subrosian_sign_guy = "subrosian sign guy"
     subrosia_bath_digging_spot = "subrosia bath digging spot"
     subrosia_market_digging_spot = "subrosia market digging spot"

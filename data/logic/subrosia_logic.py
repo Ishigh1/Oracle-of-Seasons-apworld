@@ -171,6 +171,7 @@ def make_subrosia_logic() -> list[LogicLine]:
         ),
         # Locations ###############################################################
         (RegionName.subrosia_temple_sector, RegionName.subrosian_dance_hall, TransitionType.BASIC_ONE_WAY, True_()),
+        (RegionName.subrosia_temple_sector, RegionName.reach_sign, TransitionType.BASIC_ONE_WAY, True_()),
         (
             RegionName.subrosia_temple_sector,
             RegionName.subrosian_smithy_ore,
@@ -224,6 +225,7 @@ def make_subrosia_logic() -> list[LogicLine]:
                 oos_has_magic_boomerang(),
             ),
         ),
+        (RegionName.subrosia_market_sector, RegionName.reach_sign, TransitionType.BASIC_ONE_WAY, True_()),
         (
             RegionName.subrosia_market_sector,
             RegionName.subrosia_seaside,
@@ -318,10 +320,17 @@ def make_subrosia_logic() -> list[LogicLine]:
             ),
         ),
         (
+            RegionName.subrosia_east_junction,
+            RegionName.reach_sign,
+            TransitionType.BASIC_ONE_WAY,
+            True_(),
+        ),
+        (RegionName.reach_sign, RegionName.break_sign, TransitionType.BASIC_ONE_WAY, oos_can_break_sign()),
+        (
             RegionName.subrosia_furnace_sector,
             RegionName.subrosian_sign_guy,
             TransitionType.BASIC_ONE_WAY,
-            oos_can_break_sign(),
+            OoSCanReachRegion(RegionName.break_sign),
         ),
         (
             RegionName.subrosia_furnace_sector,
