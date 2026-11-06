@@ -972,7 +972,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
         (RegionName.d1_island, RegionName.cave_south_of_mrs_ruul, TransitionType.BASIC_ONE_WAY, oos_can_swim(False)),
         # SPOOL SWAMP #############################################################################################
         (RegionName.spool_swamp_north, RegionName.maple_encounter, TransitionType.BASIC_ONE_WAY, oos_can_meet_maple()),
-        (RegionName.spool_swamp_portal, RegionName.reach_sign, TransitionType.BASIC_ONE_WAY, True_()),
+        (RegionName.spool_swamp_north, RegionName.reach_sign, TransitionType.BASIC_ONE_WAY, True_()),
         (
             RegionName.spool_swamp_north,
             RegionName.spool_swamp_tree,
