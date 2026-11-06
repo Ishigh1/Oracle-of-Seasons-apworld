@@ -22,9 +22,11 @@ from .logic_predicates import (
     oos_has_bombs,
     oos_has_bombs_for_bombjump,
     oos_has_bracelet,
+    oos_has_ember_seeds,
     oos_has_feather,
     oos_has_magic_boomerang,
     oos_has_magnet_gloves,
+    oos_has_seed_thrower,
     oos_has_shield,
     oos_has_shovel,
     oos_has_switch_hook,
@@ -337,6 +339,13 @@ def make_subrosia_logic() -> list[LogicLine]:
             RegionName.subrosian_buried_bomb_flower,
             TransitionType.BASIC_ONE_WAY,
             And(oos_has_feather(), oos_has_bracelet()),
+        ),
+        (
+            RegionName.subrosia_furnace_sector,
+            RegionName.break_sign,
+            TransitionType.BASIC_ONE_WAY,
+            # Throw an ember on the sign in east junction. Switch hook is already used to get there
+            And(oos_option_medium_logic(), oos_has_ember_seeds(), oos_has_seed_thrower()),
         ),
         (
             RegionName.subrosia_temple_sector,
