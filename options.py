@@ -516,16 +516,23 @@ class OracleOfSeasonsGashaNutKillRequirement(NamedRange):
     include_in_patch = True
 
 
-class OracleOfSeasonsRandomizePuzzles(Toggle):
+class OracleOfSeasonsRandomizePuzzles(Choice):
     """
-    If enabled, randomize some puzzles and mini-games.
     Puzzles relying on owls will not have their logic affected, and puzzles will not require additional items.
     """
+
+    option_vanilla = 0
+    option_randomized_puzzles_and_minigames = 1
+    option_disabled_minigames = 2
+    alias_false = option_vanilla
+    alias_true = option_randomized_puzzles_and_minigames
 
     display_name = "Randomize Puzzles"
 
     include_in_patch = True
-    default = 1 if (datetime.now().month == 4) else 0  # Default on during april
+    default = (
+        option_randomized_puzzles_and_minigames if (datetime.now().month == 4) else option_vanilla
+    )  # Default on during april
 
 
 class OracleOfSeasonsLostWoodsItemSequence(DefaultOnToggle):
@@ -614,7 +621,9 @@ class OracleOfSeasonsExcludedRings(ItemSet):
     """
 
     display_name = "Excluded Rings"
-    default = frozenset(str(name) for name, idata in ITEMS_DATA.items() if "ring" in idata and idata["ring"] == "useless")
+    default = frozenset(
+        str(name) for name, idata in ITEMS_DATA.items() if "ring" in idata and idata["ring"] == "useless"
+    )
     valid_keys = frozenset(RING_LIST)
 
 

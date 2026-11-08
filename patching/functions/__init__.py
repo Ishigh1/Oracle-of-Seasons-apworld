@@ -41,6 +41,7 @@ from ...options import (
     OracleOfSeasonsOldMenShuffle,
     OracleOfSeasonsShowDungeonsWithEssence,
     OracleOfSeasonsStartingPosition,
+    OracleOfSeasonsRandomizePuzzles,
 )
 from ...world import OracleOfSeasonsWorld
 from ..asm import asm_files
@@ -129,7 +130,7 @@ def get_asm_files(patch_data: dict[str, Any]) -> list[str]:
             files += asm_files["d11_in_samasa"]
         elif patch_data["options"]["linked_heros_cave"] & OracleOfSeasonsLinkedHerosCave.heros_cave:
             files += asm_files["d11_in_d0"]
-    if patch_data["options"]["randomize_puzzles"]:
+    if patch_data["options"]["randomize_puzzles"] != OracleOfSeasonsRandomizePuzzles.option_vanilla:
         files += asm_files["random_puzzles"]
 
     if get_settings()["tloz_oos_options"]["remove_music"]:
