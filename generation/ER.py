@@ -50,3 +50,7 @@ def oos_randomize_entrances(world: OracleOfSeasonsWorld) -> None:
         if world.options.linked_heros_cave.is_samasa:
             dungeon_entrances[RegionName.d11_entrance] = RegionName.enter_d11
         world.dungeon_entrances = list_entrances_for_patch(pairing_dict, "", dungeon_entrances)
+    elif world.options.linked_heros_cave.is_samasa:
+        dungeon_entrances = dict(DUNGEON_CONNECTIONS)
+        dungeon_entrances[RegionName.d11_entrance] = RegionName.enter_d11
+        world.dungeon_entrances = dungeon_entrances
