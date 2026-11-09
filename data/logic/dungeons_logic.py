@@ -925,7 +925,7 @@ def make_d6_logic() -> list[LogicLine]:
                 And(oos_option_medium_logic(), oos_has_biggoron_sword()),
                 oos_has_bombs_for_tiles(),
                 And(oos_option_medium_logic(), Has("Expert's Ring")),
-                And(oos_option_medium_logic(), Has(ItemName.rocs_ring), oos_has_bracelet())
+                And(oos_option_medium_logic(), Has(ItemName.rocs_ring), oos_has_bracelet()),
             ),
         ),
         (

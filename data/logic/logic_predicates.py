@@ -800,7 +800,8 @@ def oos_can_break_crystal() -> Rule:
         oos_has_bracelet(),
         And(
             oos_option_medium_logic(),
-            Or(Has("Expert's Ring"), oos_has_bombchus_for_tiles(), oos_can_use_ember_seeds(False)),
+            Or(Has("Expert's Ring"), oos_has_bombchus_for_tiles()),
+            # Surprisingly, embers cannot burn crystals in this game, even though they can be burnt in Ages D1
         ),
     )
 
