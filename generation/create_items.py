@@ -47,20 +47,31 @@ def create_item(world: OracleOfSeasonsWorld, name: str) -> Item:
     ap_code = world.item_name_to_id[name]
 
     # A few items become progression only in hard logic
-    progression_items_in_medium_logic = [
-        "Expert's Ring",
-        "Fist Ring",
-        "Swimmer's Ring",
-        "Energy Ring",
-        "Heart Ring L-2",
+    good_progression_items_in_medium_logic = [
+        ItemName.swimmers_ring,
+        ItemName.heart_ring_l_2,
+    ]
+    meh_progression_items_in_medium_logic = [
+        ItemName.fist_ring,
+        ItemName.energy_ring,
+        ItemName.rocs_ring
     ]
     progression_items_in_hard_logic = [
-        "Heart Ring L-1",
-        "Toss Ring",
+        ItemName.heart_ring_l_1,
+        ItemName.toss_ring,
     ]
     if (
         world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium
-        and name in progression_items_in_medium_logic
+        and name == ItemName.experts_ring
+    ):
+        classification = ItemClassification.progression
+    elif (
+        world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium
+        and name in good_progression_items_in_medium_logic
+    ):
+        classification = ItemClassification.progression_skip_balancing
+    elif (world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium
+        and name in meh_progression_items_in_medium_logic
     ):
         classification = ItemClassification.progression_deprioritized_skip_balancing
     elif (

@@ -1057,7 +1057,7 @@ def oos_can_kill_vire() -> Rule:
             And(oos_option_medium_logic(), oos_has_bombs_to_fight()),
             And(
                 # Fist Ring doesn't damage Vire
-                Has("expert's ring"),
+                Has(ItemName.experts_ring),
                 oos_option_medium_logic(),
             ),
             And(
