@@ -916,14 +916,15 @@ def make_d6_logic() -> list[LogicLine]:
             TransitionType.BASIC_ONE_WAY,
             Or(
                 # In room 4b3:
+                # Walk through the holes
+                oos_option_hard_logic(),
                 # jump over the hole
                 oos_has_feather(),
                 # Break the crystals (with crumbling floor)
-                oos_has_sword(),
+                oos_has_sword(accept_biggoron=False),
+                And(oos_option_medium_logic(), oos_has_biggoron_sword()),
                 oos_has_bombs_for_tiles(),
                 And(oos_option_medium_logic(), Has("Expert's Ring")),
-                # Walk through the holes
-                oos_option_hard_logic(),
             ),
         ),
         (
