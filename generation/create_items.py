@@ -51,28 +51,24 @@ def create_item(world: OracleOfSeasonsWorld, name: str) -> Item:
         ItemName.swimmers_ring,
         ItemName.heart_ring_l_2,
     ]
-    meh_progression_items_in_medium_logic = [
-        ItemName.fist_ring,
-        ItemName.energy_ring,
-        ItemName.rocs_ring
-    ]
+    meh_progression_items_in_medium_logic = [ItemName.fist_ring, ItemName.energy_ring]
     progression_items_in_hard_logic = [
         ItemName.heart_ring_l_1,
         ItemName.toss_ring,
     ]
-    if (
-        world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium
-        and name == ItemName.experts_ring
-    ):
+    if world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium and name == ItemName.experts_ring:
         classification = ItemClassification.progression
     elif (
         world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium
         and name in good_progression_items_in_medium_logic
     ):
         classification = ItemClassification.progression_skip_balancing
-    elif (world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium
+    elif (
+        world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_medium
         and name in meh_progression_items_in_medium_logic
     ):
+        classification = ItemClassification.progression_deprioritized_skip_balancing
+    elif world.options.logic_difficulty == OracleOfSeasonsLogicDifficulty.option_medium and name == ItemName.rocs_ring:
         classification = ItemClassification.progression_deprioritized_skip_balancing
     elif (
         world.options.logic_difficulty >= OracleOfSeasonsLogicDifficulty.option_hard
