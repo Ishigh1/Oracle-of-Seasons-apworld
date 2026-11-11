@@ -207,7 +207,7 @@ class OracleOfSeasonsWorld(World):
         return self.get_filler_item_name()  # It might loop but not enough to really matter
 
     def connect_entrances(self) -> None:
-        from .generation.ER import oos_randomize_entrances
+        from .generation.entrance_rando import oos_randomize_entrances
 
         oos_randomize_entrances(self)
 
