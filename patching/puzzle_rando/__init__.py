@@ -18,7 +18,7 @@ def randomize_puzzles(rom: RomData, texts: dict[str, str], assembler: Z80Assembl
     if randomize_puzzle_option == OracleOfSeasonsRandomizePuzzles.option_vanilla:
         return
     if randomize_puzzle_option == OracleOfSeasonsRandomizePuzzles.option_disabled_minigames:
-        disable_minigames(assembler)
+        disable_minigames(rom, assembler)
         return
     randomize_dance(rom)
     randomize_hns(assembler)
