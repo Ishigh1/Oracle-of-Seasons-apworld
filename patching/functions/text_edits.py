@@ -153,6 +153,32 @@ def make_text_data(assembler: Z80Assembler, text: dict[str, str], patch_data: di
     essence_count = patch_data["options"]["required_essences"]
     text["TX_2e00"] = f"Find 🟥{essence_count} essence{'s' if essence_count != 1 else ''}⬜\nto get the seed!"
 
+    # Maku tree nut dialogue
+    maku_dialogue = text["TX_1717"]
+    if essence_count != 8:
+        maku_dialogue = maku_dialogue.replace(" all", "", 1)
+        match essence_count:
+            case 0:
+                essence_count_string = "no"
+            case 1:
+                essence_count_string = "one"
+                maku_dialogue = maku_dialogue.replace("Essences", "Essence", 1)
+            case 2:
+                essence_count_string = "two"
+            case 3:
+                essence_count_string = "three"
+            case 4:
+                essence_count_string = "four"
+            case 5:
+                essence_count_string = "five"
+            case 6:
+                essence_count_string = "six"
+            case _:
+                essence_count_string = "seven"
+        maku_dialogue = maku_dialogue.replace("eight", essence_count_string, 1)
+        text["TX_1717"] = maku_dialogue
+        text["TX_1732"] = maku_dialogue
+
     # Tarm ruins sign
     jewel_count = patch_data["options"]["tarm_gate_required_jewels"]
     text["TX_2e12"] = f"Bring 🟩{jewel_count}⬜ jewel{'s' if jewel_count != 1 else ''}\nfor the door\nto open."
