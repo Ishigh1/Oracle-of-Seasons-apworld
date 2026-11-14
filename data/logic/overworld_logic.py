@@ -1596,10 +1596,10 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             oos_can_jump_3_wide_pit(),
         ),
         # TARM RUINS ###############################################################################################
-        (RegionName.spool_swamp_north, RegionName.tarm_ruins, TransitionType.BASIC_ONE_WAY, oos_has_required_jewels()),
-        (RegionName.tarm_ruins, RegionName.spool_swamp_north, TransitionType.BASIC_ONE_WAY, True_()),
+        (RegionName.spool_swamp_north, RegionName.tarm_ruins_with_gate_open, TransitionType.BASIC_ONE_WAY, oos_has_required_jewels()),
+        (RegionName.tarm_ruins_with_gate_open, RegionName.spool_swamp_north, TransitionType.BASIC_ONE_WAY, True_()),
         (
-            RegionName.tarm_ruins,
+            RegionName.tarm_ruins_with_gate_open,
             RegionName.lost_woods_top_statue,
             TransitionType.BASIC_ONE_WAY,
             And(
@@ -1640,7 +1640,7 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
         (RegionName.lost_woods_stump, RegionName.maple_encounter, TransitionType.BASIC_ONE_WAY, oos_can_meet_maple()),
         (
             RegionName.lost_woods_stump,
-            RegionName.tarm_ruins,
+            RegionName.tarm_ruins_with_gate_open,
             TransitionType.BASIC_ONE_WAY,
             And(
                 oos_season_in_lost_woods(SEASON_AUTUMN),

@@ -126,7 +126,7 @@ class RegionName(StrEnum):
     dragon_keyhole = "dragon keyhole"
     d4_entrance = "d4 entrance"
     chest_in_goron_mountain = "chest in goron mountain"
-    tarm_ruins = "tarm ruins"
+    tarm_ruins_with_gate_open = "tarm ruins"
     lost_woods_top_statue = "lost woods top statue"
     lost_woods_deku = "lost woods deku"
     lost_woods_phonograph = "lost woods phonograph"
