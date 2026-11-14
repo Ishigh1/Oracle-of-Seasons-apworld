@@ -95,7 +95,9 @@ def generate_early(world: OracleOfSeasonsWorld) -> None:
         world.remaining_progression_containers = 2
 
     current_instruction: str | None = None
-    remaining_instructions: list[str] = world.options.shuffle_bosses.value.split(";")
+    remaining_instructions: list[str] = OracleOfSeasonsShuffleBosses.get_option_name(
+        world.options.shuffle_bosses.value
+    ).split(";")
     remaining_dungeons = [1, 2, 4, 5, 6, 7, 8, 3]
     remaining_bosses = list(range(1, 9))
     singularity_boss = remaining_bosses[0]
