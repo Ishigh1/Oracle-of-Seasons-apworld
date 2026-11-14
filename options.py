@@ -11,12 +11,14 @@ from Options import (
     NamedRange,
     OptionGroup,
     PerGameCommonOptions,
+    PlandoBosses,
     Range,
     StartInventoryPool,
     Toggle,
     Visibility,
 )
 
+from .data.dungeon_enums import BossName, DungeonName
 from .data.items import ITEMS_DATA, RING_LIST
 
 
@@ -762,14 +764,61 @@ class OracleOfSeasonsStartingMapsCompasses(Toggle):
     include_in_slot_data = True
 
 
-class OracleOfSeasonsShuffleBosses(Toggle):
+class OracleOfSeasonsShuffleBosses(PlandoBosses):
     """
-    When enabled, all the dungeon bosses are shuffled together
+    Determines how bosses will be distributed:
+    Vanilla: Places each bosses where it belongs in vanilla
+    Shuffled: Each boss placed should not be a repeat of another
+    Chaos: Bosses can be placed anywhere
+    Singularity: A single boss will try being placed everywhere (d3 may have a different one)
+
+    This supports boss plando in the format described by the generic documentation,
+    so "Sword & Shield Dungeon-Aquamentus;Gohma;Vanilla" is a valid option value
     """
+
+    option_vanilla = 0
+    option_shuffled = 1
+    option_chaos = 2
+    option_singularity = 3
+    alias_false = option_vanilla
+    alias_true = option_shuffled
 
     display_name = "Shuffle Bosses"
 
     include_in_slot_data = True
+    bosses = frozenset(
+        (
+            BossName.d1_boss,
+            BossName.d2_boss,
+            BossName.d3_boss,
+            BossName.d4_boss,
+            BossName.d5_boss,
+            BossName.d6_boss,
+            BossName.d7_boss,
+            BossName.d8_boss,
+        )
+    )
+
+    locations = frozenset(
+        (
+            DungeonName.d1,
+            DungeonName.d2,
+            DungeonName.d3,
+            DungeonName.d4,
+            DungeonName.d5,
+            DungeonName.d6,
+            DungeonName.d7,
+            DungeonName.d8,
+        )
+    )
+
+    duplicate_bosses = True
+
+    @classmethod
+    def can_place_boss(cls, boss: str, location: str) -> bool:
+        if location == DungeonName.d3:
+            return boss != BossName.d4_boss and boss != BossName.d5_boss
+        return True
 
 
 class OracleOfSeasonsRandomizeAi(Toggle):

@@ -1,4 +1,5 @@
 import logging
+from typing import cast
 
 from Options import OptionError
 
@@ -11,9 +12,10 @@ from ..data.constants import (
     SEASONS,
     VALID_RUPEE_PRICE_VALUES,
 )
+from ..data.dungeon_enums import DungeonName, boss_name_to_dungeon_mapping, dungeon_name_to_dungeon_mapping
 from ..data.items import RING_LIST
 from ..data.locations import LOCATIONS_DATA
-from ..options import OracleOfSeasonsLogicDifficulty, OracleOfSeasonsOldMenShuffle
+from ..options import OracleOfSeasonsLogicDifficulty, OracleOfSeasonsOldMenShuffle, OracleOfSeasonsShuffleBosses
 from ..util import get_old_man_values_pool
 from ..world import OracleOfSeasonsWorld
 
@@ -92,15 +94,61 @@ def generate_early(world: OracleOfSeasonsWorld) -> None:
     else:
         world.remaining_progression_containers = 2
 
-    if world.options.shuffle_bosses:
-        dungeon_for_d4_5_bosses = world.random.sample([1, 2, 4, 5, 6, 7, 8], 2)
-        world.boss_mapping[dungeon_for_d4_5_bosses[0]] = 4
-        world.boss_mapping[dungeon_for_d4_5_bosses[1]] = 5
-        remaining_bosses = [1, 2, 3, 6, 7, 8]
-        other_dungeons = [i for i in range(1, 9) if i not in dungeon_for_d4_5_bosses]
-        world.random.shuffle(remaining_bosses)
-        for i, boss in enumerate(remaining_bosses):
-            world.boss_mapping[other_dungeons[i]] = boss
+    current_instruction: str | None = None
+    remaining_instructions: list[str] = world.options.shuffle_bosses.value.split(";")
+    remaining_dungeons = [1, 2, 4, 5, 6, 7, 8, 3]
+    remaining_bosses = list(range(1, 9))
+    singularity_boss = remaining_bosses[0]
+    world.random.shuffle(remaining_bosses)
+    while len(remaining_dungeons) > 0:
+        if current_instruction is None:
+            if len(remaining_instructions) == 0:
+                raise OptionError(
+                    "Boss Shuffle did not provide enough instructions to fill every dungeon",
+                    world.options.shuffle_bosses,
+                )
+            current_instruction = remaining_instructions.pop(0)
+        placement_instruction = cast(str, current_instruction).split("-")
+        dungeon = remaining_dungeons[-1]
+        if len(placement_instruction) == 2:
+            dungeon = dungeon_name_to_dungeon_mapping[placement_instruction[0]]
+            boss = boss_name_to_dungeon_mapping[placement_instruction[1]]
+            current_instruction = None
+        elif current_instruction in boss_name_to_dungeon_mapping:
+            boss = boss_name_to_dungeon_mapping[current_instruction]
+            if dungeon == 3 and (boss == 4 or boss == 5):
+                if len(remaining_dungeons) > 1:
+                    remaining_dungeons.insert(0, remaining_dungeons.pop())  # Handle that one later
+                else:
+                    current_instruction = None
+                continue
+        else:
+            option = OracleOfSeasonsShuffleBosses.from_text(cast(str, current_instruction))
+            if option == OracleOfSeasonsShuffleBosses.option_vanilla:
+                boss = dungeon
+            elif option == OracleOfSeasonsShuffleBosses.option_shuffled:
+                boss = remaining_bosses.pop()
+            elif option == OracleOfSeasonsShuffleBosses.option_chaos:
+                boss = world.random.randint(1, 8)
+            else:
+                boss = singularity_boss
+            if dungeon == 3 and (boss == 4 or boss == 5):
+                if option == OracleOfSeasonsShuffleBosses.option_shuffled:
+                    # Prevent an infinite loop against a too restrictive option
+                    if len(remaining_bosses) == 0 or (
+                        len(remaining_bosses) == 1 and (remaining_bosses[0] == 4 or remaining_bosses[0] == 5)
+                    ):
+                        raise OptionError(f"Couldn't place {DungeonName.d3}'s boss")
+                    remaining_bosses.insert(0, boss)
+                    continue
+
+                boss = world.random.randint(1, 6)
+                if boss >= 4:
+                    boss += 2
+        world.boss_mapping[dungeon] = boss
+        remaining_dungeons.remove(dungeon)
+        if boss in remaining_bosses:
+            remaining_bosses.remove(boss)
 
 
 def pick_essences_in_game(world: OracleOfSeasonsWorld) -> None:
