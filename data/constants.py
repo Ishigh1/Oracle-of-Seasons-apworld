@@ -355,6 +355,12 @@ ITEM_GROUPS = {
     },
     "Essences": set(ESSENCES),
     "Jewels": {"Square Jewel", "Pyramid Jewel", "Round Jewel", "X-Shaped Jewel"},
+    "Rod of Seasons": {
+        ItemName.rod_of_seasons_spring,
+        ItemName.rod_of_seasons_summer,
+        ItemName.rod_of_seasons_autumn,
+        ItemName.rod_of_seasons_winter,
+    },
 }
 
 LOCATION_GROUPS = {
