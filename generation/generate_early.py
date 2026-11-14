@@ -125,13 +125,15 @@ def generate_early(world: OracleOfSeasonsWorld) -> None:
         else:
             option = OracleOfSeasonsShuffleBosses.from_text(cast(str, current_instruction))
             if option == OracleOfSeasonsShuffleBosses.option_vanilla:
+                if dungeon not in remaining_bosses:
+                    raise OptionError(f"No boss was set for dungeon {dungeon}")
                 boss = dungeon
             elif option == OracleOfSeasonsShuffleBosses.option_shuffled:
                 boss = remaining_bosses.pop()
-            elif option == OracleOfSeasonsShuffleBosses.option_chaos:
-                boss = world.random.randint(1, 8)
-            else:
-                boss = singularity_boss
+            # elif option == OracleOfSeasonsShuffleBosses.option_chaos:
+            #     boss = world.random.randint(1, 8)
+            # else:
+            #     boss = singularity_boss
             if dungeon == 3 and (boss == 4 or boss == 5):
                 if option == OracleOfSeasonsShuffleBosses.option_shuffled:
                     # Prevent an infinite loop against a too restrictive option

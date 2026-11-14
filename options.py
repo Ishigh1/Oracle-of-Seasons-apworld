@@ -773,13 +773,13 @@ class OracleOfSeasonsShuffleBosses(PlandoBosses):
     Singularity: A single boss will try being placed everywhere (d3 may have a different one)
 
     This supports boss plando in the format described by the generic documentation,
-    so "Sword & Shield Dungeon-Aquamentus;Gohma;Vanilla" is a valid option value
+    so "Gnarled Root Dungeon-Medusa;Sword & Shield Dungeon-Aquamentus;Vanilla" is a valid option value
     """
 
     option_vanilla = 0
     option_shuffled = 1
-    option_chaos = 2
-    option_singularity = 3
+    # option_chaos = 2
+    # option_singularity = 3
     alias_false = option_vanilla
     alias_true = option_shuffled
 
@@ -812,7 +812,7 @@ class OracleOfSeasonsShuffleBosses(PlandoBosses):
         )
     )
 
-    duplicate_bosses = True
+    # duplicate_bosses = True
 
     @classmethod
     def can_place_boss(cls, boss: str, location: str) -> bool:
