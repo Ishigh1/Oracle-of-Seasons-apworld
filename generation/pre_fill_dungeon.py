@@ -97,7 +97,9 @@ def stage_pre_fill_dungeon_items(multiworld: MultiWorld):
             confined_dungeon_items = [
                 item for item in filling_world.nonprog_pre_fill_items if item.name.endswith(f"({DUNGEON_NAMES[i]})")
             ]
-            for item in confined_dungeon_items:
+            while confined_dungeon_items: # TODO: make it a normal for loop once 6524 is merged
                 location = dungeon_locations.pop()
-                assert location.item is None, "Why is this location filled?"
+                if location.item:
+                    continue # Complain that #6524 isn't merged
+                item = confined_dungeon_items.pop()
                 location.place_locked_item(item)
