@@ -769,12 +769,14 @@ class OracleOfSeasonsShuffleBosses(PlandoBosses):
     Determines how bosses will be distributed:
     Vanilla: Places each bosses where it belongs in vanilla
     Shuffled: Each boss placed should not be a repeat of another
-    Chaos: Bosses can be placed anywhere
-    Singularity: A single boss will try being placed everywhere (d3 may have a different one)
 
     This supports boss plando in the format described by the generic documentation,
     so "Gnarled Root Dungeon-Medusa;Sword & Shield Dungeon-Aquamentus;Vanilla" is a valid option value
+    Note that bosses cannot be duplicated
     """
+    # Chaos: Bosses can be placed anywhere
+    # Singularity: A single boss will try being placed everywhere (d3 may have a different one)
+
 
     option_vanilla = 0
     option_shuffled = 1
