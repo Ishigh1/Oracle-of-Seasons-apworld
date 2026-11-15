@@ -54,9 +54,9 @@
   ld e,$01
   call searchKey
   ld a,(hl)
-  push af
   call $15ba ; findTileInRoom
   ret nz
+  push af ; store searched tile
   
   ; createKeySpriteInteraction
   push hl
@@ -74,7 +74,7 @@
   ; Key interaction has been set
   
   pop af
-  cp $80
+  cp $1e
   jr z,@keyBlock
   
   push af
@@ -100,8 +100,7 @@
   call getFreeInteractionSlot
   ld (hl),$05 ; INTERAC_PUFF
   ld l,$4b ; Interaction.yh
-  call $2077 ; setShortPosition_paramC
-  ret
+  jp $2077 ; setShortPosition_paramC
 
 16//unlockFlags: /include unlockFlagsData
 

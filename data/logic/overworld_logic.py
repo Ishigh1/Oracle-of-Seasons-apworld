@@ -1596,7 +1596,12 @@ def make_holodrum_logic(world: OracleOfSeasonsWorld, options: OracleOfSeasonsOpt
             oos_can_jump_3_wide_pit(),
         ),
         # TARM RUINS ###############################################################################################
-        (RegionName.spool_swamp_north, RegionName.tarm_ruins_with_gate_open, TransitionType.BASIC_ONE_WAY, oos_has_required_jewels()),
+        (
+            RegionName.spool_swamp_north,
+            RegionName.tarm_ruins_with_gate_open,
+            TransitionType.BASIC_ONE_WAY,
+            oos_has_required_jewels(),
+        ),
         (RegionName.tarm_ruins_with_gate_open, RegionName.spool_swamp_north, TransitionType.BASIC_ONE_WAY, True_()),
         (
             RegionName.tarm_ruins_with_gate_open,
