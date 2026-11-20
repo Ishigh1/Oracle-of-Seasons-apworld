@@ -382,7 +382,7 @@ class NestedRule(Rule[TWorld], game=OracleOfSeasonsWorld.game):
 
     def __init__(
         self,
-        *children: Rule[TWorld] | Rule.Resolved,
+        *children: CoreRule[TWorld] | Rule.Resolved,
         options: Iterable[OptionFilter] = (),
         filtered_resolution: bool = False,
     ) -> None:
@@ -487,7 +487,7 @@ class AtLeast(NestedRule[TWorld], game=OracleOfSeasonsWorld.game):
     def __init__(
         self,
         count: int | FieldResolver,
-        *children: Rule[TWorld] | Rule.Resolved,
+        *children: CoreRule[TWorld] | Rule.Resolved,
         options: Iterable[OptionFilter] = (),
         filtered_resolution: bool = False,
     ) -> None:
@@ -617,7 +617,7 @@ class And(NestedRule[TWorld], game=OracleOfSeasonsWorld.game):
     def _instantiate(self, world: TWorld) -> Rule.Resolved:
         children_to_process = list(self.children)
         clauses: list[Rule.Resolved] = []
-        true_rule: Rule.Resolved | None = None
+        true_rule: CoreRule.Resolved | None = None
 
         while children_to_process:
             child = children_to_process.pop(0)
@@ -789,7 +789,7 @@ class Or(NestedRule[TWorld], game=OracleOfSeasonsWorld.game):
 class WrapperRule(Rule[TWorld], game=OracleOfSeasonsWorld.game):
     """A base rule class that wraps another rule to provide extra logic or data"""
 
-    child: Rule[TWorld] | Rule.Resolved
+    child: CoreRule[TWorld] | Rule.Resolved
     """The child rule being wrapped"""
 
     @override
@@ -828,7 +828,7 @@ class WrapperRule(Rule[TWorld], game=OracleOfSeasonsWorld.game):
         return f"{self.__class__.__name__}[{self.child}]"
 
     class Resolved(Rule.Resolved):
-        child: Rule.Resolved
+        child: CoreRule.Resolved
 
         def __post_init__(self) -> None:
             object.__setattr__(self, "force_recalculate", self.force_recalculate or self.child.force_recalculate)
@@ -963,7 +963,7 @@ class Has(Rule[TWorld], game=OracleOfSeasonsWorld.game):
             return f"Has {count}{self.item_name}"
 
         @override
-        def combine_and(self, other_rule: Rule.Resolved, world: "World") -> Sequence[Rule.Resolved]:
+        def combine_and(self, other_rule: CoreRule.Resolved, world: "World") -> Sequence[Rule.Resolved]:
             result = super().combine_and(other_rule, world)
             if result is not NotImplemented:
                 return result
@@ -997,7 +997,7 @@ class Has(Rule[TWorld], game=OracleOfSeasonsWorld.game):
             return NotImplemented
 
         @override
-        def combine_or(self, other_rule: Rule.Resolved, world: "World") -> Sequence[Rule.Resolved]:
+        def combine_or(self, other_rule: CoreRule.Resolved, world: "World") -> Sequence[Rule.Resolved]:
             result = super().combine_or(other_rule, world)
             if result is not NotImplemented:
                 return result
@@ -1149,7 +1149,7 @@ class HasAll(Rule[TWorld], game=OracleOfSeasonsWorld.game):
             return f"Has all of ({items})"
 
         @override
-        def combine_and(self, other_rule: Rule.Resolved, world: "World") -> Sequence[Rule.Resolved]:
+        def combine_and(self, other_rule: CoreRule.Resolved, world: "World") -> Sequence[Rule.Resolved]:
             result = super().combine_and(other_rule, world)
             if result is not NotImplemented:
                 return result
@@ -1304,7 +1304,7 @@ class HasAny(Rule[TWorld], game=OracleOfSeasonsWorld.game):
             return f"Has any of ({items})"
 
         @override
-        def combine_or(self, other_rule: Rule.Resolved, world: "World") -> Sequence[Rule.Resolved]:
+        def combine_or(self, other_rule: CoreRule.Resolved, world: "World") -> Sequence[Rule.Resolved]:
             result = super().combine_or(other_rule, world)
             if result is not NotImplemented:
                 return result
@@ -1476,7 +1476,7 @@ class HasAllCounts(Rule[TWorld], game=OracleOfSeasonsWorld.game):
             return f"Has all of ({items})"
 
         @override
-        def combine_and(self, other_rule: Rule.Resolved, world: "World") -> Sequence[Rule.Resolved]:
+        def combine_and(self, other_rule: CoreRule.Resolved, world: "World") -> Sequence[Rule.Resolved]:
             result = super().combine_and(other_rule, world)
             if result is not NotImplemented:
                 return result
@@ -1646,7 +1646,7 @@ class HasAnyCount(Rule[TWorld], game=OracleOfSeasonsWorld.game):
             return f"Has any of ({items})"
 
         @override
-        def combine_or(self, other_rule: Rule.Resolved, world: "World") -> Sequence[Rule.Resolved]:
+        def combine_or(self, other_rule: CoreRule.Resolved, world: "World") -> Sequence[Rule.Resolved]:
             result = super().combine_or(other_rule, world)
             if result is not NotImplemented:
                 return result
